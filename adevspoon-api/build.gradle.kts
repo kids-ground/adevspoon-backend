@@ -3,5 +3,6 @@
  */
 
 plugins {
-    id("com.adevspoon.kotlin-library-conventions")
+    id("com.adevspoon.kotlin-common-conventions")
 }
+

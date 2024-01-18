@@ -11,4 +11,9 @@ plugins {
 }
 
 rootProject.name = "adevspoon-backend"
-include("app", "list", "utilities")
+include(
+    "adevspoon-domain",
+    "adevspoon-common",
+    "adevspoon-infrastructure",
+    "adevspoon-api"
+)
