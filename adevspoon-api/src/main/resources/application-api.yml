@@ -1,0 +1,13 @@
+spring:
+  profiles:
+    active: local
+
+  docker:
+    compose:
+      lifecycle-management: start_only
+      file: docker-compose.yml
+      enabled: true
+---
+spring:
+  profiles:
+    active: dev
