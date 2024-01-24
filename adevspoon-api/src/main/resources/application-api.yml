@@ -5,7 +5,7 @@ spring:
   docker:
     compose:
       lifecycle-management: start_only
-      file: docker-compose.yml
+      file: docker-compose-local.yml
       enabled: true
 ---
 spring:
