@@ -12,7 +12,6 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":adevspoon-common"))
     implementation(project(":adevspoon-domain"))
     implementation(project(":adevspoon-infrastructure"))
 

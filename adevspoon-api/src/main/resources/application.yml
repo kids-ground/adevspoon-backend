@@ -1,11 +1,14 @@
 spring:
   profiles:
     active: local
+    include:
+      - infrastructure
+      - domain
 
   docker:
     compose:
       lifecycle-management: start_only
-      file: docker-compose-local.yml
+      file: ./adevspoon-api/docker-compose-local.yml
       enabled: true
 ---
 spring:
