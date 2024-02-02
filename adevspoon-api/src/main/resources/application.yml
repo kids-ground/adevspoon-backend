@@ -1,37 +1,28 @@
 spring:
   profiles:
     default: local
-
----
-spring:
-  profiles:
     group:
       local:
         - infrastructure
         - domain-local
-
-  docker:
-    compose:
-      lifecycle-management: start_only
-      file: ./adevspoon-api/docker-compose-local.yml
-      enabled: true
-#---
-## dev
-#spring:
-#  profiles:
-#    group:
 #      dev:
 #        - infrastructure-dev
 #        - domain-dev
 #        - logging
 #        - metrics
-#---
-## prod
-#spring:
-#  profiles:
-#    group:
 #      prod:
 #        - infrastructure-prod
 #        - domain-prod
 #        - common-prod
 #        - metrics
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local, dev
+  docker:
+    compose:
+      lifecycle-management: start_only
+      file: ./adevspoon-api/docker-compose-local.yml
+      enabled: true
