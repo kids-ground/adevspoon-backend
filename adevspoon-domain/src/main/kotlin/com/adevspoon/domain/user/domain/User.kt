@@ -1,12 +1,11 @@
-package com.adevspoon.domain.user
+package com.adevspoon.domain.user.domain
 
-import com.adevspoon.domain.user.enums.UserOAuth
-import com.adevspoon.domain.user.enums.UserProfileBelt
-import com.adevspoon.domain.user.enums.UserStatus
+import com.adevspoon.domain.user.domain.enums.UserOAuth
+import com.adevspoon.domain.user.domain.enums.UserProfileBelt
+import com.adevspoon.domain.user.domain.enums.UserStatus
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
-import java.time.Instant
 import java.time.LocalDateTime
 
 @Entity
