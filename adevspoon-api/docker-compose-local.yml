@@ -4,7 +4,7 @@ services:
     image: mysql:8.0.33
     container_name: adevspoon-mysql
     ports:
-      - 3306:3306
+      - 3316:3316
     environment:
       MYSQL_ROOT_PASSWORD: admin
       MYSQL_DATABASE: adevspoon-local

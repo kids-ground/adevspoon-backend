@@ -1,12 +1,12 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/adevspoon-local
+    url: jdbc:mysql://localhost:3306/adevspoon
     username: root
-    password: admin
+    password: rlafhrdnjs1
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     properties:
       hibernate:
         format_sql: true
