@@ -26,3 +26,8 @@ spring:
       lifecycle-management: start_only
       file: ./adevspoon-api/docker-compose-local.yml
       enabled: true
+
+springdoc:
+  swagger-ui:
+    path: /docs
+
