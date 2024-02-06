@@ -3,8 +3,9 @@ spring:
     default: local
     group:
       local:
-        - infrastructure
         - domain-local
+        - common-local
+        - infrastructure
 #      dev:
 #        - infrastructure-dev
 #        - domain-dev
@@ -30,4 +31,6 @@ spring:
 springdoc:
   swagger-ui:
     path: /docs
+
+
 

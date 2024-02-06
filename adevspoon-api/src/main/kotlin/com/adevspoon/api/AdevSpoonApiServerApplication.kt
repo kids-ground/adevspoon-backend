@@ -5,7 +5,11 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.runApplication
 
 @ConfigurationPropertiesScan
-@SpringBootApplication(scanBasePackages = ["com.adevspoon.api", "com.adevspoon.domain"])
+@SpringBootApplication(scanBasePackages = [
+    "com.adevspoon.api",
+    "com.adevspoon.domain",
+    "com.adevspoon.common"
+])
 class AdevSpoonApiServerApplication
 
 fun main(args: Array<String>) {
