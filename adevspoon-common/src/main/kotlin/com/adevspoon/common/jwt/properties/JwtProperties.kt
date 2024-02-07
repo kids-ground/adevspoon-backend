@@ -1,4 +1,4 @@
-package com.adevspoon.common.jwt
+package com.adevspoon.common.jwt.properties
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.bind.ConstructorBinding
