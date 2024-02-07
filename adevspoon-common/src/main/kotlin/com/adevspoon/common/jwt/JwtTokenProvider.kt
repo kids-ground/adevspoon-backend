@@ -19,7 +19,7 @@ private const val USER_ROLE = "role"
 class JwtTokenProvider(
     private val jwtProperties: JwtProperties
 ) {
-    fun createUserToken(jwtTokenInfo: JwtTokenInfo): String = Jwts.builder()
+    fun createToken(jwtTokenInfo: JwtTokenInfo): String = Jwts.builder()
         .setSubject(USER_TOKEN_SUBJECT)
         .claim(USER_ID, jwtTokenInfo.userId)
         .claim(USER_ROLE, jwtTokenInfo.authorities)
@@ -29,7 +29,7 @@ class JwtTokenProvider(
         .signWith(SecretKeySpec(jwtProperties.secretKey.toByteArray(), SignatureAlgorithm.HS256.jcaName))
         .compact()!!
 
-    fun validateUserTokenAndGetSubject(token: String): JwtTokenInfo = Jwts.parserBuilder()
+    fun validateTokenAndGetTokenInfo(token: String): JwtTokenInfo = Jwts.parserBuilder()
         .setSigningKey(jwtProperties.secretKey.toByteArray())
         .build()
         .parseClaimsJws(token)
