@@ -8,9 +8,8 @@ import org.springframework.security.config.http.SessionCreationPolicy
 
 @Configuration
 class SecurityConfig {
-
     private val allowedSwaggerUrls = arrayOf("/docs", "/swagger-ui/**", "/v3/**")
-    private val allowedApiUrls = arrayOf("/")
+    private val allowedApiUrls = arrayOf("/api/member")
 
     @Bean
     fun filterChain(http: HttpSecurity) = http

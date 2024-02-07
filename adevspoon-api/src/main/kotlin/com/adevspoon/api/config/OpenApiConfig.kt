@@ -8,18 +8,15 @@ import io.swagger.v3.oas.models.security.SecurityScheme
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
-@Configuration
-class OpenApiConfig(
-    private val securitySchemeName: String = "JWT 토큰"
-) {
+private const val SECURITY_SCHEME_NAME: String = "JWT 토큰"
 
+@Configuration
+class OpenApiConfig {
     @Bean
-    fun openApi(): OpenAPI {
-        return OpenAPI()
-            .info(apiInfo())
-            .components(Components().addSecuritySchemes(securitySchemeName, apiSecurityScheme()))
-            .security(apiSecurityRequirementList())
-    }
+    fun openApi(): OpenAPI = OpenAPI()
+        .info(apiInfo())
+        .components(Components().addSecuritySchemes(SECURITY_SCHEME_NAME, apiSecurityScheme()))
+        .security(apiSecurityRequirementList())
 
     private fun apiInfo() = Info()
         .title("Adevspoon API 명세")
@@ -30,5 +27,5 @@ class OpenApiConfig(
         .type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")
         .`in`(SecurityScheme.In.HEADER).name("Authorization")
 
-    private fun apiSecurityRequirementList() = listOf(SecurityRequirement().addList(securitySchemeName))
+    private fun apiSecurityRequirementList() = listOf(SecurityRequirement().addList(SECURITY_SCHEME_NAME))
 }
