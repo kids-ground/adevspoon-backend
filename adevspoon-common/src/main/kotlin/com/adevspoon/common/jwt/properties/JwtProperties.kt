@@ -7,6 +7,7 @@ import org.springframework.boot.context.properties.bind.ConstructorBinding
 @ConfigurationProperties(prefix = "jwt")
 data class JwtProperties @ConstructorBinding constructor(
     val secretKey: String,
-    val expirationHours: Long,
+    val accessExpirationHours: Long,
+    val refreshExpirationHours: Long,
     val issuer: String
 )
