@@ -16,6 +16,9 @@ spring:
 #        - domain-prod
 #        - common-prod
 #        - metrics
+server:
+  servlet:
+    context-path: /api
 
 ---
 spring:
