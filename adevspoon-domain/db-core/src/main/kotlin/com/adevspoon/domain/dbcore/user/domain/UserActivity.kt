@@ -16,61 +16,61 @@ class UserActivity(
 
     @NotNull
     @Column(name = "cumulativeAnswerCount", nullable = false)
-    var cumulativeAnswerCount: Int? = null,
+    var cumulativeAnswerCount: Int = 0,
 
     @NotNull
     @Column(name = "consecutiveAnswerCount", nullable = false)
-    var consecutiveAnswerCount: Int? = null,
+    var consecutiveAnswerCount: Int = 0,
 
     @NotNull
     @Column(name = "cumulativeAttendanceCount", nullable = false)
-    var cumulativeAttendanceCount: Int? = null,
+    var cumulativeAttendanceCount: Int = 1,
 
     @NotNull
     @Column(name = "consecutiveAttendanceCount", nullable = false)
-    var consecutiveAttendanceCount: Int? = null,
+    var consecutiveAttendanceCount: Int = 1,
 
     @NotNull
     @Column(name = "answerCountWithinWeek", nullable = false)
-    var answerCountWithinWeek: Int? = null,
+    var answerCountWithinWeek: Int = 0,
 
     @NotNull
     @Column(name = "maxConsecutiveAnswerCount", nullable = false)
-    var maxConsecutiveAnswerCount: Int? = null,
+    var maxConsecutiveAnswerCount: Int = 0,
 
     @NotNull
     @Column(name = "maxConsecutiveAttendanceCount", nullable = false)
-    var maxConsecutiveAttendanceCount: Int? = null,
+    var maxConsecutiveAttendanceCount: Int = 0,
 
     @NotNull
     @Column(name = "boardPostCount", nullable = false)
-    var boardPostCount: Int? = null,
+    var boardPostCount: Int = 0,
 
     @NotNull
     @Column(name = "answerDatabase", nullable = false)
-    var answerDatabase: Int? = null,
+    var answerDatabase: Int = 0,
 
     @NotNull
     @Column(name = "answerNetwork", nullable = false)
-    var answerNetwork: Int? = null,
+    var answerNetwork: Int = 0,
 
     @NotNull
     @Column(name = "answerOperatingSystem", nullable = false)
-    var answerOperatingSystem: Int? = null,
+    var answerOperatingSystem: Int = 0,
 
     @NotNull
     @Column(name = "answerDataStructure", nullable = false)
-    var answerDataStructure: Int? = null,
+    var answerDataStructure: Int = 0,
 
     @NotNull
     @Column(name = "answerAlgorithm", nullable = false)
-    var answerAlgorithm: Int? = null,
+    var answerAlgorithm: Int = 0,
 
     @NotNull
     @Column(name = "answerMachineLearning", nullable = false)
-    var answerMachineLearning: Int? = null,
+    var answerMachineLearning: Int = 0,
 
     @NotNull
     @Column(name = "answerClang", nullable = false)
-    var answerClang: Int? = null
+    var answerClang: Int = 0
 ): BaseEntity()

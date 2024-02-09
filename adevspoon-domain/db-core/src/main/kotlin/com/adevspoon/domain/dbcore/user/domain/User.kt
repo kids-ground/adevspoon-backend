@@ -20,8 +20,8 @@ class User(
     @Enumerated(EnumType.STRING)
     var status: UserStatus? = null,
 
-    @Column(name = "oAuth")
     @Enumerated(EnumType.STRING)
+    @Column(name = "oAuth" , columnDefinition="ENUM('kakao','apple')")
     var oAuth: UserOAuth? = null,
 
     @Column(name = "kakao_id")
@@ -63,8 +63,8 @@ class User(
     var email: String? = null,
 
     @NotNull
-    @Column(name = "profileBelt", nullable = false)
     @Enumerated(EnumType.STRING)
+    @Column(name = "profileBelt" , columnDefinition="ENUM('none','passionate')" ,nullable = false)
     var profileBelt: UserProfileBelt? = null,
 
     @Size(max = 1)
