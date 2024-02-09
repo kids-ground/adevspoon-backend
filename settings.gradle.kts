@@ -14,7 +14,7 @@ rootProject.name = "adevspoon-backend"
 include(
     "adevspoon-api",
     "adevspoon-domain:db-core",
-    "adevspoon-domain:oauth",
+    "adevspoon-domain:oauth-core",
     "adevspoon-common",
-    "adevspoon-infrastructure",
+    "adevspoon-infrastructure:oauth",
 )

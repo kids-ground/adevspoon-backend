@@ -14,7 +14,8 @@ plugins {
 dependencies {
     implementation(project(":adevspoon-common"))
     implementation(project(":adevspoon-domain:db-core"))
-    implementation(project(":adevspoon-domain:oauth"))
+    implementation(project(":adevspoon-domain:oauth-core"))
+    implementation(project(":adevspoon-infrastructure:oauth"))
 
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework:spring-tx")
