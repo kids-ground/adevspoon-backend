@@ -12,9 +12,8 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":adevspoon-domain"))
     implementation(project(":adevspoon-common"))
-    implementation(project(":adevspoon-infrastructure"))
+    implementation(project(":adevspoon-domain:db-core"))
 
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework:spring-tx")
