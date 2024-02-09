@@ -3,7 +3,7 @@ spring:
     default: local
     group:
       local:
-        - domain-local
+        - domain-db-local
         - common-local
         - infrastructure
 #      dev:
