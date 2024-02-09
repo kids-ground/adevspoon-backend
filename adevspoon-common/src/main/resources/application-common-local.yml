@@ -1,5 +1,0 @@
-jwt:
-  secretKey: qwertyuiop1234567890asdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM
-  access-expiration-hours: 876000
-  refresh-expiration-hours: 876000
-  issuer: adevspoon

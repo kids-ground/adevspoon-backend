@@ -1,9 +1,8 @@
+package com.adevspoon.api.common.utils
 
-package com.adevspoon.common.jwt
-
-import com.adevspoon.common.jwt.dto.JwtTokenInfo
-import com.adevspoon.common.jwt.dto.JwtTokenType
-import com.adevspoon.common.jwt.properties.JwtProperties
+import com.adevspoon.api.common.dto.JwtTokenInfo
+import com.adevspoon.api.common.dto.JwtTokenType
+import com.adevspoon.api.common.properties.JwtProperties
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.stereotype.Component
@@ -16,7 +15,6 @@ private const val USER_TOKEN_SUBJECT = "Token"
 private const val USER_ID = "userId"
 private const val USER_ROLE = "role"
 private const val USER_TOKEN_TYPE = "tokenType"
-
 @Component
 class JwtTokenProvider(
     private val jwtProperties: JwtProperties
@@ -27,13 +25,17 @@ class JwtTokenProvider(
         .claim(USER_ROLE, jwtTokenInfo.authorities)
         .claim(USER_TOKEN_TYPE, jwtTokenInfo.tokenType)
         .setIssuer(jwtProperties.issuer)
-        .setExpiration(Date.from(Instant.now().plus(
-            when(jwtTokenInfo.tokenType) {
-                JwtTokenType.ACCESS -> jwtProperties.accessExpirationHours
-                JwtTokenType.REFRESH -> jwtProperties.refreshExpirationHours
-            },
-            ChronoUnit.HOURS
-        )))
+        .setExpiration(
+            Date.from(
+                Instant.now().plus(
+                    when (jwtTokenInfo.tokenType) {
+                        JwtTokenType.ACCESS -> jwtProperties.accessExpirationHours
+                        JwtTokenType.REFRESH -> jwtProperties.refreshExpirationHours
+                    },
+                    ChronoUnit.HOURS
+                )
+            )
+        )
         .signWith(SecretKeySpec(jwtProperties.secretKey.toByteArray(), SignatureAlgorithm.HS256.jcaName))
         .compact()!!
 
@@ -50,4 +52,3 @@ class JwtTokenProvider(
             )
         }
 }
-

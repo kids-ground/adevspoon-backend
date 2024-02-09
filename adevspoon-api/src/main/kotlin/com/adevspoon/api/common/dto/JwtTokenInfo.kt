@@ -1,4 +1,4 @@
-package com.adevspoon.common.jwt.dto
+package com.adevspoon.api.common.dto
 
 data class JwtTokenInfo(
     val tokenType: JwtTokenType,

@@ -11,7 +11,7 @@ import com.adevspoon.common.outer.oauth.dto.OAuthUserInfoRequest
 @UseCase
 class SignInUseCase(
     private val memberCreateUseCase: MemberCreateUseCase,
-    private val oAuthClient: OAuthClient
+//    private val oAuthClient: OAuthClient
 ) {
 
     fun execute(loginRequest: SocialLoginRequest){
