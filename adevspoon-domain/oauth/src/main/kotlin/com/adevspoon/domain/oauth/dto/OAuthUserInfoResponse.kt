@@ -1,4 +1,4 @@
-package com.adevspoon.common.outer.oauth.dto
+package com.adevspoon.domain.oauth.dto
 
 data class OAuthUserInfoResponse(
     val type: OAuthType,
