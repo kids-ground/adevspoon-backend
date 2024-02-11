@@ -7,11 +7,11 @@ import com.adevspoon.infrastructure.oauth.dto.OAuthUserInfoResponse
 import org.springframework.stereotype.Component
 
 @Component
-class OAuthAdaptor(
+class OAuthAdapterImpl(
     private val kakaoFeignClient: KakaoFeignClient,
     private val appleFeignClient: AppleFeignClient,
-) {
-    fun getOAuthUserInfo(oAuthUserInfoRequest: OAuthUserInfoRequest): OAuthUserInfoResponse {
+): OAuthAdapter {
+    override fun getOAuthUserInfo(oAuthUserInfoRequest: OAuthUserInfoRequest): OAuthUserInfoResponse {
         TODO("Not yet implemented")
     }
 }
