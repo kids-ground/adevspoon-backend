@@ -8,5 +8,5 @@ import org.springframework.web.bind.annotation.GetMapping
 @FeignClient(name = "apple", url = "\${feign.apple.url}")
 interface AppleFeignClient {
     @GetMapping("/auth/keys")
-    fun authKeys(): AppleAuthKeysResponse
+    fun getAuthKeys(): AppleAuthKeysResponse
 }
