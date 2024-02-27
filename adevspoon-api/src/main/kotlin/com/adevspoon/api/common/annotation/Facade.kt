@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service
 @Retention(AnnotationRetention.RUNTIME)
 @MustBeDocumented
 @Service
-annotation class UseCase(
+annotation class Facade(
     @get:AliasFor(annotation = Service::class)
     val value: String = ""
 )

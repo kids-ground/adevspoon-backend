@@ -1,4 +1,4 @@
-package com.adevspoon.api.common.annotation
+package com.adevspoon.domain.common.annotation
 
 import org.springframework.core.annotation.AliasFor
 import org.springframework.stereotype.Service
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service
 @Retention(AnnotationRetention.RUNTIME)
 @MustBeDocumented
 @Service
-annotation class UseCase(
+annotation class DomainAdapter(
     @get:AliasFor(annotation = Service::class)
     val value: String = ""
 )
