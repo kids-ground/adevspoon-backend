@@ -36,7 +36,8 @@ class AppleKeyService(
                 val publicKeySpec = RSAPublicKeySpec(BigInteger(POSITIVE_SIGNUM, decodedN), BigInteger(POSITIVE_SIGNUM, decodedE))
                 val keyFactory = KeyFactory.getInstance(it.kty)
                 keyFactory.generatePublic(publicKeySpec)
-            } ?: throw IllegalArgumentException("publicKey is null")
+            }
+            ?: throw IllegalArgumentException("publicKey is null")
     }
 
     private fun validateAndGetKey(identityToken: String, publicKey: PublicKey): String {

@@ -1,5 +1,6 @@
 package com.adevspoon.infrastructure.oauth.service
 
+import com.adevspoon.infrastructure.common.annotation.Adapter
 import com.adevspoon.infrastructure.oauth.client.AppleFeignClient
 import com.adevspoon.infrastructure.oauth.client.KakaoFeignClient
 import com.adevspoon.infrastructure.oauth.dto.OAuthType
@@ -7,7 +8,7 @@ import com.adevspoon.infrastructure.oauth.dto.OAuthUserInfoRequest
 import com.adevspoon.infrastructure.oauth.dto.OAuthUserInfoResponse
 import org.springframework.stereotype.Component
 
-@Component
+@Adapter
 class OAuthAdapterImpl(
     private val kakaoFeignClient: KakaoFeignClient,
     private val appleKeyService: AppleKeyService,
