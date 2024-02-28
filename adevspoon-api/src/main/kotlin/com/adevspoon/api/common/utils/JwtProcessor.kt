@@ -13,7 +13,7 @@ import java.util.*
 import javax.crypto.spec.SecretKeySpec
 
 private const val USER_TOKEN_SUBJECT = "Token"
-private const val USER_ID = "userId"
+private const val USER_ID = "user_id"
 private const val USER_ROLE = "role"
 private const val USER_TOKEN_TYPE = "tokenType"
 @Component

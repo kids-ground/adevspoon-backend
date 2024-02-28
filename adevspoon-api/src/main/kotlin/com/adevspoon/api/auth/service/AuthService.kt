@@ -1,6 +1,10 @@
 package com.adevspoon.api.auth.service
 
+import com.adevspoon.api.common.dto.JwtTokenInfo
+import com.adevspoon.api.common.dto.JwtTokenType
+import com.adevspoon.api.common.utils.JwtProcessor
 import com.adevspoon.api.member.dto.request.SocialLoginRequest
+import com.adevspoon.api.member.dto.response.ServiceToken
 import com.adevspoon.api.member.dto.response.SocialLoginResponse
 import com.adevspoon.api.member.service.MemberService
 import com.adevspoon.infrastructure.oauth.dto.OAuthType
@@ -12,14 +16,18 @@ import org.springframework.stereotype.Service
 @Service
 class AuthService(
     private val memberService: MemberService,
-    private val oAuthAdapter: OAuthAdapter
+    private val oAuthAdapter: OAuthAdapter,
+    private val jwtProcessor: JwtProcessor,
 ) {
-
     fun signIn(loginRequest: SocialLoginRequest): SocialLoginResponse {
         val oAuthUserInfo = getOAuthUserInfo(loginRequest)
-        val socialLoginResponse = memberService.getOrCreateUser(oAuthUserInfo.id, loginRequest.loginType.toUserOAuth())
-        // TODO: JWT 토큰 생성하기
-        return socialLoginResponse
+        val userInfo = memberService.getOrCreateUser(oAuthUserInfo, loginRequest.loginType.toUserOAuth())
+        val jwtToken = getServiceToken(userInfo.userId)
+
+        memberService.setRefreshToken(userInfo.userId, jwtToken.refreshToken)
+
+        userInfo.token = jwtToken
+        return userInfo
     }
 
     private fun getOAuthUserInfo(loginRequest: SocialLoginRequest): OAuthUserInfoResponse {
@@ -31,4 +39,9 @@ class AuthService(
         )
         return oAuthAdapter.getOAuthUserInfo(oAuthUserInfoRequest)
     }
+
+    private fun getServiceToken(userId: Long): ServiceToken = ServiceToken(
+        accessToken = jwtProcessor.createToken(JwtTokenInfo(JwtTokenType.ACCESS, userId)),
+        refreshToken = jwtProcessor.createToken(JwtTokenInfo(JwtTokenType.REFRESH, userId))
+    )
 }

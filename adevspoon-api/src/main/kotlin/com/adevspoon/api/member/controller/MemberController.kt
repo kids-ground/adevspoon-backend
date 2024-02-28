@@ -1,5 +1,6 @@
 package com.adevspoon.api.member.controller
 
+import com.adevspoon.api.auth.service.AuthService
 import com.adevspoon.api.member.dto.request.SocialLoginRequest
 import com.adevspoon.api.member.dto.response.SocialLoginResponse
 import io.swagger.v3.oas.annotations.Operation
@@ -13,10 +14,12 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("member")
 @Tag(name = "[유저]")
-class MemberController {
-    @Operation(summary = "소셜 로그인", description = "kakao, apple을 통한 로그인/회원가입")
+class MemberController(
+    private val authService: AuthService
+) {
+    @Operation(summary = "로그인/회원가입", description = "kakao, apple을 통한 로그인/회원가입")
     @PostMapping
-    fun socialLogin(@RequestBody request: SocialLoginRequest) : ResponseEntity<String> {
-        return ResponseEntity.ok().body("success");
+    fun socialLogin(@RequestBody request: SocialLoginRequest) : ResponseEntity<SocialLoginResponse> {
+        return ResponseEntity.ok().body(authService.signIn(request))
     }
 }
