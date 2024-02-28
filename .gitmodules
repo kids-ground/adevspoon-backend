@@ -1,0 +1,3 @@
+[submodule "adevspoon-config"]
+	path = adevspoon-config
+	url = https://github.com/kids-ground/adevspoon-config.git

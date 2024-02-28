@@ -3,34 +3,25 @@ spring:
     default: local
     group:
       local:
+        - api-local
         - domain-local
         - common-local
-        - infrastructure
-#      dev:
-#        - infrastructure-dev
-#        - domain-dev
-#        - logging
-#        - metrics
-#      prod:
-#        - infrastructure-prod
-#        - domain-prod
-#        - common-prod
-#        - metrics
+        - infrastructure-local
+      dev:
+        - api-dev
+        - common-dev
+        - domain-dev
+        - infrastructure-dev
+      prod:
+        - api-prod
+        - common-prod
+        - domain-prod
+        - infrastructure-prod
 
----
-spring:
-  config:
-    activate:
-      on-profile: local, dev
-  docker:
-    compose:
-      lifecycle-management: start_only
-      file: ./adevspoon-api/docker-compose-local.yml
-      enabled: true
+server:
+  servlet:
+    context-path: /api
 
 springdoc:
   swagger-ui:
     path: /docs
-
-
-

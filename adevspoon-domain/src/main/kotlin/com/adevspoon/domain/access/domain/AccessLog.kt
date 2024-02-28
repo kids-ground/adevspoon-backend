@@ -1,12 +1,11 @@
 package com.adevspoon.domain.access.domain
 
 import com.adevspoon.domain.access.domain.enums.AccessLogType
-import com.adevspoon.domain.common.domain.BaseEntity
+import com.adevspoon.domain.domain.BaseEntity
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 import java.io.Serializable
-import java.time.LocalDateTime
 
 // 조회 로그
 @Entity

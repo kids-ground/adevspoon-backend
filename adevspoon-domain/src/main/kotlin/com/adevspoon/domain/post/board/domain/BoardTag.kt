@@ -1,10 +1,9 @@
 package com.adevspoon.domain.post.board.domain
 
-import com.adevspoon.domain.common.domain.BaseEntity
+import com.adevspoon.domain.domain.BaseEntity
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
-import java.time.Instant
 
 @Entity
 @Table(name = "BoardTag", schema = "adevspoon")

@@ -1,9 +1,8 @@
 package com.adevspoon.domain.popup.domain
 
-import com.adevspoon.domain.common.domain.LegacyBaseEntity
+import com.adevspoon.domain.domain.LegacyBaseEntity
 import jakarta.persistence.*
 import jakarta.validation.constraints.Size
-import java.time.Instant
 import java.time.LocalDate
 
 @Entity

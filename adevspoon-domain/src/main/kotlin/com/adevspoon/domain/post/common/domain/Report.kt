@@ -1,16 +1,14 @@
 package com.adevspoon.domain.post.common.domain
 
-import com.adevspoon.domain.common.domain.LegacyBaseEntity
+import com.adevspoon.domain.domain.LegacyBaseEntity
 import com.adevspoon.domain.post.common.domain.enums.ReportReason
 import com.adevspoon.domain.post.techAnswer.domain.Answer
-import com.adevspoon.domain.user.domain.User
+import com.adevspoon.domain.member.domain.User
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
-import org.springframework.data.jpa.domain.support.AuditingEntityListener
-import java.time.Instant
 
 @Entity
 @Table(name = "reports", schema = "adevspoon")

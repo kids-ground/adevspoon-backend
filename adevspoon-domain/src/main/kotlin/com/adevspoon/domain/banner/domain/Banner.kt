@@ -1,6 +1,6 @@
 package com.adevspoon.domain.banner.domain
 
-import com.adevspoon.domain.common.domain.LegacyBaseEntity
+import com.adevspoon.domain.domain.LegacyBaseEntity
 import jakarta.persistence.*
 import jakarta.validation.constraints.Size
 import java.time.LocalDateTime

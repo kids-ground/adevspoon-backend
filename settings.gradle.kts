@@ -12,8 +12,8 @@ plugins {
 
 rootProject.name = "adevspoon-backend"
 include(
+    "adevspoon-api",
     "adevspoon-domain",
     "adevspoon-common",
     "adevspoon-infrastructure",
-    "adevspoon-api"
 )

@@ -23,3 +23,11 @@ tasks.getByName("bootJar") {
 tasks.getByName("jar") {
     enabled = true
 }
+
+tasks.register("copyConfig", Copy::class) {
+    copy {
+        from("../adevspoon-config/backend/domain")
+        include("*.yml", "*.xml")
+        into("src/main/resources")
+    }
+}

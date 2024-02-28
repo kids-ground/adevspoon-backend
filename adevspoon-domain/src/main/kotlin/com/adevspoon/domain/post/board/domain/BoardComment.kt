@@ -1,12 +1,11 @@
 package com.adevspoon.domain.post.board.domain
 
-import com.adevspoon.domain.common.domain.BaseEntity
-import com.adevspoon.domain.user.domain.User
+import com.adevspoon.domain.domain.BaseEntity
+import com.adevspoon.domain.member.domain.User
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
-import java.time.Instant
 
 @Entity
 @Table(name = "BoardComment", schema = "adevspoon")

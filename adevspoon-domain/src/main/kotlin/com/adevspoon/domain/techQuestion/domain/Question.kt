@@ -1,11 +1,10 @@
 package com.adevspoon.domain.techQuestion.domain
 
-import com.adevspoon.domain.common.domain.LegacyBaseEntity
+import com.adevspoon.domain.domain.LegacyBaseEntity
 import com.adevspoon.domain.techQuestion.domain.enums.QuestionDifficulty
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
-import java.time.Instant
 
 @Entity
 @Table(name = "questions", schema = "adevspoon")
