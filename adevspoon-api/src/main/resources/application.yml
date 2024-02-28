@@ -3,41 +3,25 @@ spring:
     default: local
     group:
       local:
+        - api-local
         - domain-local
         - common-local
         - infrastructure-local
-#      dev:
-#        - infrastructure-dev
-#        - domain-dev
-#        - logging
-#        - metrics
-#      prod:
-#        - infrastructure-prod
-#        - domain-prod
-#        - common-prod
-#        - metrics
+      dev:
+        - api-dev
+        - common-dev
+        - domain-dev
+        - infrastructure-dev
+      prod:
+        - api-prod
+        - common-prod
+        - domain-prod
+        - infrastructure-prod
+
 server:
   servlet:
     context-path: /api
 
----
-spring:
-  config:
-    activate:
-      on-profile: local, dev
-  docker:
-    compose:
-      lifecycle-management: start_only
-      file: ./adevspoon-api/docker-compose-local.yml
-      enabled: true
-
 springdoc:
   swagger-ui:
     path: /docs
-
-jwt:
-  secretKey: qwertyuiop1234567890asdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM
-  access-expiration-hours: 876000
-  refresh-expiration-hours: 876000
-  issuer: adevspoon
-

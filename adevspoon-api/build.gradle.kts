@@ -31,3 +31,16 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
 }
 
+
+
+tasks.register("copyConfig", Copy::class) {
+    copy {
+        from("../adevspoon-config/backend/api")
+        include("*.yml", "*.xml")
+        into("src/main/resources")
+    }
+}
+
+tasks.assemble {
+    dependsOn(":adevspoon-common", ":adevspoon-domain", ":adevspoon-infrastructure")
+}
