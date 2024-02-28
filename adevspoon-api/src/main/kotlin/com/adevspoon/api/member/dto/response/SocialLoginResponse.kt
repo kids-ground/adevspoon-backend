@@ -1,6 +1,6 @@
 package com.adevspoon.api.member.dto.response
 
-import com.adevspoon.domain.user.domain.User
+import com.adevspoon.domain.member.domain.User
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.LocalDateTime
 

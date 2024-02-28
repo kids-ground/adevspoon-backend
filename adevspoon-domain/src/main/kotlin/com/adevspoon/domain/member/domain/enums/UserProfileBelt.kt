@@ -1,4 +1,4 @@
-package com.adevspoon.domain.user.domain.enums
+package com.adevspoon.domain.member.domain.enums
 
 enum class UserProfileBelt {
     NONE, PASSIONATE

@@ -1,7 +1,7 @@
 package com.adevspoon.domain.techQuestion.domain
 
 import com.adevspoon.domain.domain.BaseEntity
-import com.adevspoon.domain.user.domain.User
+import com.adevspoon.domain.member.domain.User
 import jakarta.persistence.*
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction

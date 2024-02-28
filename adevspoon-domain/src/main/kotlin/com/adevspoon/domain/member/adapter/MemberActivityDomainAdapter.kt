@@ -1,11 +1,11 @@
-package com.adevspoon.domain.user.adapter
+package com.adevspoon.domain.member.adapter
 
 import com.adevspoon.domain.common.annotation.DomainAdapter
-import com.adevspoon.domain.user.domain.UserActivity
-import com.adevspoon.domain.user.repository.UserActivityRepository
+import com.adevspoon.domain.member.domain.UserActivity
+import com.adevspoon.domain.member.repository.UserActivityRepository
 
 @DomainAdapter
-class UserActivityDomainAdapter(
+class MemberActivityDomainAdapter(
     private val userActivityRepository: UserActivityRepository
 ) {
     fun save(userActivity: UserActivity) = userActivityRepository.save(userActivity)

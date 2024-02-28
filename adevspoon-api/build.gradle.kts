@@ -31,8 +31,6 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
 }
 
-
-
 tasks.register("copyConfig", Copy::class) {
     copy {
         from("../adevspoon-config/backend/api")

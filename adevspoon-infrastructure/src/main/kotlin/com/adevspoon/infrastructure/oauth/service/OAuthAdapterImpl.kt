@@ -21,9 +21,13 @@ class OAuthAdapterImpl(
 
     private fun getKakaoUserInfo(accessToken: String?): OAuthUserInfoResponse =
         accessToken?.let {
+            val kakaoResponse = kakaoFeignClient.getUserProfile("Bearer $accessToken")
             OAuthUserInfoResponse(
-                id = "${kakaoFeignClient.getUserProfile("Bearer $accessToken").id}",
-                type = OAuthType.KAKAO
+                id = "${kakaoResponse.id}",
+                type = OAuthType.KAKAO,
+                nickname = kakaoResponse.kakaoAccount.profile.nickname,
+                profileImageUrl = kakaoResponse.kakaoAccount.profile.profileImageUrl,
+                thumbnailImageUrl = kakaoResponse.kakaoAccount.profile.thumbnailImageUrl,
             )
         } ?: throw IllegalArgumentException("accessToken is null")
 

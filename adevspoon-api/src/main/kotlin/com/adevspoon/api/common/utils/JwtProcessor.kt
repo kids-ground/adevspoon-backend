@@ -2,6 +2,7 @@ package com.adevspoon.api.common.utils
 
 import com.adevspoon.api.common.dto.JwtTokenInfo
 import com.adevspoon.api.common.dto.JwtTokenType
+import com.adevspoon.api.common.enums.ServiceRole
 import com.adevspoon.api.common.properties.JwtProperties
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
@@ -16,14 +17,14 @@ private const val USER_ID = "userId"
 private const val USER_ROLE = "role"
 private const val USER_TOKEN_TYPE = "tokenType"
 @Component
-class JwtTokenProvider(
+class JwtProcessor(
     private val jwtProperties: JwtProperties
 ) {
     fun createToken(jwtTokenInfo: JwtTokenInfo): String = Jwts.builder()
-        .setSubject(USER_TOKEN_SUBJECT)
         .claim(USER_ID, jwtTokenInfo.userId)
-        .claim(USER_ROLE, jwtTokenInfo.authorities)
+        .claim(USER_ROLE, jwtTokenInfo.role.name)
         .claim(USER_TOKEN_TYPE, jwtTokenInfo.tokenType)
+        .setSubject(USER_TOKEN_SUBJECT)
         .setIssuer(jwtProperties.issuer)
         .setExpiration(
             Date.from(
@@ -39,16 +40,21 @@ class JwtTokenProvider(
         .signWith(SecretKeySpec(jwtProperties.secretKey.toByteArray(), SignatureAlgorithm.HS256.jcaName))
         .compact()!!
 
-    fun validateTokenAndGetTokenInfo(token: String): JwtTokenInfo = Jwts.parserBuilder()
-        .setSigningKey(jwtProperties.secretKey.toByteArray())
-        .build()
-        .parseClaimsJws(token)
-        .body
-        .let {
-            JwtTokenInfo(
-                userId = it.get(key = USER_ID) as Long,
-                authorities = it.get(key = USER_ROLE) as String,
-                tokenType = enumValueOf<JwtTokenType>(it.get(key = USER_TOKEN_TYPE) as String)
-            )
-        }
+    // TODO: JWT Validate 예외 처리하기
+    fun validateTokenAndGetTokenInfo(token: String): JwtTokenInfo = try {
+        Jwts.parserBuilder()
+            .setSigningKey(jwtProperties.secretKey.toByteArray())
+            .build()
+            .parseClaimsJws(token)
+            .body
+            .let {
+                JwtTokenInfo(
+                    userId = it.get(key = USER_ID) as Long? ?: 0L,
+                    role = enumValueOf(it.get(key = USER_ROLE) as String? ?: ServiceRole.USER.name),
+                    tokenType = enumValueOf(it.get(key = USER_TOKEN_TYPE) as String? ?: JwtTokenType.ACCESS.name)
+                )
+            }
+    } catch (e: Exception) {
+        throw RuntimeException("Invalid token")
+    }
 }

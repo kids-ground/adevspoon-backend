@@ -1,10 +1,9 @@
-package com.adevspoon.domain.user.repository
+package com.adevspoon.domain.member.repository
 
-import com.adevspoon.domain.user.domain.User
-import com.adevspoon.domain.user.domain.enums.UserOAuth
+import com.adevspoon.domain.member.domain.User
+import com.adevspoon.domain.member.domain.enums.UserOAuth
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
-import org.springframework.stereotype.Repository
 
 interface UserRepository : JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.oAuth = :oAuth AND u.appleId = :appleId")

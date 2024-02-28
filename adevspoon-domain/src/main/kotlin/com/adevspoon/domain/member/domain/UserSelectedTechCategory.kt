@@ -1,4 +1,4 @@
-package com.adevspoon.domain.user.domain
+package com.adevspoon.domain.member.domain
 
 import jakarta.persistence.*
 import java.io.Serializable

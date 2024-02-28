@@ -1,4 +1,4 @@
-package com.adevspoon.domain.user.domain
+package com.adevspoon.domain.member.domain
 
 import com.adevspoon.domain.domain.LegacyBaseEntity
 import jakarta.persistence.*

@@ -1,9 +1,9 @@
-package com.adevspoon.domain.user.domain
+package com.adevspoon.domain.member.domain
 
 import com.adevspoon.domain.domain.LegacyBaseEntity
-import com.adevspoon.domain.user.domain.enums.UserOAuth
-import com.adevspoon.domain.user.domain.enums.UserProfileBelt
-import com.adevspoon.domain.user.domain.enums.UserStatus
+import com.adevspoon.domain.member.domain.enums.UserOAuth
+import com.adevspoon.domain.member.domain.enums.UserProfileBelt
+import com.adevspoon.domain.member.domain.enums.UserStatus
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size

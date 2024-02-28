@@ -1,9 +1,8 @@
 package com.adevspoon.api.member.dto.request
 
-import com.adevspoon.domain.user.domain.enums.UserOAuth
+import com.adevspoon.domain.member.domain.enums.UserOAuth
 import com.adevspoon.infrastructure.oauth.dto.OAuthType
 import com.fasterxml.jackson.annotation.JsonCreator
-import java.util.*
 
 data class SocialLoginRequest(
     val oauthToken: String,

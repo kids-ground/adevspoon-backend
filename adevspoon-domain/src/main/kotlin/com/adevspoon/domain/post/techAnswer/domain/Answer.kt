@@ -3,7 +3,7 @@ package com.adevspoon.domain.post.techAnswer.domain
 import com.adevspoon.domain.domain.LegacyBaseEntity
 import com.adevspoon.domain.post.techAnswer.domain.enums.AnswerStatus
 import com.adevspoon.domain.techQuestion.domain.Question
-import com.adevspoon.domain.user.domain.User
+import com.adevspoon.domain.member.domain.User
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
 import org.hibernate.annotations.OnDelete

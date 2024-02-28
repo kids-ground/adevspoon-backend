@@ -3,7 +3,7 @@ package com.adevspoon.domain.post.common.domain
 import com.adevspoon.domain.domain.LegacyBaseEntity
 import com.adevspoon.domain.post.common.domain.enums.ReportReason
 import com.adevspoon.domain.post.techAnswer.domain.Answer
-import com.adevspoon.domain.user.domain.User
+import com.adevspoon.domain.member.domain.User
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size

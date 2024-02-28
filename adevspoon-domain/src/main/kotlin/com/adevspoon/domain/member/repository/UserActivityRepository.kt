@@ -1,6 +1,6 @@
-package com.adevspoon.domain.user.repository
+package com.adevspoon.domain.member.repository
 
-import com.adevspoon.domain.user.domain.UserActivity
+import com.adevspoon.domain.member.domain.UserActivity
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface UserActivityRepository : JpaRepository<UserActivity, Long> {
