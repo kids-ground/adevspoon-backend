@@ -1,5 +1,0 @@
-feign:
-  kakao:
-    url: https://kapi.kakao.com
-  apple:
-    url: https://appleid.apple.com
