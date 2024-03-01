@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 abstract class LegacyBaseEntity (
     @CreatedDate
     @Column(name = "created_at", updatable = false)
-    val createdAt: LocalDateTime? = null,
+    var createdAt: LocalDateTime? = null,
 
     @LastModifiedDate
     @Column(name = "updated_at")
