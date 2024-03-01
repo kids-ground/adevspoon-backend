@@ -12,22 +12,22 @@ import java.io.Serializable
 @Table(name = "AccessLog", schema = "adevspoon")
 class AccessLog (
     @EmbeddedId
-    val id: AccessLogId? = null
+    val id: AccessLogId
 ): BaseEntity()
 
 @Embeddable
 class AccessLogId(
     @Size(max = 50)
     @NotNull
-    @Column(name = "type", nullable = false, length = 50)
+    @Column(name = "type", nullable = false, columnDefinition = "varchar(50)")
     @Enumerated(EnumType.STRING)
-    val type: AccessLogType? = null,
+    val type: AccessLogType,
 
     @NotNull
     @Column(name = "userId", nullable = false)
-    val userId: Long? = null,
+    val userId: Long,
 
     @NotNull
     @Column(name = "targetId", nullable = false)
-    val targetId: Long? = null,
+    val targetId: Long,
 ) : Serializable
