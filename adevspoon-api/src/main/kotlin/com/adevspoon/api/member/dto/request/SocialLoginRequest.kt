@@ -17,7 +17,6 @@ enum class SocialLoginType {
         @JsonCreator
         @JvmStatic
         fun fromString(value: String): SocialLoginType {
-            System.out.println(value.uppercase())
             return valueOf(value.uppercase())
         }
     }

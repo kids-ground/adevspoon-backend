@@ -24,15 +24,16 @@ class AppleKeyService(
     }
 
     private fun getPublicKey(identityToken: String): PublicKey {
-        val jwtHeaderString = identityToken.split("\\.".toRegex()).toTypedArray()[0]
+        val jwtHeaderPart = identityToken.split("\\.".toRegex()).toTypedArray()[0]
+        val jwtHeaderString = String(Base64.getDecoder().decode(jwtHeaderPart))
         val jwtHeader = objectMapper.readValue(jwtHeaderString, JwtHeader::class.java)
 
         return appleFeignClient.getAuthKeys()
             .keys
             .firstOrNull { key -> key.alg == jwtHeader.alg && key.kid == jwtHeader.kid }
             ?.let {
-                val decodedN = Base64.getDecoder().decode(it.n)
-                val decodedE = Base64.getDecoder().decode(it.e)
+                val decodedN = Base64.getUrlDecoder().decode(it.n)
+                val decodedE = Base64.getUrlDecoder().decode(it.e)
                 val publicKeySpec = RSAPublicKeySpec(BigInteger(POSITIVE_SIGNUM, decodedN), BigInteger(POSITIVE_SIGNUM, decodedE))
                 val keyFactory = KeyFactory.getInstance(it.kty)
                 keyFactory.generatePublic(publicKeySpec)

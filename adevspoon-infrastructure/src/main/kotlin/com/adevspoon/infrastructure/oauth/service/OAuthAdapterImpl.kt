@@ -25,6 +25,7 @@ class OAuthAdapterImpl(
             OAuthUserInfoResponse(
                 id = "${kakaoResponse.id}",
                 type = OAuthType.KAKAO,
+                email = kakaoResponse.kakaoAccount.email,
                 nickname = kakaoResponse.kakaoAccount.profile.nickname,
                 profileImageUrl = kakaoResponse.kakaoAccount.profile.profileImageUrl,
                 thumbnailImageUrl = kakaoResponse.kakaoAccount.profile.thumbnailImageUrl,
