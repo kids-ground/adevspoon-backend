@@ -22,7 +22,7 @@ class Answer(
 
     @NotNull
     @Column(name = "like_cnt", nullable = false)
-    var likeCnt: Int? = null,
+    var likeCnt: Int = 0,
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
