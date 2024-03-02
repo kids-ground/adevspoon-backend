@@ -16,7 +16,7 @@ class User(
     @Column(name = "id", nullable = false)
     val id: Long = 0,
 
-    @Column(name = "status")
+    @Column(name = "status" , columnDefinition="ENUM('active','exit')")
     @Enumerated(EnumType.STRING)
     var status: UserStatus? = null,
 
@@ -51,21 +51,21 @@ class User(
 
     @NotNull
     @Column(name = "question_cnt", nullable = false)
-    var questionCnt: Int? = null,
+    var questionCnt: Int = 0,
 
     @NotNull
     @Column(name = "answer_cnt", nullable = false)
-    var answerCnt: Int? = null,
+    var answerCnt: Int = 0,
 
     @Size(max = 255)
     @NotNull
     @Column(name = "email", nullable = false)
-    var email: String? = null,
+    var email: String = "",
 
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "profileBelt" , columnDefinition="ENUM('none','passionate')" ,nullable = false)
-    var profileBelt: UserProfileBelt? = null,
+    var profileBelt: UserProfileBelt = UserProfileBelt.NONE,
 
     @Size(max = 1)
     @Column(name = "representativeBadge", length = 1)
@@ -78,5 +78,5 @@ class User(
     @Size(max = 255)
     @NotNull
     @Column(name = "careerDescription", nullable = false)
-    var careerDescription: String? = null
+    var careerDescription: String = ""
 ): LegacyBaseEntity()
