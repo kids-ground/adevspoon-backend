@@ -1,7 +1,9 @@
 package com.adevspoon.common.dto
 
-data class SuccessResponse<T>(
+import kotlin.reflect.jvm.internal.impl.load.kotlin.JvmType
+
+data class SuccessResponse(
     val code: Int = 200,
     val message: String = "Success",
-    val data: T
+    val data: Any?
 )
