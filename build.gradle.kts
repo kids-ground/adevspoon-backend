@@ -54,6 +54,7 @@ subprojects {
         implementation("org.springframework.boot:spring-boot-starter-validation")
 
         testImplementation("org.springframework.boot:spring-boot-starter-test")
+        testImplementation("io.mockk:mockk:1.13.7")
 
         kapt("org.springframework.boot:spring-boot-configuration-processor")
     }
