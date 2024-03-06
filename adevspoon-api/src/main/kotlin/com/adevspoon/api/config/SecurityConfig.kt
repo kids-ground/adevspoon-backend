@@ -1,35 +1,53 @@
 package com.adevspoon.api.config
 
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest
+import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 @Configuration
 class SecurityConfig {
     private val allowedSwaggerUrls = arrayOf("/docs", "/swagger-ui/**", "/v3/**")
-    private val allowedApiUrls = arrayOf("/api/member")
+    private val allowedApiUrls = arrayOf("/member", "/dummy")
+    private val log = LoggerFactory.getLogger(this.javaClass)!!
 
     @Bean
     fun filterChain(http: HttpSecurity) = http
         .csrf { it.disable() }
         .formLogin { it.disable() }
         .httpBasic { it.disable() }
-        .exceptionHandling {
-            it.authenticationEntryPoint { request, response, authException ->
-                // 인증 불가 - 401
-            }
-            it.accessDeniedHandler { request, response, accessDeniedException ->
-                // 권한 없음 - 403
-            }
-        }
+        .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
         .authorizeHttpRequests {
             it.requestMatchers(*allowedSwaggerUrls).permitAll()
                 .requestMatchers(*allowedApiUrls).permitAll()
-                .requestMatchers(PathRequest.toH2Console()).permitAll()
+//                .requestMatchers(PathRequest.toH2Console()).permitAll()
                 .anyRequest().authenticated()
         }
-        .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+        .exceptionHandling {
+            it.authenticationEntryPoint { request, response, authException ->
+                log.info("인증불가 401")
+                // 인증 불가 - 401
+            }
+            it.accessDeniedHandler { request, response, accessDeniedException ->
+                log.info("권한없음 403")
+                // 권한 없음 - 403
+            }
+        }
         .build()!!
+
+    @Bean
+    fun corsConfigurationSource(): UrlBasedCorsConfigurationSource {
+        val corsConfigSource = UrlBasedCorsConfigurationSource()
+        val corsConfig = CorsConfiguration()
+        corsConfig.allowedHeaders = listOf("*")
+        corsConfig.allowedMethods = listOf("HEAD", "POST", "GET", "DELETE", "PUT", "PATCH", "OPTIONS")
+        corsConfig.allowedOrigins = listOf("*")
+        corsConfig.allowCredentials = true
+        corsConfig.maxAge = 3600L
+        corsConfigSource.registerCorsConfiguration("/**", corsConfig)
+        return corsConfigSource
+    }
 }

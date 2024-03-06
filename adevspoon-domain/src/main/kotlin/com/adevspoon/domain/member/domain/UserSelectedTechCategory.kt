@@ -13,12 +13,10 @@ class UserSelectedTechCategory(
 
 @Embeddable
 class UserSelectedTechCategoryId(
-    @MapsId("userId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "userId", nullable = false)
     val user: User? = null,
 
-    @MapsId("categoryId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "categoryId", nullable = false)
     val category: TechCategory? = null

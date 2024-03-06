@@ -11,6 +11,7 @@ data class KakaoUserInfoResponse(
         @JsonProperty("profile_nickname_needs_agreement")
         val profileNicknameNeedsAgreement: Boolean,
         val profile: KakaoProfile,
+        val email: String?,
     ) {
         data class KakaoProfile(
             val nickname: String,

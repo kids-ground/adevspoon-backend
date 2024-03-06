@@ -9,6 +9,7 @@ import com.adevspoon.domain.member.domain.User
 import com.adevspoon.domain.member.domain.UserActivity
 import com.adevspoon.domain.member.domain.enums.UserOAuth
 import com.adevspoon.infrastructure.oauth.dto.OAuthUserInfoResponse
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -19,11 +20,13 @@ class MemberService(
     private val imageProperties: ImageProperties,
     private val nicknameProcessor: NicknameProcessor,
 ) {
+    private val log = LoggerFactory.getLogger(this.javaClass)!!
+
     @Transactional
     fun getOrCreateUser(oauthUserInfo: OAuthUserInfoResponse, oauthType: UserOAuth): SocialLoginResponse =
         when (oauthType) {
-            UserOAuth.kakao -> memberDomainAdapter.findByOAuthAndAppleId(oauthType, oauthUserInfo.id)
-            UserOAuth.apple -> memberDomainAdapter.findByOAuthAndKakaoId(oauthType, oauthUserInfo.id.toLong())
+            UserOAuth.kakao -> memberDomainAdapter.findByOAuthAndKakaoId(oauthType, oauthUserInfo.id.toLong())
+            UserOAuth.apple -> memberDomainAdapter.findByOAuthAndAppleId(oauthType, oauthUserInfo.id)
         }?.let {
             SocialLoginResponse.from(it, false)
         } ?: createUser(oauthUserInfo, oauthType)
@@ -35,10 +38,12 @@ class MemberService(
     }
 
     private fun createUser(oauthUserInfo: OAuthUserInfoResponse, oauthType: UserOAuth): SocialLoginResponse {
+        log.info("유저 생성 $oauthType ${oauthUserInfo.id}")
         val user = when (oauthType) {
             UserOAuth.kakao -> User(oAuth = oauthType, kakaoId = oauthUserInfo.id.toLong())
             UserOAuth.apple -> User(oAuth = oauthType, appleId = oauthUserInfo.id)
         }.apply {
+            email = oauthUserInfo.email ?: ""
             profileImg = oauthUserInfo.profileImageUrl ?: imageProperties.profileUrl
             thumbnailImg = oauthUserInfo.thumbnailImageUrl ?: imageProperties.thumbnailUrl
             nickname = nicknameProcessor.createRandomNickname()

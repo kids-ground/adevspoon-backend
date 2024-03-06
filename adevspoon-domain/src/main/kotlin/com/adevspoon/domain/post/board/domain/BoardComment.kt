@@ -28,9 +28,9 @@ class BoardComment(
 
     @NotNull
     @Column(name = "content", nullable = false)
-    var content: String? = null,
+    var content: String,
 
     @NotNull
     @Column(name = "likeCount", nullable = false)
-    var likeCount: Int? = null
+    var likeCount: Int = 0
 ): BaseEntity()

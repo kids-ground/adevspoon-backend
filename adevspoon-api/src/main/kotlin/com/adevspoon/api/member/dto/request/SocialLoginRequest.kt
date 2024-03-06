@@ -15,6 +15,7 @@ enum class SocialLoginType {
 
     companion object {
         @JsonCreator
+        @JvmStatic
         fun fromString(value: String): SocialLoginType {
             return valueOf(value.uppercase())
         }
