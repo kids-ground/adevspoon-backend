@@ -25,21 +25,24 @@ class AppleKeyService(
     }
 
     private fun getPublicKey(identityToken: String): PublicKey {
-        val jwtHeaderPart = identityToken.split("\\.".toRegex()).toTypedArray()[0]
-        val jwtHeaderString = String(Base64.getDecoder().decode(jwtHeaderPart))
-        val jwtHeader = objectMapper.readValue(jwtHeaderString, JwtHeader::class.java)
+        try {
+            val jwtHeaderPart = identityToken.split("\\.".toRegex()).toTypedArray()[0]
+            val jwtHeaderString = String(Base64.getDecoder().decode(jwtHeaderPart))
+            val jwtHeader = objectMapper.readValue(jwtHeaderString, JwtHeader::class.java)
 
-        return appleFeignClient.getAuthKeys()
-            .keys
-            .firstOrNull { key -> key.alg == jwtHeader.alg && key.kid == jwtHeader.kid }
-            ?.let {
-                val decodedN = Base64.getUrlDecoder().decode(it.n)
-                val decodedE = Base64.getUrlDecoder().decode(it.e)
-                val publicKeySpec = RSAPublicKeySpec(BigInteger(POSITIVE_SIGNUM, decodedN), BigInteger(POSITIVE_SIGNUM, decodedE))
-                val keyFactory = KeyFactory.getInstance(it.kty)
-                keyFactory.generatePublic(publicKeySpec)
-            }
-            ?: throw OAuthErrorCode.APPLE_TOKEN_HEADER_INVALID.getException()
+            return appleFeignClient.getAuthKeys()
+                .keys
+                .firstOrNull { key -> key.alg == jwtHeader.alg && key.kid == jwtHeader.kid }
+                ?.let {
+                    val decodedN = Base64.getUrlDecoder().decode(it.n)
+                    val decodedE = Base64.getUrlDecoder().decode(it.e)
+                    val publicKeySpec = RSAPublicKeySpec(BigInteger(POSITIVE_SIGNUM, decodedN), BigInteger(POSITIVE_SIGNUM, decodedE))
+                    val keyFactory = KeyFactory.getInstance(it.kty)
+                    keyFactory.generatePublic(publicKeySpec)
+                } ?: throw OAuthErrorCode.APPLE_TOKEN_HEADER_INVALID.getException()
+        } catch (e: Exception) {
+            throw OAuthErrorCode.APPLE_TOKEN_HEADER_INVALID.getException()
+        }
     }
 
     private fun validateAndGetKey(identityToken: String, publicKey: PublicKey): String {
