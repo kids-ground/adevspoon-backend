@@ -1,7 +1,7 @@
 package com.adevspoon.common.exception
 
 
-abstract class AdevspoonException(
+class AdevspoonException(
     private val errorCode: AdevspoonErrorCode,
 ) : RuntimeException() {
     val errorInfo = errorCode.getErrorInfo()
