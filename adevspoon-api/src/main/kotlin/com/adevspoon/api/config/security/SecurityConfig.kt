@@ -1,15 +1,19 @@
-package com.adevspoon.api.config
+package com.adevspoon.api.config.security
 
+import com.adevspoon.api.common.utils.JwtProcessor
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 @Configuration
-class SecurityConfig {
+class SecurityConfig(
+    private val jwtProcessor: JwtProcessor
+) {
     private val allowedSwaggerUrls = arrayOf("/docs", "/swagger-ui/**", "/v3/**")
     private val allowedApiUrls = arrayOf("/member", "/dummy")
     private val log = LoggerFactory.getLogger(this.javaClass)!!
@@ -20,6 +24,7 @@ class SecurityConfig {
         .formLogin { it.disable() }
         .httpBasic { it.disable() }
         .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+        .addFilterBefore(jwtTokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter::class.java)
         .authorizeHttpRequests {
             it.requestMatchers(*allowedSwaggerUrls).permitAll()
                 .requestMatchers(*allowedApiUrls).permitAll()
@@ -50,4 +55,6 @@ class SecurityConfig {
         corsConfigSource.registerCorsConfiguration("/**", corsConfig)
         return corsConfigSource
     }
+
+    fun jwtTokenAuthenticationFilter() = JwtTokenAuthenticationFilter(jwtProcessor)
 }

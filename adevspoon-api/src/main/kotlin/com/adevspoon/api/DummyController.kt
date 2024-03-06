@@ -16,6 +16,11 @@ class DummyController{
         log.info("dummy ㅎ $param")
         return "dummy ㅎ2"
     }
+
+    @GetMapping("/security")
+    fun dummySecurityTest(): String {
+        return "g2"
+    }
 }
 
 
