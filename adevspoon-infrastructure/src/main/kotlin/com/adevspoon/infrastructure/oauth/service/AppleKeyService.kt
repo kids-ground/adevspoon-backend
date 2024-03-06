@@ -2,6 +2,7 @@ package com.adevspoon.infrastructure.oauth.service
 
 import com.adevspoon.infrastructure.oauth.client.AppleFeignClient
 import com.adevspoon.infrastructure.oauth.dto.JwtHeader
+import com.adevspoon.infrastructure.oauth.exception.OAuthErrorCode
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.jsonwebtoken.Jwts
 import org.springframework.stereotype.Component
@@ -38,7 +39,7 @@ class AppleKeyService(
                 val keyFactory = KeyFactory.getInstance(it.kty)
                 keyFactory.generatePublic(publicKeySpec)
             }
-            ?: throw IllegalArgumentException("publicKey is null")
+            ?: throw OAuthErrorCode.APPLE_TOKEN_HEADER_INVALID.getException()
     }
 
     private fun validateAndGetKey(identityToken: String, publicKey: PublicKey): String {
@@ -49,7 +50,7 @@ class AppleKeyService(
                 .parseClaimsJws(identityToken)
                 .body["sub"] as String
         } catch (e: Exception) {
-            throw IllegalArgumentException("invalid identityToken")
+            throw OAuthErrorCode.APPLE_TOKEN_INVALID.getException()
         }
     }
 }
