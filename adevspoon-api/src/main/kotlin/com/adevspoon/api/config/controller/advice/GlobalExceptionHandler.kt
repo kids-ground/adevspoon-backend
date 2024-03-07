@@ -1,9 +1,7 @@
-package com.adevspoon.api.config.controllerAdvice
+package com.adevspoon.api.config.controller.advice
 
 import com.adevspoon.common.dto.ErrorResponse
-import com.adevspoon.common.dto.SuccessResponse
 import com.adevspoon.common.exception.AdevspoonException
-import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity

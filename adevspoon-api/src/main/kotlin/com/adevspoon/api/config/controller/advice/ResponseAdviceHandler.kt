@@ -1,4 +1,4 @@
-package com.adevspoon.api.config.controllerAdvice
+package com.adevspoon.api.config.controller.advice
 
 import com.adevspoon.common.dto.SuccessResponse
 import org.springframework.core.MethodParameter
