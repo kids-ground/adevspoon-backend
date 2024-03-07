@@ -1,5 +1,6 @@
 package com.adevspoon.api.config.security
 
+import com.adevspoon.api.common.dto.RequestUserInfo
 import com.adevspoon.api.common.utils.JwtProcessor
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
@@ -28,7 +29,7 @@ class JwtTokenAuthenticationFilter(
 
         val tokenInfo = jwtProcessor.validateAuthorizationHeader(authHeader)
         SecurityContextHolder.getContext().authentication = UsernamePasswordAuthenticationToken(
-            tokenInfo.userId,
+            RequestUserInfo(tokenInfo.userId),
             null,
             Collections.singleton(tokenInfo.getAuthority())
         )
