@@ -1,9 +1,10 @@
-package com.adevspoon.api.common.utils
+package com.adevspoon.api.common.util
 
 import com.adevspoon.api.common.dto.JwtTokenInfo
 import com.adevspoon.api.common.dto.JwtTokenType
 import com.adevspoon.api.common.enums.ServiceRole
 import com.adevspoon.api.common.properties.JwtProperties
+import com.adevspoon.common.exception.CommonErrorCode
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.stereotype.Component
@@ -16,6 +17,7 @@ private const val USER_TOKEN_SUBJECT = "Token"
 private const val USER_ID = "user_id"
 private const val USER_ROLE = "role"
 private const val USER_TOKEN_TYPE = "tokenType"
+
 @Component
 class JwtProcessor(
     private val jwtProperties: JwtProperties
@@ -40,8 +42,9 @@ class JwtProcessor(
         .signWith(SecretKeySpec(jwtProperties.secretKey.toByteArray(), SignatureAlgorithm.HS256.jcaName))
         .compact()!!
 
-    // TODO: JWT Validate 예외 처리하기
-    fun validateTokenAndGetTokenInfo(token: String): JwtTokenInfo = try {
+    fun validateAuthorizationHeader(authorizationHeader: String): JwtTokenInfo = try {
+        val token = authorizationHeader.removePrefix("Bearer ")
+
         Jwts.parserBuilder()
             .setSigningKey(jwtProperties.secretKey.toByteArray())
             .build()
@@ -49,12 +52,12 @@ class JwtProcessor(
             .body
             .let {
                 JwtTokenInfo(
-                    userId = it.get(key = USER_ID) as Long? ?: 0L,
-                    role = enumValueOf(it.get(key = USER_ROLE) as String? ?: ServiceRole.USER.name),
-                    tokenType = enumValueOf(it.get(key = USER_TOKEN_TYPE) as String? ?: JwtTokenType.ACCESS.name)
+                    userId = (it.get(key = USER_ID) as? Int)?.toLong() ?: 0L,
+                    role = enumValueOf(it.get(key = USER_ROLE) as? String? ?: ServiceRole.USER.name),
+                    tokenType = enumValueOf(it.get(key = USER_TOKEN_TYPE) as? String? ?: JwtTokenType.ACCESS.name)
                 )
             }
     } catch (e: Exception) {
-        throw RuntimeException("Invalid token")
+        throw CommonErrorCode.UNAUTHORIZED.getException()
     }
 }

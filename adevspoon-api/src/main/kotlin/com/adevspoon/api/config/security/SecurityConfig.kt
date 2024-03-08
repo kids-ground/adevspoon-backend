@@ -1,15 +1,25 @@
-package com.adevspoon.api.config
+package com.adevspoon.api.config.security
 
+import com.adevspoon.api.common.extension.writeErrorResponse
+import com.adevspoon.api.common.util.JwtProcessor
+import com.adevspoon.common.exception.CommonErrorCode
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.web.AuthenticationEntryPoint
+import org.springframework.security.web.access.AccessDeniedHandler
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 @Configuration
-class SecurityConfig {
+class SecurityConfig(
+    private val jwtProcessor: JwtProcessor,
+    private val objectMapper: ObjectMapper
+) {
     private val allowedSwaggerUrls = arrayOf("/docs", "/swagger-ui/**", "/v3/**")
     private val allowedApiUrls = arrayOf("/member", "/dummy")
     private val log = LoggerFactory.getLogger(this.javaClass)!!
@@ -20,6 +30,8 @@ class SecurityConfig {
         .formLogin { it.disable() }
         .httpBasic { it.disable() }
         .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+        .addFilterBefore(jwtTokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter::class.java)
+        .addFilterBefore(authenticationExceptionFilter(), JwtTokenAuthenticationFilter::class.java)
         .authorizeHttpRequests {
             it.requestMatchers(*allowedSwaggerUrls).permitAll()
                 .requestMatchers(*allowedApiUrls).permitAll()
@@ -27,14 +39,8 @@ class SecurityConfig {
                 .anyRequest().authenticated()
         }
         .exceptionHandling {
-            it.authenticationEntryPoint { request, response, authException ->
-                log.info("인증불가 401")
-                // 인증 불가 - 401
-            }
-            it.accessDeniedHandler { request, response, accessDeniedException ->
-                log.info("권한없음 403")
-                // 권한 없음 - 403
-            }
+            it.authenticationEntryPoint(authenticationEntryPoint())
+            it.accessDeniedHandler(accessDeniedHandler())
         }
         .build()!!
 
@@ -49,5 +55,19 @@ class SecurityConfig {
         corsConfig.maxAge = 3600L
         corsConfigSource.registerCorsConfiguration("/**", corsConfig)
         return corsConfigSource
+    }
+
+    private fun jwtTokenAuthenticationFilter() = JwtTokenAuthenticationFilter(jwtProcessor)
+
+    private fun authenticationExceptionFilter() = AuthenticationExceptionFilter(objectMapper)
+
+    private fun authenticationEntryPoint() = AuthenticationEntryPoint { request, response, authException ->
+        log.info("Authentication Error - ${authException.message}")
+        response.writeErrorResponse(CommonErrorCode.MISSING_AUTH, objectMapper)
+    }
+
+    private fun accessDeniedHandler() = AccessDeniedHandler { request, response, accessDeniedException ->
+        log.info("Access Denied Error - ${accessDeniedException.message}")
+        response.writeErrorResponse(CommonErrorCode.FORBIDDEN, objectMapper)
     }
 }
