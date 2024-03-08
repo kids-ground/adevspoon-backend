@@ -26,7 +26,7 @@ class RequestUserArgumentResolver: HandlerMethodArgumentResolver {
                 .authentication
                 .principal as RequestUserInfo
         } catch (e: Exception) {
-            throw CommonErrorCode.AUTH_UNAVAILABLE_ERROR.getException()
+            throw CommonErrorCode.ILLEGAL_AUTH_ARGUMENT_ERROR.getException()
         }
     }
 }

@@ -13,7 +13,7 @@ enum class CommonErrorCode(
     FORBIDDEN(403, 403_000_000, "권한이 없습니다"),
     NOT_FOUND(404, 404_000_000, "요청 정보를 찾을 수 없습니다"),
 
-    AUTH_UNAVAILABLE_ERROR(500, 500_000_001, "서버 내부 오류입니다. 관리자에게 문의하세요");
+    ILLEGAL_AUTH_ARGUMENT_ERROR(500, 500_000_001, "서버 내부 오류입니다. 관리자에게 문의하세요");
 
 
 
