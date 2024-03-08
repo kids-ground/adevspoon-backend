@@ -1,4 +1,4 @@
-package com.adevspoon.api.common.utils
+package com.adevspoon.api.common.util
 
 import org.springframework.stereotype.Component
 

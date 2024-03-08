@@ -1,7 +1,7 @@
 package com.adevspoon.api.member.service
 
 import com.adevspoon.api.common.properties.ImageProperties
-import com.adevspoon.api.common.utils.NicknameProcessor
+import com.adevspoon.api.common.util.NicknameProcessor
 import com.adevspoon.api.member.dto.response.SocialLoginResponse
 import com.adevspoon.domain.member.adapter.MemberActivityDomainAdapter
 import com.adevspoon.domain.member.adapter.MemberDomainAdapter

@@ -1,4 +1,4 @@
-package com.adevspoon.api.common.utils
+package com.adevspoon.api.common.util
 
 import com.adevspoon.api.common.dto.JwtTokenInfo
 import com.adevspoon.api.common.dto.JwtTokenType
@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.*
-import java.util.regex.Pattern
 import javax.crypto.spec.SecretKeySpec
 
 private const val USER_TOKEN_SUBJECT = "Token"

@@ -2,7 +2,7 @@ package com.adevspoon.api.auth.service
 
 import com.adevspoon.api.common.dto.JwtTokenInfo
 import com.adevspoon.api.common.dto.JwtTokenType
-import com.adevspoon.api.common.utils.JwtProcessor
+import com.adevspoon.api.common.util.JwtProcessor
 import com.adevspoon.api.member.dto.request.SocialLoginRequest
 import com.adevspoon.api.member.dto.response.ServiceToken
 import com.adevspoon.api.member.dto.response.SocialLoginResponse
