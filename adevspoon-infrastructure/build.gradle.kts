@@ -21,6 +21,8 @@ dependencyManagement {
 dependencies {
     implementation(project(":adevspoon-common"))
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.1.0")
+    implementation("com.amazonaws:aws-java-sdk-s3:1.12.676")
+
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
