@@ -1,4 +1,4 @@
-package com.adevspoon.infrastructure.storage.config
+package com.adevspoon.infrastructure.storage.util
 
 import java.util.*
 

@@ -3,6 +3,8 @@ package com.adevspoon.infrastructure.storage.service
 import com.adevspoon.infrastructure.storage.config.*
 import com.adevspoon.infrastructure.storage.dto.FileInfo
 import com.adevspoon.infrastructure.storage.exception.StorageErrorCode
+import com.adevspoon.infrastructure.storage.util.getImageRootPath
+import com.adevspoon.infrastructure.storage.util.getImageUploadPath
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.model.ObjectMetadata
 import org.springframework.beans.factory.annotation.Value
