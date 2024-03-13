@@ -1,9 +1,9 @@
 package com.adevspoon.infrastructure.oauth.dto
 
-import com.adevspoon.infrastructure.oauth.dto.OAuthType
+import com.adevspoon.common.enums.SocialType
 
 data class OAuthUserInfoResponse(
-    val type: OAuthType,
+    val type: SocialType,
     val id: String,
     val nickname: String? = null,
     val profileImageUrl: String? = null,

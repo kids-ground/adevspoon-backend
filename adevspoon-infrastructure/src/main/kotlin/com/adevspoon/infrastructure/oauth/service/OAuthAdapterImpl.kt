@@ -1,8 +1,8 @@
 package com.adevspoon.infrastructure.oauth.service
 
+import com.adevspoon.common.enums.SocialType
 import com.adevspoon.infrastructure.config.Adapter
 import com.adevspoon.infrastructure.oauth.client.KakaoFeignClient
-import com.adevspoon.infrastructure.oauth.dto.OAuthType
 import com.adevspoon.infrastructure.oauth.dto.OAuthUserInfoRequest
 import com.adevspoon.infrastructure.oauth.dto.OAuthUserInfoResponse
 import com.adevspoon.infrastructure.oauth.exception.OAuthErrorCode
@@ -14,8 +14,8 @@ class OAuthAdapterImpl(
 ): OAuthAdapter {
     override fun getOAuthUserInfo(oAuthUserInfoRequest: OAuthUserInfoRequest): OAuthUserInfoResponse =
         when (oAuthUserInfoRequest.type) {
-            OAuthType.KAKAO -> getKakaoUserInfo(oAuthUserInfoRequest.kakaoAccessToken)
-            OAuthType.APPLE -> getAppleUserInfo(oAuthUserInfoRequest.appleIdentityToken)
+            SocialType.KAKAO -> getKakaoUserInfo(oAuthUserInfoRequest.kakaoAccessToken)
+            SocialType.APPLE -> getAppleUserInfo(oAuthUserInfoRequest.appleIdentityToken)
         }
 
     private fun getKakaoUserInfo(accessToken: String?): OAuthUserInfoResponse =
@@ -23,7 +23,7 @@ class OAuthAdapterImpl(
             val kakaoResponse = kakaoFeignClient.getUserProfile("Bearer $accessToken")
             OAuthUserInfoResponse(
                 id = "${kakaoResponse.id}",
-                type = OAuthType.KAKAO,
+                type = SocialType.KAKAO,
                 email = kakaoResponse.kakaoAccount.email,
                 nickname = kakaoResponse.kakaoAccount.profile.nickname,
                 profileImageUrl = kakaoResponse.kakaoAccount.profile.profileImageUrl,
@@ -35,7 +35,7 @@ class OAuthAdapterImpl(
         identityToken?.let {
             OAuthUserInfoResponse(
                 id = appleKeyService.getIdentityKey(it),
-                type = OAuthType.APPLE
+                type = SocialType.APPLE
             )
         } ?: throw OAuthErrorCode.APPLE_TOKEN_EMPTY.getException()
 }

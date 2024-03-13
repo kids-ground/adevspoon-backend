@@ -1,8 +1,8 @@
 package com.adevspoon.infrastructure.oauth.service
 
+import com.adevspoon.common.enums.SocialType
 import com.adevspoon.infrastructure.oauth.client.KakaoFeignClient
 import com.adevspoon.infrastructure.oauth.dto.KakaoUserInfoResponse
-import com.adevspoon.infrastructure.oauth.dto.OAuthType
 import com.adevspoon.infrastructure.oauth.dto.OAuthUserInfoRequest
 import io.mockk.*
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -42,7 +42,7 @@ class OAuthAdapterImplTest {
             )
             val oAuthUserInfo = oAuthAdapterImpl.getOAuthUserInfo(
                 OAuthUserInfoRequest(
-                    OAuthType.KAKAO,
+                    SocialType.KAKAO,
                     kakaoAccessToken = "accessToken"
                 )
             )
@@ -58,7 +58,7 @@ class OAuthAdapterImplTest {
 
             val oAuthUserInfo = oAuthAdapterImpl.getOAuthUserInfo(
                 OAuthUserInfoRequest(
-                    OAuthType.APPLE,
+                    SocialType.APPLE,
                     appleIdentityToken = "identityToken"
                 )
             )
@@ -71,7 +71,7 @@ class OAuthAdapterImplTest {
         @Test
         fun `FAIL - 카카오 로그인 잘못된 AccessToken`() {
             assertThrows<RuntimeException> {
-                oAuthAdapterImpl.getOAuthUserInfo(OAuthUserInfoRequest(OAuthType.KAKAO, null))
+                oAuthAdapterImpl.getOAuthUserInfo(OAuthUserInfoRequest(SocialType.KAKAO, null))
             }
             verify { kakaoFeignClient wasNot Called }
             verify { appleKeyService wasNot Called }
@@ -80,7 +80,7 @@ class OAuthAdapterImplTest {
         @Test
         fun `FAIL - 애플 로그인 잘못된 IdentityToken`() {
             assertThrows<RuntimeException> {
-                oAuthAdapterImpl.getOAuthUserInfo(OAuthUserInfoRequest(OAuthType.APPLE, null))
+                oAuthAdapterImpl.getOAuthUserInfo(OAuthUserInfoRequest(SocialType.APPLE, null))
             }
             verify { kakaoFeignClient wasNot Called }
             verify { appleKeyService wasNot Called }

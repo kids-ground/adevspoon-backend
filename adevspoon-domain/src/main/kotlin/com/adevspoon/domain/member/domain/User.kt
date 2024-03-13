@@ -79,4 +79,5 @@ class User(
     @NotNull
     @Column(name = "careerDescription", nullable = false)
     var careerDescription: String = ""
-): LegacyBaseEntity()
+): LegacyBaseEntity() {
+}

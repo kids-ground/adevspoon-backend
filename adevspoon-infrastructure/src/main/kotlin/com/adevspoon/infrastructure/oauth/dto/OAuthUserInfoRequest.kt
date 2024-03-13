@@ -1,9 +1,9 @@
 package com.adevspoon.infrastructure.oauth.dto
 
-import com.adevspoon.infrastructure.oauth.dto.OAuthType
+import com.adevspoon.common.enums.SocialType
 
 data class OAuthUserInfoRequest(
-    val type: OAuthType,
+    val type: SocialType,
     val kakaoAccessToken: String? = null,
     val appleIdentityToken: String? = null
 )
