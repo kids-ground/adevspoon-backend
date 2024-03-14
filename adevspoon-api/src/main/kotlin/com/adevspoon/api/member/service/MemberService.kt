@@ -1,12 +1,12 @@
 package com.adevspoon.api.member.service
 
+import com.adevspoon.api.common.annotation.ApplicationService
 import com.adevspoon.domain.member.domain.User
 import com.adevspoon.domain.member.service.MemberDomainService
 import org.slf4j.LoggerFactory
-import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
-@Service
+@ApplicationService
 class MemberService(
     private val memberDomainService: MemberDomainService
 ) {

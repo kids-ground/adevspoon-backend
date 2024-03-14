@@ -1,7 +1,7 @@
 package com.adevspoon.infrastructure.oauth.service
 
 import com.adevspoon.common.enums.SocialType
-import com.adevspoon.infrastructure.config.Adapter
+import com.adevspoon.infrastructure.common.annotation.Adapter
 import com.adevspoon.infrastructure.oauth.client.KakaoFeignClient
 import com.adevspoon.infrastructure.oauth.dto.OAuthUserInfoRequest
 import com.adevspoon.infrastructure.oauth.dto.OAuthUserInfoResponse

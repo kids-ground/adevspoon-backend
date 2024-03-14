@@ -1,5 +1,6 @@
 package com.adevspoon.api.auth.service
 
+import com.adevspoon.api.common.annotation.ApplicationService
 import com.adevspoon.api.common.dto.JwtTokenInfo
 import com.adevspoon.api.common.dto.JwtTokenType
 import com.adevspoon.api.common.properties.ImageProperties
@@ -11,9 +12,8 @@ import com.adevspoon.api.member.dto.response.SocialLoginResponse
 import com.adevspoon.domain.member.domain.enums.UserOAuth
 import com.adevspoon.domain.member.service.MemberDomainService
 import com.adevspoon.infrastructure.oauth.service.OAuthAdapter
-import org.springframework.stereotype.Service
 
-@Service
+@ApplicationService
 class AuthService(
     private val memberDomainService: MemberDomainService,
     private val oAuthAdapter: OAuthAdapter,

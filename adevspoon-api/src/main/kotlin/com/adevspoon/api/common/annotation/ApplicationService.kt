@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service
 @Retention(AnnotationRetention.RUNTIME)
 @MustBeDocumented
 @Service
-annotation class Facade(
+annotation class ApplicationService(
     @get:AliasFor(annotation = Service::class)
     val value: String = ""
 )

@@ -5,4 +5,4 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 @EnableFeignClients(basePackages = ["com.adevspoon.infrastructure"])
-class AdevspoonInfra
+class FeignConfig

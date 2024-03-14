@@ -1,14 +1,14 @@
 package com.adevspoon.domain.member.service
 
+import com.adevspoon.domain.common.annotation.DomainService
 import com.adevspoon.domain.member.domain.User
 import com.adevspoon.domain.member.domain.UserActivity
 import com.adevspoon.domain.member.domain.enums.UserOAuth
 import com.adevspoon.domain.member.repository.UserActivityRepository
 import com.adevspoon.domain.member.repository.UserRepository
-import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
-@Service
+@DomainService
 class MemberDomainService(
     private val userRepository: UserRepository,
     private val userActivityRepository: UserActivityRepository

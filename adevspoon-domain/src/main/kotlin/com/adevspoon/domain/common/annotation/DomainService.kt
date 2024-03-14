@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service
 @Retention(AnnotationRetention.RUNTIME)
 @MustBeDocumented
 @Service
-annotation class DomainAdapter(
+annotation class DomainService(
     @get:AliasFor(annotation = Service::class)
     val value: String = ""
 )
