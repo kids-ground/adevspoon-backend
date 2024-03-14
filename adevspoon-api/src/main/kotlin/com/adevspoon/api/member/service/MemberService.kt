@@ -1,19 +1,20 @@
 package com.adevspoon.api.member.service
 
 import com.adevspoon.api.common.annotation.ApplicationService
-import com.adevspoon.domain.member.domain.User
+import com.adevspoon.api.member.dto.request.MemberProfileUpdateRequest
+import com.adevspoon.api.member.dto.response.MemberProfileResponse
 import com.adevspoon.domain.member.service.MemberDomainService
 import org.slf4j.LoggerFactory
-import org.springframework.transaction.annotation.Transactional
 
 @ApplicationService
 class MemberService(
     private val memberDomainService: MemberDomainService
 ) {
-    private val log = LoggerFactory.getLogger(this.javaClass)!!
+    private val logger = LoggerFactory.getLogger(this.javaClass)!!
 
-    @Transactional
-    fun updateProfile(userId: Long): User {
-        TODO("User get - User update(Profile 인자에 담긴 정보 모두)")
+    fun updateProfile(userId: Long, request: MemberProfileUpdateRequest): MemberProfileResponse {
+        TODO("""
+            1. 
+        """.trimIndent())
     }
 }

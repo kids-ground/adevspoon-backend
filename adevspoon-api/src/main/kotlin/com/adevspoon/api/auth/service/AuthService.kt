@@ -7,8 +7,8 @@ import com.adevspoon.api.common.properties.ImageProperties
 import com.adevspoon.api.common.util.JwtProcessor
 import com.adevspoon.api.common.util.NicknameProcessor
 import com.adevspoon.api.member.dto.request.SocialLoginRequest
-import com.adevspoon.api.member.dto.response.ServiceToken
-import com.adevspoon.api.member.dto.response.SocialLoginResponse
+import com.adevspoon.api.member.dto.response.TokenResponse
+import com.adevspoon.api.member.dto.response.MemberAndTokenResponse
 import com.adevspoon.domain.member.domain.enums.UserOAuth
 import com.adevspoon.domain.member.service.MemberDomainService
 import com.adevspoon.infrastructure.oauth.service.OAuthAdapter
@@ -21,7 +21,7 @@ class AuthService(
     private val imageProperties: ImageProperties,
     private val nicknameProcessor: NicknameProcessor,
 ) {
-    fun signIn(loginRequest: SocialLoginRequest): SocialLoginResponse {
+    fun signIn(loginRequest: SocialLoginRequest): MemberAndTokenResponse {
         val oAuthUserInfo = oAuthAdapter.getOAuthUserInfo(loginRequest.toOAuthUserInfoRequest())
         val (user, isSignUp) = memberDomainService.getMemberAndIsSignUp(
             enumValueOf<UserOAuth>(loginRequest.loginType.name.lowercase()),
@@ -35,12 +35,12 @@ class AuthService(
             nickname = nicknameProcessor.createRandomNickname()
         }
 
-        val jwtServiceToken = ServiceToken(
+        val jwtTokenResponse = TokenResponse(
             accessToken = jwtProcessor.createToken(JwtTokenInfo(JwtTokenType.ACCESS, user.id)),
             refreshToken = jwtProcessor.createToken(JwtTokenInfo(JwtTokenType.REFRESH, user.id)),
         ).also { user.refreshToken = it.refreshToken }
 
-        return SocialLoginResponse.from(user, isSignUp)
-            .apply { token = jwtServiceToken }
+        return MemberAndTokenResponse.from(user, isSignUp)
+            .apply { token = jwtTokenResponse }
     }
 }
