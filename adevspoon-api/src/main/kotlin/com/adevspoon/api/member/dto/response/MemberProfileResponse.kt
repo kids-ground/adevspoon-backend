@@ -1,5 +1,6 @@
 package com.adevspoon.api.member.dto.response
 
+import com.adevspoon.domain.member.dto.response.MemberProfileResponseDto
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.LocalDateTime
 
@@ -26,11 +27,29 @@ data class MemberProfileResponse(
 
     val badges: List<BadgeResponse>? = null,
     val profileBelt: String,
-    val representativeBadge: String? = null,
+    val representativeBadge: BadgeResponse? = null,
 
     @JsonProperty("created_at")
     val createdAt: LocalDateTime,
 
     @JsonProperty("updated_at")
     val updatedAt: LocalDateTime,
-)
+) {
+    companion object {
+        fun from(profile: MemberProfileResponseDto) = MemberProfileResponse(
+            userId = profile.memberId,
+            nickname = profile.nickname,
+            statusMessage = profile.statusMessage,
+            profileImg = profile.profileImageUrl,
+            thumbnailImg = profile.thumbnailImageUrl,
+            questionCnt = profile.questionCnt,
+            answerCnt = profile.answerCnt,
+            alarmOn = profile.alarmOn,
+            profileBelt = profile.profileBelt,
+            badges = profile.badges?.map { BadgeResponse.from(it) },
+            representativeBadge = profile.representativeBadge?.let { BadgeResponse.from(it) },
+            createdAt = profile.createdAt,
+            updatedAt = profile.updatedAt
+        )
+    }
+}
