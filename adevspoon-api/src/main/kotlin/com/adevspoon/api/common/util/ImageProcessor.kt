@@ -1,6 +1,9 @@
 package com.adevspoon.api.common.util
 
 import com.adevspoon.api.common.properties.ImageProperties
+import com.adevspoon.common.enums.FileExtension
+import com.adevspoon.common.enums.ImageType
+import com.adevspoon.common.exception.FileErrorCode
 import net.coobird.thumbnailator.Thumbnails
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
@@ -13,10 +16,17 @@ import java.util.*
 class ImageProcessor(
     private val imageProperties: ImageProperties
 ) {
-    fun getImageExtension(fileName: String): String? = StringUtils.getFilenameExtension(fileName)
+    fun getExtension(fileName: String?): FileExtension {
+        if (fileName == null) throw FileErrorCode.FILE_NAME_EMPTY.getException()
+        val extension = StringUtils.getFilenameExtension(fileName) ?: throw FileErrorCode.FILE_EXTENSION_EMPTY.getException()
 
-    fun resizeImage(file: InputStream, type: ImageType, extension: String): InputStream {
-        val tempFile = File("${imageProperties.tempDir}/${UUID.randomUUID()}.$extension")
+        return FileExtension
+            .fromValue(extension)
+            ?: throw FileErrorCode.FILE_EXTENSION_NOT_SUPPORT.getException()
+    }
+
+    fun resize(file: InputStream, type: ImageType, extension: FileExtension): InputStream {
+        val tempFile = File("${imageProperties.tempDir}/${UUID.randomUUID()}.${extension.value}")
         try {
             Thumbnails.of(file)
                 .size(type.size, type.size)
@@ -24,14 +34,9 @@ class ImageProcessor(
 
             return FileInputStream(tempFile)
         } catch (e: Exception) {
-            throw e
+            throw FileErrorCode.RESIZE_IMAGE_FAILED.getExternalException(e.message ?: "썸네일 생성 오류 발생")
         } finally {
             tempFile.delete()
         }
     }
-}
-
-enum class ImageType(val size: Int) {
-    ORIGIN(640),
-    THUMBNAIL(250)
 }

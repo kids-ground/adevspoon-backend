@@ -2,7 +2,7 @@ package com.adevspoon.api.config.controller.resolver
 
 import com.adevspoon.api.common.annotation.RequestUser
 import com.adevspoon.api.common.dto.RequestUserInfo
-import com.adevspoon.common.exception.CommonErrorCode
+import com.adevspoon.common.exception.AuthErrorCode
 import org.springframework.core.MethodParameter
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.support.WebDataBinderFactory
@@ -26,7 +26,7 @@ class RequestUserArgumentResolver: HandlerMethodArgumentResolver {
                 .authentication
                 .principal as RequestUserInfo
         } catch (e: Exception) {
-            throw CommonErrorCode.ILLEGAL_AUTH_ARGUMENT_ERROR.getException()
+            throw AuthErrorCode.ILLEGAL_AUTH_ARGUMENT_ERROR.getException()
         }
     }
 }
