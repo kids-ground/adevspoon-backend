@@ -6,4 +6,4 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 
 @ConfigurationPropertiesScan
 @SpringBootApplication
-interface AdevspoonDomain
+class AdevspoonDomain

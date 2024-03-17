@@ -7,12 +7,14 @@ import com.adevspoon.infrastructure.storage.util.getImageRootPath
 import com.adevspoon.infrastructure.storage.util.getImageUploadPath
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.model.ObjectMetadata
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import java.util.*
 
 class S3StorageAdapter(
     private val s3Client: AmazonS3
 ): StorageAdapter {
+    private val logger = LoggerFactory.getLogger(this.javaClass)!!
 
     @Value("\${cloud.aws.s3.bucket}")
     lateinit var s3Bucket: String
@@ -31,6 +33,7 @@ class S3StorageAdapter(
                 file.file,
                 ObjectMetadata()
             )
+            logger.info("S3에 이미지 업로드 완료: ${getImageUrl(imagePath)}")
             return getImageUrl(imagePath)
         } catch (e: Exception) {
             throw StorageErrorCode.S3_UPLOAD_ERROR.getExternalException(e.message ?: "")
