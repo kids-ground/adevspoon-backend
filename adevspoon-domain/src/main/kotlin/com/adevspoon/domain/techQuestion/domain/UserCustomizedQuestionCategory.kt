@@ -12,7 +12,7 @@ import java.io.Serializable
 @Table(name = "UserCustomizedQuestionCategory", schema = "adevspoon")
 class UserCustomizedQuestionCategory(
     @EmbeddedId
-    val id: UserCustomizedQuestionCategoryId? = null
+    val id: UserCustomizedQuestionCategoryId
 ): BaseEntity()
 
 @Embeddable
