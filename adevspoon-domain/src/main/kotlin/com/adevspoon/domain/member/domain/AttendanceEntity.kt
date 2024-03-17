@@ -7,7 +7,7 @@ import java.time.LocalDateTime
 
 @Entity
 @Table(name = "Attendance", schema = "adevspoon")
-class Attendance(
+class AttendanceEntity(
     @EmbeddedId
     val attendanceId: AttendanceId? = null
 )
@@ -16,7 +16,7 @@ class Attendance(
 class AttendanceId(
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "userId", nullable = false)
-    val user: User? = null,
+    val user: UserEntity? = null,
 
     @NotNull
     @Column(name = "attendTime", nullable = false)

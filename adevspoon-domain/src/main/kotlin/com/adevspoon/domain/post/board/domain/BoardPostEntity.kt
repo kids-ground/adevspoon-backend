@@ -1,7 +1,7 @@
 package com.adevspoon.domain.post.board.domain
 
 import com.adevspoon.domain.domain.BaseEntity
-import com.adevspoon.domain.member.domain.User
+import com.adevspoon.domain.member.domain.UserEntity
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
@@ -10,7 +10,7 @@ import org.hibernate.annotations.OnDeleteAction
 
 @Entity
 @Table(name = "BoardPost", schema = "adevspoon")
-class BoardPost(
+class BoardPostEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "postId", nullable = false)
@@ -28,12 +28,12 @@ class BoardPost(
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "userId", nullable = false)
-    val user: User? = null,
+    val user: UserEntity? = null,
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "categoryId", nullable = false)
-    var tag: BoardTag? = null,
+    var tag: BoardTagEntity? = null,
 
     @NotNull
     @Column(name = "likeCount", nullable = false)

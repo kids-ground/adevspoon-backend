@@ -1,6 +1,6 @@
 package com.adevspoon.domain.member.dto.response
 
-import com.adevspoon.domain.member.domain.Badge
+import com.adevspoon.domain.member.domain.BadgeEntity
 
 
 data class BadgeResponseDto(
@@ -12,7 +12,7 @@ data class BadgeResponseDto(
     var silhouetteUrl: String? = null,
 ) {
     companion object {
-        fun from(badge: Badge) = BadgeResponseDto(
+        fun from(badge: BadgeEntity) = BadgeResponseDto(
             id = badge.id ?: -1,
             name = badge.name ?: "",
             description = badge.description,

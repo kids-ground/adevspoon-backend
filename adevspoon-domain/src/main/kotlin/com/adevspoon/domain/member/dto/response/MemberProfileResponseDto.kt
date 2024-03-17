@@ -1,7 +1,7 @@
 package com.adevspoon.domain.member.dto.response
 
-import com.adevspoon.domain.member.domain.Badge
-import com.adevspoon.domain.member.domain.User
+import com.adevspoon.domain.member.domain.BadgeEntity
+import com.adevspoon.domain.member.domain.UserEntity
 import java.time.LocalDateTime
 
 data class MemberProfileResponseDto(
@@ -20,7 +20,7 @@ data class MemberProfileResponseDto(
     val representativeBadge: BadgeResponseDto?,
 ) {
     companion object {
-        fun from(user: User, hasBadgeList: List<Badge>, representativeBadge: Badge?) = MemberProfileResponseDto(
+        fun from(user: UserEntity, hasBadgeList: List<BadgeEntity>, representativeBadge: BadgeEntity?) = MemberProfileResponseDto(
             memberId = user.id,
             nickname = user.nickname ?: "",
             statusMessage = user.statusMessage ?: "",

@@ -7,7 +7,7 @@ import java.io.Serializable
 
 @Entity
 @Table(name = "banner_location_relation", schema = "adevspoon")
-class BannerLocationRelation (
+class BannerLocationRelationEntity (
     @EmbeddedId
     val bannerLocationRelationId: BannerLocationRelationId? = null
 )
@@ -17,9 +17,9 @@ class BannerLocationRelationId(
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "banner_id")
-    val banner: Banner? = null,
+    val banner: BannerEntity? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id")
-    val location: BannerLocation? = null
+    val location: BannerLocationEntity? = null
 ) : Serializable

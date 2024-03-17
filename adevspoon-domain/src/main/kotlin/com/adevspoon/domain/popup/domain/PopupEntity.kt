@@ -7,7 +7,7 @@ import java.time.LocalDate
 
 @Entity
 @Table(name = "popup", schema = "adevspoon")
-class Popup(
+class PopupEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

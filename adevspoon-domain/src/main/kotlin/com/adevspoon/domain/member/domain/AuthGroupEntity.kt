@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size
 
 @Entity
 @Table(name = "auth_group", schema = "adevspoon")
-class AuthGroup(
+class AuthGroupEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

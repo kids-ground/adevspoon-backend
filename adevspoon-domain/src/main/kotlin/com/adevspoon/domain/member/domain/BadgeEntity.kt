@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size
 
 @Entity
 @Table(name = "Badges", schema = "adevspoon")
-class Badge(
+class BadgeEntity(
     @Id
     @Column(name = "id", nullable = false)
     val id: Int? = null,

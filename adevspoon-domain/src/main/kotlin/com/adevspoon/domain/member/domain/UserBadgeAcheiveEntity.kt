@@ -6,7 +6,7 @@ import java.io.Serializable
 
 @Entity
 @Table(name = "UserBadgeAcheive", schema = "adevspoon")
-class UserBadgeAcheive(
+class UserBadgeAcheiveEntity(
     @EmbeddedId
     val id: UserBadgeAcheiveId? = null
 ): BaseEntity()
@@ -15,9 +15,9 @@ class UserBadgeAcheive(
 class UserBadgeAcheiveId(
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "userId", nullable = false)
-    val user: User? = null,
+    val user: UserEntity? = null,
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "badgeId", nullable = false)
-    val badge: Badge? = null
+    val badge: BadgeEntity? = null
 ): Serializable

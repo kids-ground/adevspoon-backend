@@ -8,7 +8,7 @@ import java.io.Serializable
 // FIXME - 빈 테이블 삭제 요망
 @Entity
 @Table(name = "QuestionDifficultyJudge", schema = "adevspoon")
-class QuestionDifficultyJudge(
+class QuestionDifficultyJudgeEntity(
     @EmbeddedId
     val id: QuestionDifficultyJudgeId? = null,
 

@@ -1,8 +1,8 @@
 package com.adevspoon.domain.member.service
 
 import com.adevspoon.domain.common.annotation.DomainService
-import com.adevspoon.domain.member.domain.User
-import com.adevspoon.domain.member.domain.UserActivity
+import com.adevspoon.domain.member.domain.UserEntity
+import com.adevspoon.domain.member.domain.UserActivityEntity
 import com.adevspoon.domain.member.domain.enums.UserOAuth
 import com.adevspoon.domain.member.dto.request.MemberUpdateRequestDto
 import com.adevspoon.domain.member.dto.response.MemberProfileResponseDto
@@ -23,7 +23,7 @@ class MemberDomainService(
 ) {
     // 유저정보와 회원가입 여부반환
     @Transactional
-    fun getMemberAndIsSignUp(oAuth: UserOAuth, oAuthId: String): Pair<User, Boolean> {
+    fun getMemberAndIsSignUp(oAuth: UserOAuth, oAuthId: String): Pair<UserEntity, Boolean> {
         val user = when (oAuth) {
             UserOAuth.kakao -> userRepository.findByOAuthAndKakaoId(oAuth, oAuthId.toLong())
             UserOAuth.apple -> userRepository.findByOAuthAndAppleId(oAuth, oAuthId)
@@ -31,11 +31,11 @@ class MemberDomainService(
         if (user != null) return user to false
 
         return when (oAuth) {
-            UserOAuth.kakao -> User(oAuth = oAuth, kakaoId = oAuthId.toLong())
-            UserOAuth.apple -> User(oAuth = oAuth, appleId = oAuthId)
+            UserOAuth.kakao -> UserEntity(oAuth = oAuth, kakaoId = oAuthId.toLong())
+            UserOAuth.apple -> UserEntity(oAuth = oAuth, appleId = oAuthId)
         }.also {
             userRepository.save(it)
-            userActivityRepository.save(UserActivity(id = it.id))
+            userActivityRepository.save(UserActivityEntity(id = it.id))
         } to true
     }
 

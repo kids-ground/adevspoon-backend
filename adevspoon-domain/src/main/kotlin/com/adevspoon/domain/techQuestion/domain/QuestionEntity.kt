@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Size
 
 @Entity
 @Table(name = "questions", schema = "adevspoon")
-class Question(
+class QuestionEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

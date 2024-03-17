@@ -10,7 +10,7 @@ import java.io.Serializable
 // 조회 로그
 @Entity
 @Table(name = "AccessLog", schema = "adevspoon")
-class AccessLog (
+class AccessLogEntity (
     @EmbeddedId
     val id: AccessLogId
 ): BaseEntity()

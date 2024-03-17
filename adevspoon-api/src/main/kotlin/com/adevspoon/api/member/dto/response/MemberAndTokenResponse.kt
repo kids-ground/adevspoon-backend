@@ -1,6 +1,6 @@
 package com.adevspoon.api.member.dto.response
 
-import com.adevspoon.domain.member.domain.User
+import com.adevspoon.domain.member.domain.UserEntity
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.LocalDateTime
 
@@ -34,7 +34,7 @@ data class MemberAndTokenResponse (
     val updatedAt: LocalDateTime,
 ) {
     companion object {
-        fun from(user: User, isSignup: Boolean = false): MemberAndTokenResponse {
+        fun from(user: UserEntity, isSignup: Boolean = false): MemberAndTokenResponse {
             return MemberAndTokenResponse(
                 isSign = isSignup,
                 nickname = user.nickname!!,

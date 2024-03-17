@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotNull
 
 @Entity
 @Table(name = "UserActivity", schema = "adevspoon")
-class UserActivity(
+class UserActivityEntity(
     @Id
     @Column(name = "userId", nullable = false)
     var id: Long? = null,

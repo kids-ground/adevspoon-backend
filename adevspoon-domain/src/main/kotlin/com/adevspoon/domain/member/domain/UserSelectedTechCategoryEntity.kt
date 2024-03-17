@@ -6,7 +6,7 @@ import java.io.Serializable
 // Fixme 빈 테이블 - 삭제필요
 @Entity
 @Table(name = "UserSelectedTechCategory", schema = "adevspoon")
-class UserSelectedTechCategory(
+class UserSelectedTechCategoryEntity(
     @EmbeddedId
     val id: UserSelectedTechCategoryId? = null
 )
@@ -15,9 +15,9 @@ class UserSelectedTechCategory(
 class UserSelectedTechCategoryId(
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "userId", nullable = false)
-    val user: User? = null,
+    val user: UserEntity? = null,
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "categoryId", nullable = false)
-    val category: TechCategory? = null
+    val category: TechCategoryEntity? = null
 ): Serializable

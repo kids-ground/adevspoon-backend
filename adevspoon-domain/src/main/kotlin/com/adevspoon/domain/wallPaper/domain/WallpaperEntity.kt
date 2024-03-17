@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size
 
 @Entity
 @Table(name = "Wallpaper", schema = "adevspoon")
-class Wallpaper(
+class WallpaperEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

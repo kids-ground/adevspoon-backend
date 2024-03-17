@@ -1,4 +1,4 @@
-package com.adevspoon.domain.techQuestion.domain
+package com.adevspoon.domain.member.domain
 
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
@@ -6,25 +6,23 @@ import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
 import java.io.Serializable
 
-// FIXME - 현재 사용중인 것 같지 않음
 @Entity
-@Table(name = "questionTagRelation", schema = "adevspoon")
-class QuestionTagRelation(
+@Table(name = "user_auth", schema = "adevspoon")
+class UserAuthEntity(
     @EmbeddedId
-    val questionTagRelationId: QuestionTagRelationId? = null
+    val userAuthId: UserAuthId? = null
 )
 
-@Embeddable
-class QuestionTagRelationId(
+class UserAuthId(
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "question_id", nullable = false)
-    val question: Question? = null,
+    @JoinColumn(name = "user_id", nullable = false)
+    val user: UserEntity? = null,
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "tag_id", nullable = false)
-    val tag: Tag? = null
+    @JoinColumn(name = "auth_group_id", nullable = false)
+    val authGroup: AuthGroupEntity? = null
 ): Serializable

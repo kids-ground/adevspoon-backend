@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Size
 
 @Entity
 @Table(name = "banner_location", schema = "adevspoon")
-class BannerLocation (
+class BannerLocationEntity (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
