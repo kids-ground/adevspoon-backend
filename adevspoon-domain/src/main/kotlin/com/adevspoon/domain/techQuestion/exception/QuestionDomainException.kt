@@ -1,0 +1,5 @@
+package com.adevspoon.domain.techQuestion.exception
+
+import com.adevspoon.common.exception.AdevspoonException
+
+class QuestionCategoryNotFoundException : AdevspoonException(QuestionDomainErrorCode.QUESTION_CATEGORY_NOT_FOUND)

@@ -5,6 +5,7 @@ import com.adevspoon.api.common.dto.JwtTokenType
 import com.adevspoon.api.common.enums.ServiceRole
 import com.adevspoon.api.common.properties.JwtProperties
 import com.adevspoon.common.exception.CommonErrorCode
+import com.adevspoon.common.exception.CommonUnauthorizedException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.stereotype.Component
@@ -58,6 +59,6 @@ class JwtProcessor(
                 )
             }
     } catch (e: Exception) {
-        throw CommonErrorCode.UNAUTHORIZED.getException()
+        throw CommonUnauthorizedException()
     }
 }

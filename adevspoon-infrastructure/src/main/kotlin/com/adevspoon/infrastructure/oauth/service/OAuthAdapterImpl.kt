@@ -5,7 +5,8 @@ import com.adevspoon.infrastructure.common.annotation.Adapter
 import com.adevspoon.infrastructure.oauth.client.KakaoFeignClient
 import com.adevspoon.infrastructure.oauth.dto.OAuthUserInfoRequest
 import com.adevspoon.common.dto.OAuthUserInfo
-import com.adevspoon.infrastructure.oauth.exception.OAuthErrorCode
+import com.adevspoon.infrastructure.oauth.exception.OAuthAppleTokenEmptyException
+import com.adevspoon.infrastructure.oauth.exception.OAuthKakaoTokenEmptyException
 
 @Adapter
 class OAuthAdapterImpl(
@@ -29,7 +30,7 @@ class OAuthAdapterImpl(
                 profileImageUrl = kakaoResponse.kakaoAccount.profile.profileImageUrl,
                 thumbnailImageUrl = kakaoResponse.kakaoAccount.profile.thumbnailImageUrl,
             )
-        } ?: throw OAuthErrorCode.KAKAO_TOKEN_EMPTY.getException()
+        } ?: throw OAuthKakaoTokenEmptyException()
 
     private fun getAppleUserInfo(identityToken: String?): OAuthUserInfo =
         identityToken?.let {
@@ -37,5 +38,5 @@ class OAuthAdapterImpl(
                 id = appleKeyService.getIdentityKey(it),
                 type = SocialType.APPLE
             )
-        } ?: throw OAuthErrorCode.APPLE_TOKEN_EMPTY.getException()
+        } ?: throw OAuthAppleTokenEmptyException()
 }

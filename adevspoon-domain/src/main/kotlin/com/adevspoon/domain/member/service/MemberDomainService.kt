@@ -8,7 +8,9 @@ import com.adevspoon.domain.member.domain.enums.UserOAuth
 import com.adevspoon.domain.member.dto.request.MemberUpdateRequireDto
 import com.adevspoon.domain.member.dto.response.MemberAndSignup
 import com.adevspoon.domain.member.dto.response.MemberProfile
+import com.adevspoon.domain.member.exception.MemberBadgeNotFoundException
 import com.adevspoon.domain.member.exception.MemberDomainErrorCode
+import com.adevspoon.domain.member.exception.MemberNotFoundException
 import com.adevspoon.domain.member.repository.UserActivityRepository
 import com.adevspoon.domain.member.repository.UserBadgeAcheiveRepository
 import com.adevspoon.domain.member.repository.UserRepository
@@ -45,7 +47,7 @@ class MemberDomainService(
 
     @Transactional
     fun getMemberProfile(userId: Long): MemberProfile {
-        val user = userRepository.findByIdOrNull(userId) ?: throw MemberDomainErrorCode.USER_NOT_FOUND.getException()
+        val user = userRepository.findByIdOrNull(userId) ?: throw MemberNotFoundException()
         val userBadgeList = userBadgeAcheiveRepository.findUserBadgeList(userId)
         val userRepresentativeBadge = userBadgeList.firstOrNull {
             it.id?.toString()?.equals(user.representativeBadge) ?: false
@@ -56,7 +58,7 @@ class MemberDomainService(
 
     @Transactional
     fun updateMemberProfile(updateInfo: MemberUpdateRequireDto): MemberProfile {
-        val user = userRepository.findByIdOrNull(updateInfo.memberId) ?: throw MemberDomainErrorCode.USER_NOT_FOUND.getException()
+        val user = userRepository.findByIdOrNull(updateInfo.memberId) ?: throw MemberBadgeNotFoundException()
         val userBadgeList = userBadgeAcheiveRepository.findUserBadgeList(updateInfo.memberId)
         var userRepresentativeBadge = userBadgeList.firstOrNull {
             it.id?.toString()?.equals(user.representativeBadge) ?: false
@@ -67,7 +69,7 @@ class MemberDomainService(
         if (updateInfo.representativeBadge != null)
             userRepresentativeBadge = userBadgeList
                 .firstOrNull { it.id == updateInfo.representativeBadge }
-                ?: throw MemberDomainErrorCode.USER_BADGE_NOT_FOUND.getException()
+                ?: throw MemberBadgeNotFoundException()
 
         user.apply {
             this.nickname = updateInfo.nickname ?: user.nickname
@@ -82,7 +84,7 @@ class MemberDomainService(
 
     @Transactional
     fun updateMemberToken(userId: Long, refreshToken: String) {
-        val user = userRepository.findByIdOrNull(userId) ?: throw MemberDomainErrorCode.USER_NOT_FOUND.getException()
+        val user = userRepository.findByIdOrNull(userId) ?: throw MemberNotFoundException()
         user.apply {
             this.refreshToken = refreshToken
         }

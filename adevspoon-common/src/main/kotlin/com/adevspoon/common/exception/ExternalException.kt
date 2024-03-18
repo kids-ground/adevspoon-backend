@@ -1,8 +1,8 @@
 package com.adevspoon.common.exception
 
-class ExternalException(
+open class ExternalException(
     private val errorCode: AdevspoonErrorCode,
-    val reason: String,
+    open val reason: String?,
 ): RuntimeException() {
     val errorInfo = errorCode.getErrorInfo()
 }

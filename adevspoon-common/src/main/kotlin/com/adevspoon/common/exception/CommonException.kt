@@ -1,0 +1,7 @@
+package com.adevspoon.common.exception
+
+class CommonBadRequestException: AdevspoonException(CommonErrorCode.BAD_REQUEST)
+class CommonUnauthorizedException: AdevspoonException(CommonErrorCode.UNAUTHORIZED)
+class CommonForbiddenException: AdevspoonException(CommonErrorCode.FORBIDDEN)
+class CommonNotFoundException: AdevspoonException(CommonErrorCode.NOT_FOUND)
+class CommonInternalServerErrorException: AdevspoonException(CommonErrorCode.INTERNAL_SERVER_ERROR)

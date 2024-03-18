@@ -2,7 +2,7 @@ package com.adevspoon.infrastructure.storage.service
 
 import com.adevspoon.infrastructure.storage.config.*
 import com.adevspoon.infrastructure.storage.dto.FileInfo
-import com.adevspoon.infrastructure.storage.exception.StorageErrorCode
+import com.adevspoon.infrastructure.storage.exception.StorageS3UploadException
 import com.adevspoon.infrastructure.storage.util.getImageRootPath
 import com.adevspoon.infrastructure.storage.util.getImageUploadPath
 import com.amazonaws.services.s3.AmazonS3
@@ -36,7 +36,7 @@ class S3StorageAdapter(
             logger.info("S3에 이미지 업로드 완료: ${getImageUrl(imagePath)}")
             return getImageUrl(imagePath)
         } catch (e: Exception) {
-            throw StorageErrorCode.S3_UPLOAD_ERROR.getExternalException(e.message ?: "")
+            throw StorageS3UploadException(e.message)
         }
     }
 

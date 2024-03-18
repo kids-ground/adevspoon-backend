@@ -3,7 +3,7 @@ package com.adevspoon.api.common.util
 import com.adevspoon.api.common.properties.ImageProperties
 import com.adevspoon.common.enums.FileExtension
 import com.adevspoon.common.enums.ImageType
-import com.adevspoon.common.exception.FileErrorCode
+import com.adevspoon.common.exception.*
 import net.coobird.thumbnailator.Thumbnails
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
@@ -17,12 +17,12 @@ class ImageProcessor(
     private val imageProperties: ImageProperties
 ) {
     fun getExtension(fileName: String?): FileExtension {
-        if (fileName == null) throw FileErrorCode.FILE_NAME_EMPTY.getException()
-        val extension = StringUtils.getFilenameExtension(fileName) ?: throw FileErrorCode.FILE_EXTENSION_EMPTY.getException()
+        if (fileName.isNullOrEmpty()) throw FileNameEmptyException()
+        val extension = StringUtils.getFilenameExtension(fileName) ?: throw FileExtensionEmptyException()
 
         return FileExtension
             .fromValue(extension)
-            ?: throw FileErrorCode.FILE_EXTENSION_NOT_SUPPORT.getException()
+            ?: throw FileExtensionNotSupportedException()
     }
 
     fun resize(file: InputStream, type: ImageType, extension: FileExtension): InputStream {
@@ -34,7 +34,7 @@ class ImageProcessor(
 
             return FileInputStream(tempFile)
         } catch (e: Exception) {
-            throw FileErrorCode.RESIZE_IMAGE_FAILED.getExternalException(e.message ?: "썸네일 생성 오류 발생")
+            throw FileResizeImageFailedException(e.message)
         } finally {
             tempFile.delete()
         }
