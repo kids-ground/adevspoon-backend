@@ -1,59 +1,41 @@
 package com.adevspoon.api.member.service
 
-import com.adevspoon.api.common.properties.ImageProperties
-import com.adevspoon.api.common.util.NicknameProcessor
-import com.adevspoon.api.member.dto.response.SocialLoginResponse
-import com.adevspoon.domain.member.adapter.MemberActivityDomainAdapter
-import com.adevspoon.domain.member.adapter.MemberDomainAdapter
-import com.adevspoon.domain.member.domain.User
-import com.adevspoon.domain.member.domain.UserActivity
-import com.adevspoon.domain.member.domain.enums.UserOAuth
-import com.adevspoon.infrastructure.oauth.dto.OAuthUserInfoResponse
-import org.slf4j.LoggerFactory
-import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
+import com.adevspoon.api.common.annotation.ApplicationService
+import com.adevspoon.api.common.util.ImageProcessor
+import com.adevspoon.common.enums.ImageType
+import com.adevspoon.api.member.dto.request.MemberProfileUpdateRequest
+import com.adevspoon.api.member.dto.response.MemberProfileResponse
+import com.adevspoon.domain.member.service.MemberDomainService
+import com.adevspoon.infrastructure.storage.dto.FileInfo
+import com.adevspoon.infrastructure.storage.service.StorageAdapter
+import org.springframework.web.multipart.MultipartFile
 
-@Service
+@ApplicationService
 class MemberService(
-    private val memberDomainAdapter: MemberDomainAdapter,
-    private val memberActivityDomainAdapter: MemberActivityDomainAdapter,
-    private val imageProperties: ImageProperties,
-    private val nicknameProcessor: NicknameProcessor,
+    private val memberDomainService: MemberDomainService,
+    private val storageAdapter: StorageAdapter,
+    private val imageProcessor: ImageProcessor
 ) {
-    private val log = LoggerFactory.getLogger(this.javaClass)!!
+    fun updateProfile(userId: Long, request: MemberProfileUpdateRequest): MemberProfileResponse {
+        val (profileUrl, thumbnailUrl) = request.image
+            ?.let(::uploadProfileImage)
+            ?: listOf(null, null)
+        val memberProfile = memberDomainService
+            .updateMemberProfile(request.toMemberUpdateRequireDto(userId, profileUrl, thumbnailUrl))
 
-    @Transactional
-    fun getOrCreateUser(oauthUserInfo: OAuthUserInfoResponse, oauthType: UserOAuth): SocialLoginResponse =
-        when (oauthType) {
-            UserOAuth.kakao -> memberDomainAdapter.findByOAuthAndKakaoId(oauthType, oauthUserInfo.id.toLong())
-            UserOAuth.apple -> memberDomainAdapter.findByOAuthAndAppleId(oauthType, oauthUserInfo.id)
-        }?.let {
-            SocialLoginResponse.from(it, false)
-        } ?: createUser(oauthUserInfo, oauthType)
-
-    @Transactional
-    fun setRefreshToken(userId: Long, reference: String) {
-        val user = memberDomainAdapter.findByUserId(userId)
-        user?.refreshToken = reference
+        return MemberProfileResponse.from(memberProfile)
     }
 
-    private fun createUser(oauthUserInfo: OAuthUserInfoResponse, oauthType: UserOAuth): SocialLoginResponse {
-        log.info("유저 생성 $oauthType ${oauthUserInfo.id}")
-        val user = when (oauthType) {
-            UserOAuth.kakao -> User(oAuth = oauthType, kakaoId = oauthUserInfo.id.toLong())
-            UserOAuth.apple -> User(oAuth = oauthType, appleId = oauthUserInfo.id)
-        }.apply {
-            email = oauthUserInfo.email ?: ""
-            profileImg = oauthUserInfo.profileImageUrl ?: imageProperties.profileUrl
-            thumbnailImg = oauthUserInfo.thumbnailImageUrl ?: imageProperties.thumbnailUrl
-            nickname = nicknameProcessor.createRandomNickname()
-        }
+    private fun uploadProfileImage(image: MultipartFile): List<String> {
+        val fileExtension = imageProcessor.getExtension(image.originalFilename)
+        val originalImage = imageProcessor.resize(image.inputStream, ImageType.ORIGIN, fileExtension)
+        val thumbnailImage = imageProcessor.resize(image.inputStream, ImageType.THUMBNAIL, fileExtension)
 
-        memberDomainAdapter.save(user)
-
-        val userActivity = UserActivity(id = user.id)
-        memberActivityDomainAdapter.save(userActivity)
-
-        return SocialLoginResponse.from(user, true)
+        return storageAdapter.uploadImageList(
+            listOf(
+                FileInfo(file = originalImage, size = ImageType.ORIGIN.size, extension = fileExtension),
+                FileInfo(file = thumbnailImage, size = ImageType.THUMBNAIL.size, extension = fileExtension)
+            )
+        )
     }
 }

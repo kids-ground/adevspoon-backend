@@ -56,6 +56,17 @@ subprojects {
         testImplementation("org.springframework.boot:spring-boot-starter-test")
         testImplementation("io.mockk:mockk:1.13.7")
 
+        // Testcontainers - Local & Test 환경에서 사용
+        implementation("org.testcontainers:testcontainers:1.19.7")
+        implementation("org.testcontainers:localstack:1.19.7")
+        // 마이그레이션 완료 후부터 사용하기
+//        developmentOnly("org.testcontainers:mysql:1.19.7")
+        testImplementation("org.testcontainers:testcontainers:1.19.7")
+        testImplementation("org.testcontainers:junit-jupiter:1.19.7")
+        testImplementation("org.testcontainers:localstack:1.19.7")
+        testImplementation("org.testcontainers:mysql:1.19.7")
+
+        // Annotation Processor
         kapt("org.springframework.boot:spring-boot-configuration-processor")
     }
 }

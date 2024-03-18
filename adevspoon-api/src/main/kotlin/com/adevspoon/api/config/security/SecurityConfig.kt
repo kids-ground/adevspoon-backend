@@ -2,11 +2,13 @@ package com.adevspoon.api.config.security
 
 import com.adevspoon.api.common.extension.writeErrorResponse
 import com.adevspoon.api.common.util.JwtProcessor
+import com.adevspoon.common.exception.AuthErrorCode
 import com.adevspoon.common.exception.CommonErrorCode
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.AuthenticationEntryPoint
@@ -21,7 +23,6 @@ class SecurityConfig(
     private val objectMapper: ObjectMapper
 ) {
     private val allowedSwaggerUrls = arrayOf("/docs", "/swagger-ui/**", "/v3/**")
-    private val allowedApiUrls = arrayOf("/member", "/dummy")
     private val log = LoggerFactory.getLogger(this.javaClass)!!
 
     @Bean
@@ -34,7 +35,8 @@ class SecurityConfig(
         .addFilterBefore(authenticationExceptionFilter(), JwtTokenAuthenticationFilter::class.java)
         .authorizeHttpRequests {
             it.requestMatchers(*allowedSwaggerUrls).permitAll()
-                .requestMatchers(*allowedApiUrls).permitAll()
+                .requestMatchers(HttpMethod.POST, "/member").permitAll()
+                .requestMatchers(HttpMethod.GET, "/dummy").permitAll()
 //                .requestMatchers(PathRequest.toH2Console()).permitAll()
                 .anyRequest().authenticated()
         }
@@ -63,7 +65,7 @@ class SecurityConfig(
 
     private fun authenticationEntryPoint() = AuthenticationEntryPoint { request, response, authException ->
         log.info("Authentication Error - ${authException.message}")
-        response.writeErrorResponse(CommonErrorCode.MISSING_AUTH, objectMapper)
+        response.writeErrorResponse(AuthErrorCode.MISSING_AUTH, objectMapper)
     }
 
     private fun accessDeniedHandler() = AccessDeniedHandler { request, response, accessDeniedException ->

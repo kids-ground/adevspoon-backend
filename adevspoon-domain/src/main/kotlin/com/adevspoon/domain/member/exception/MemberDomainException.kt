@@ -1,0 +1,6 @@
+package com.adevspoon.domain.member.exception
+
+import com.adevspoon.common.exception.AdevspoonException
+
+class MemberNotFoundException: AdevspoonException(MemberDomainErrorCode.MEMBER_NOT_FOUND)
+class MemberBadgeNotFoundException: AdevspoonException(MemberDomainErrorCode.MEMBER_BADGE_NOT_FOUND)

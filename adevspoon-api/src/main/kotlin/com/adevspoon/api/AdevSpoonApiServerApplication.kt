@@ -4,10 +4,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.runApplication
 
-@ConfigurationPropertiesScan
-@SpringBootApplication(scanBasePackages = [
-    "com.adevspoon",
-])
+@ConfigurationPropertiesScan(basePackages = ["com.adevspoon"])
+@SpringBootApplication(scanBasePackages = ["com.adevspoon"])
 class AdevSpoonApiServerApplication
 
 fun main(args: Array<String>) {

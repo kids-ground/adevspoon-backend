@@ -1,0 +1,14 @@
+package com.adevspoon.infrastructure.oauth.exception
+
+import com.adevspoon.common.exception.AdevspoonException
+import com.adevspoon.common.exception.ExternalException
+
+class OAuthKakaoTokenEmptyException: AdevspoonException(OAuthErrorCode.KAKAO_TOKEN_EMPTY)
+class OAuthAppleTokenEmptyException: AdevspoonException(OAuthErrorCode.APPLE_TOKEN_EMPTY)
+
+class OAuthKakaoTokenInvalidException: AdevspoonException(OAuthErrorCode.KAKAO_TOKEN_INVALID)
+class OAuthAppleTokenHeaderInvalidException: AdevspoonException(OAuthErrorCode.APPLE_TOKEN_HEADER_INVALID)
+class OAuthAppleTokenInvalidException: AdevspoonException(OAuthErrorCode.APPLE_TOKEN_INVALID)
+
+class OAuthKakaoServerErrorException(reason: String?): ExternalException(OAuthErrorCode.KAKAO_SERVER_ERROR, reason)
+class OAuthAppleServerErrorException(reason: String?): ExternalException(OAuthErrorCode.APPLE_SERVER_ERROR, reason)

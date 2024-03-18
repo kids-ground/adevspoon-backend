@@ -2,7 +2,8 @@ package com.adevspoon.infrastructure.oauth.service
 
 import com.adevspoon.infrastructure.oauth.client.AppleFeignClient
 import com.adevspoon.infrastructure.oauth.dto.JwtHeader
-import com.adevspoon.infrastructure.oauth.exception.OAuthErrorCode
+import com.adevspoon.infrastructure.oauth.exception.OAuthAppleTokenHeaderInvalidException
+import com.adevspoon.infrastructure.oauth.exception.OAuthAppleTokenInvalidException
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.jsonwebtoken.Jwts
 import org.springframework.stereotype.Component
@@ -39,9 +40,9 @@ class AppleKeyService(
                     val publicKeySpec = RSAPublicKeySpec(BigInteger(POSITIVE_SIGNUM, decodedN), BigInteger(POSITIVE_SIGNUM, decodedE))
                     val keyFactory = KeyFactory.getInstance(it.kty)
                     keyFactory.generatePublic(publicKeySpec)
-                } ?: throw OAuthErrorCode.APPLE_TOKEN_HEADER_INVALID.getException()
+                } ?: throw OAuthAppleTokenHeaderInvalidException()
         } catch (e: Exception) {
-            throw OAuthErrorCode.APPLE_TOKEN_HEADER_INVALID.getException()
+            throw OAuthAppleTokenHeaderInvalidException()
         }
     }
 
@@ -53,7 +54,7 @@ class AppleKeyService(
                 .parseClaimsJws(identityToken)
                 .body["sub"] as String
         } catch (e: Exception) {
-            throw OAuthErrorCode.APPLE_TOKEN_INVALID.getException()
+            throw OAuthAppleTokenInvalidException()
         }
     }
 }

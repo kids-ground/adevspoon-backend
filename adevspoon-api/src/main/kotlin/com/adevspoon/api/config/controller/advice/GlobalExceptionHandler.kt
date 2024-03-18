@@ -2,6 +2,7 @@ package com.adevspoon.api.config.controller.advice
 
 import com.adevspoon.common.dto.ErrorResponse
 import com.adevspoon.common.exception.AdevspoonException
+import com.adevspoon.common.exception.ExternalException
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
@@ -34,6 +35,19 @@ class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
             .body(ErrorResponse(errorInfo.code, errorInfo.message))
     }
 
+    @ExceptionHandler(ExternalException::class)
+    fun handleExternalException(e: ExternalException): ResponseEntity<ErrorResponse> {
+        logger.error("""
+            message: ${e.message}
+            reason: ${e.reason}
+        """.trimIndent())
+        val errorInfo = e.errorInfo
+        return ResponseEntity
+            .status(errorInfo.status)
+            .body(ErrorResponse(errorInfo.code, errorInfo.message))
+    }
+
+    // TODO: - ErrorResponse 내 TraceID를 넘기는 것 고려
     @ExceptionHandler(Exception::class)
     fun handleUncaughtException(e: Exception): ResponseEntity<ErrorResponse> {
         logger.error(e.message)
