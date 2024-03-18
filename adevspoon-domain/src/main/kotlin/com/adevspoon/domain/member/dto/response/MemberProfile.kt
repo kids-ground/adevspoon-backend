@@ -4,7 +4,7 @@ import com.adevspoon.domain.member.domain.BadgeEntity
 import com.adevspoon.domain.member.domain.UserEntity
 import java.time.LocalDateTime
 
-data class MemberProfileResponseDto(
+data class MemberProfile(
     val memberId: Long,
     val nickname: String,
     val statusMessage: String,
@@ -15,12 +15,12 @@ data class MemberProfileResponseDto(
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime,
     val alarmOn: Boolean,
-    val badges: List<BadgeResponseDto>?,
+    val badges: List<Badge>?,
     val profileBelt: String,
-    val representativeBadge: BadgeResponseDto?,
+    val representativeBadge: Badge?,
 ) {
     companion object {
-        fun from(user: UserEntity, hasBadgeList: List<BadgeEntity>, representativeBadge: BadgeEntity?) = MemberProfileResponseDto(
+        fun from(user: UserEntity, hasBadgeList: List<BadgeEntity>, representativeBadge: BadgeEntity?) = MemberProfile(
             memberId = user.id,
             nickname = user.nickname ?: "",
             statusMessage = user.statusMessage ?: "",
@@ -32,8 +32,8 @@ data class MemberProfileResponseDto(
             updatedAt = user.updatedAt ?: LocalDateTime.now(),
             alarmOn = user.fcmToken != null,
             profileBelt = user.profileBelt.name.lowercase(),
-            badges = hasBadgeList.map { BadgeResponseDto.from(it) },
-            representativeBadge = representativeBadge?.let { BadgeResponseDto.from(it) }
+            badges = hasBadgeList.map { Badge.from(it) },
+            representativeBadge = representativeBadge?.let { Badge.from(it) }
         )
     }
 }

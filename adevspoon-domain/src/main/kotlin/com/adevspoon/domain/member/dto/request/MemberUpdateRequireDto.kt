@@ -1,6 +1,7 @@
 package com.adevspoon.domain.member.dto.request
 
-data class MemberUpdateRequestDto(
+data class MemberUpdateRequireDto(
+    val memberId: Long,
     val nickname: String?,
     val fcmToken: String?,
     val representativeBadge: Int?,

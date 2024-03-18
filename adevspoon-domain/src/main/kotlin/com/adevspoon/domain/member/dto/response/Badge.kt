@@ -3,7 +3,7 @@ package com.adevspoon.domain.member.dto.response
 import com.adevspoon.domain.member.domain.BadgeEntity
 
 
-data class BadgeResponseDto(
+data class Badge(
     val id: Int,
     val name: String,
     var description: String? = null,
@@ -12,7 +12,7 @@ data class BadgeResponseDto(
     var silhouetteUrl: String? = null,
 ) {
     companion object {
-        fun from(badge: BadgeEntity) = BadgeResponseDto(
+        fun from(badge: BadgeEntity) = Badge(
             id = badge.id ?: -1,
             name = badge.name ?: "",
             description = badge.description,

@@ -1,6 +1,6 @@
 package com.adevspoon.api.member.dto.response
 
-import com.adevspoon.domain.member.dto.response.MemberProfileResponseDto
+import com.adevspoon.domain.member.dto.response.MemberProfile
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.LocalDateTime
 
@@ -36,7 +36,7 @@ data class MemberProfileResponse(
     val updatedAt: LocalDateTime,
 ) {
     companion object {
-        fun from(profile: MemberProfileResponseDto) = MemberProfileResponse(
+        fun from(profile: MemberProfile) = MemberProfileResponse(
             userId = profile.memberId,
             nickname = profile.nickname,
             statusMessage = profile.statusMessage,

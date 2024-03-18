@@ -1,6 +1,6 @@
-package com.adevspoon.api.common.util
+package com.adevspoon.domain.member.service
 
-import org.springframework.stereotype.Component
+import com.adevspoon.domain.common.annotation.DomainService
 
 private val adjectives = mutableListOf(
     "행복한", "최고의", "기쁜", "신이 난", "재미있는",
@@ -16,8 +16,8 @@ private val animals = mutableListOf(
     "원숭이", "뱀", "악어", "부엉이", "고릴라"
 )
 
-@Component
-class NicknameProcessor {
+@DomainService
+class NicknameDomainService {
     fun createRandomNickname(): String {
         return "${adjectives.random()} ${animals.random()}"
     }

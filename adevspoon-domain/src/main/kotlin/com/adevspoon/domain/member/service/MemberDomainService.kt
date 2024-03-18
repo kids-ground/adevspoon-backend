@@ -1,16 +1,19 @@
 package com.adevspoon.domain.member.service
 
+import com.adevspoon.common.dto.OAuthUserInfo
 import com.adevspoon.domain.common.annotation.DomainService
 import com.adevspoon.domain.member.domain.UserEntity
 import com.adevspoon.domain.member.domain.UserActivityEntity
 import com.adevspoon.domain.member.domain.enums.UserOAuth
-import com.adevspoon.domain.member.dto.request.MemberUpdateRequestDto
-import com.adevspoon.domain.member.dto.response.MemberProfileResponseDto
+import com.adevspoon.domain.member.dto.request.MemberUpdateRequireDto
+import com.adevspoon.domain.member.dto.response.MemberAndSignup
+import com.adevspoon.domain.member.dto.response.MemberProfile
 import com.adevspoon.domain.member.exception.MemberDomainErrorCode
 import com.adevspoon.domain.member.repository.UserActivityRepository
 import com.adevspoon.domain.member.repository.UserBadgeAcheiveRepository
 import com.adevspoon.domain.member.repository.UserRepository
 import com.adevspoon.domain.techQuestion.service.QuestionDomainService
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.transaction.annotation.Transactional
 
@@ -20,40 +23,41 @@ class MemberDomainService(
     private val userBadgeAcheiveRepository: UserBadgeAcheiveRepository,
     private val userActivityRepository: UserActivityRepository,
     private val questionDomainService: QuestionDomainService,
+    private val nicknameDomainService: NicknameDomainService,
 ) {
-    // 유저정보와 회원가입 여부반환
-    @Transactional
-    fun getMemberAndIsSignUp(oAuth: UserOAuth, oAuthId: String): Pair<UserEntity, Boolean> {
-        val user = when (oAuth) {
-            UserOAuth.kakao -> userRepository.findByOAuthAndKakaoId(oAuth, oAuthId.toLong())
-            UserOAuth.apple -> userRepository.findByOAuthAndAppleId(oAuth, oAuthId)
-        }
-        if (user != null) return user to false
+    @Value("\${default.profile-url}")
+    private lateinit var defaultProfileImg: String
+    @Value("\${default.thumbnail-url}")
+    private lateinit var defaultThumbnailImg: String
 
-        return when (oAuth) {
-            UserOAuth.kakao -> UserEntity(oAuth = oAuth, kakaoId = oAuthId.toLong())
-            UserOAuth.apple -> UserEntity(oAuth = oAuth, appleId = oAuthId)
-        }.also {
-            userRepository.save(it)
-            userActivityRepository.save(UserActivityEntity(id = it.id))
-        } to true
+    @Transactional
+    fun getMemberAndSignUp(oauthInfo: OAuthUserInfo): MemberAndSignup {
+        val oauthType = UserOAuth.from(oauthInfo.type)
+        when (oauthType) {
+            UserOAuth.kakao -> userRepository.findByOAuthAndKakaoId(oauthType, oauthInfo.id.toLong())
+            UserOAuth.apple -> userRepository.findByOAuthAndAppleId(oauthType, oauthInfo.id)
+        }?.let {
+            return MemberAndSignup.from(it)
+        }
+
+        return createMember(oauthInfo)
     }
 
     @Transactional
-    fun getMemberProfile(userId: Long): MemberProfileResponseDto {
+    fun getMemberProfile(userId: Long): MemberProfile {
         val user = userRepository.findByIdOrNull(userId) ?: throw MemberDomainErrorCode.USER_NOT_FOUND.getException()
         val userBadgeList = userBadgeAcheiveRepository.findUserBadgeList(userId)
         val userRepresentativeBadge = userBadgeList.firstOrNull {
             it.id?.toString()?.equals(user.representativeBadge) ?: false
         }
 
-        return MemberProfileResponseDto.from(user, userBadgeList, userRepresentativeBadge)
+        return MemberProfile.from(user, userBadgeList, userRepresentativeBadge)
     }
 
     @Transactional
-    fun updateMemberProfile(userId: Long, updateInfo: MemberUpdateRequestDto): MemberProfileResponseDto {
-        val user = userRepository.findByIdOrNull(userId) ?: throw MemberDomainErrorCode.USER_NOT_FOUND.getException()
-        val userBadgeList = userBadgeAcheiveRepository.findUserBadgeList(userId)
+    fun updateMemberProfile(updateInfo: MemberUpdateRequireDto): MemberProfile {
+        val user = userRepository.findByIdOrNull(updateInfo.memberId) ?: throw MemberDomainErrorCode.USER_NOT_FOUND.getException()
+        val userBadgeList = userBadgeAcheiveRepository.findUserBadgeList(updateInfo.memberId)
         var userRepresentativeBadge = userBadgeList.firstOrNull {
             it.id?.toString()?.equals(user.representativeBadge) ?: false
         }
@@ -73,6 +77,32 @@ class MemberDomainService(
             this.representativeBadge = userRepresentativeBadge?.id?.toString()
         }
 
-        return MemberProfileResponseDto.from(user, userBadgeList, userRepresentativeBadge)
+        return MemberProfile.from(user, userBadgeList, userRepresentativeBadge)
+    }
+
+    @Transactional
+    fun updateMemberToken(userId: Long, refreshToken: String) {
+        val user = userRepository.findByIdOrNull(userId) ?: throw MemberDomainErrorCode.USER_NOT_FOUND.getException()
+        user.apply {
+            this.refreshToken = refreshToken
+        }
+    }
+
+    private fun createMember(oauthInfo: OAuthUserInfo): MemberAndSignup {
+        val oauthType = UserOAuth.from(oauthInfo.type)
+        when (oauthType) {
+            UserOAuth.kakao -> UserEntity(oAuth = oauthType, kakaoId = oauthInfo.id.toLong())
+            UserOAuth.apple -> UserEntity(oAuth = oauthType, appleId = oauthInfo.id)
+        }.apply {
+            email = oauthInfo.email ?: ""
+            profileImg = oauthInfo.profileImageUrl ?: defaultProfileImg
+            thumbnailImg = oauthInfo.thumbnailImageUrl ?: defaultThumbnailImg
+            nickname = nicknameDomainService.createRandomNickname()
+        }.also {
+            userRepository.save(it)
+            userActivityRepository.save(UserActivityEntity(id = it.id))
+        }.let {
+            return MemberAndSignup.from(it)
+        }
     }
 }

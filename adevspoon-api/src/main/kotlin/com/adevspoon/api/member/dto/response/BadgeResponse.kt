@@ -1,6 +1,6 @@
 package com.adevspoon.api.member.dto.response
 
-import com.adevspoon.domain.member.dto.response.BadgeResponseDto
+import com.adevspoon.domain.member.dto.response.Badge
 
 data class BadgeResponse(
     val id: Int,
@@ -11,7 +11,7 @@ data class BadgeResponse(
     val silhouetteUrl: String,
 ) {
     companion object {
-        fun from(badge: BadgeResponseDto) = BadgeResponse(
+        fun from(badge: Badge) = BadgeResponse(
             id = badge.id,
             name = badge.name,
             description = badge.description,

@@ -1,11 +1,11 @@
 package com.adevspoon.api.member.dto.response
 
-import com.adevspoon.domain.member.domain.UserEntity
+import com.adevspoon.domain.member.dto.response.MemberAndSignup
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.LocalDateTime
 
 data class MemberAndTokenResponse (
-    var token: TokenResponse? = null,
+    val token: TokenResponse,
     val isSign: Boolean,
 
     @JsonProperty("user_id")
@@ -34,18 +34,19 @@ data class MemberAndTokenResponse (
     val updatedAt: LocalDateTime,
 ) {
     companion object {
-        fun from(user: UserEntity, isSignup: Boolean = false): MemberAndTokenResponse {
+        fun from(member: MemberAndSignup, token: TokenResponse): MemberAndTokenResponse {
             return MemberAndTokenResponse(
-                isSign = isSignup,
-                nickname = user.nickname!!,
-                userId = user.id,
-                profileImg = user.profileImg,
-                thumbnailImg = user.thumbnailImg,
-                questionCnt = user.questionCnt,
-                answerCnt = user.answerCnt,
-                createdAt = user.createdAt ?: LocalDateTime.now(),
-                updatedAt = user.updatedAt ?: LocalDateTime.now(),
-                alarmOn = user.fcmToken != null,
+                isSign = member.isSign,
+                nickname = member.nickname,
+                userId = member.memberId,
+                profileImg = member.profileImg,
+                thumbnailImg = member.thumbnailImg,
+                questionCnt = member.questionCnt,
+                answerCnt = member.answerCnt,
+                createdAt = member.createdAt,
+                updatedAt = member.updatedAt,
+                alarmOn = member.alarmOn,
+                token = token
             )
         }
     }

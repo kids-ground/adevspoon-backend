@@ -1,8 +1,8 @@
-package com.adevspoon.infrastructure.oauth.dto
+package com.adevspoon.common.dto
 
 import com.adevspoon.common.enums.SocialType
 
-data class OAuthUserInfoResponse(
+data class OAuthUserInfo(
     val type: SocialType,
     val id: String,
     val nickname: String? = null,

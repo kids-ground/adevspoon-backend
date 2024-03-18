@@ -20,13 +20,10 @@ class MemberService(
         val (profileUrl, thumbnailUrl) = request.image
             ?.let(::uploadProfileImage)
             ?: listOf(null, null)
-        val memberProfileResponseDto = memberDomainService
-            .updateMemberProfile(
-                userId,
-                request.toMemberUpdateRequestDto(profileUrl, thumbnailUrl)
-            )
+        val memberProfile = memberDomainService
+            .updateMemberProfile(request.toMemberUpdateRequireDto(userId, profileUrl, thumbnailUrl))
 
-        return MemberProfileResponse.from(memberProfileResponseDto)
+        return MemberProfileResponse.from(memberProfile)
     }
 
     private fun uploadProfileImage(image: MultipartFile): List<String> {

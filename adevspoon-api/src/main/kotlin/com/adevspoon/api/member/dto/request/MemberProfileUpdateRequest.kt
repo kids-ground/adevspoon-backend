@@ -1,6 +1,6 @@
 package com.adevspoon.api.member.dto.request
 
-import com.adevspoon.domain.member.dto.request.MemberUpdateRequestDto
+import com.adevspoon.domain.member.dto.request.MemberUpdateRequireDto
 import org.springframework.web.multipart.MultipartFile
 
 data class MemberProfileUpdateRequest(
@@ -10,10 +10,12 @@ data class MemberProfileUpdateRequest(
     val representativeBadge: Int?,
     val categoryIds: String?,
 ) {
-    fun toMemberUpdateRequestDto(
+    fun toMemberUpdateRequireDto(
+        memberId: Long,
         profileUrl: String?,
         thumbnailUrl: String?
-    ) = MemberUpdateRequestDto(
+    ) = MemberUpdateRequireDto(
+        memberId = memberId,
         nickname = nickname,
         fcmToken = fcmToken,
         representativeBadge = representativeBadge,
