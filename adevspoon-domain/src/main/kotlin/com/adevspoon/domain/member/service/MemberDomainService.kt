@@ -9,7 +9,6 @@ import com.adevspoon.domain.member.dto.request.MemberUpdateRequireDto
 import com.adevspoon.domain.member.dto.response.MemberAndSignup
 import com.adevspoon.domain.member.dto.response.MemberProfile
 import com.adevspoon.domain.member.exception.MemberBadgeNotFoundException
-import com.adevspoon.domain.member.exception.MemberDomainErrorCode
 import com.adevspoon.domain.member.exception.MemberNotFoundException
 import com.adevspoon.domain.member.repository.UserActivityRepository
 import com.adevspoon.domain.member.repository.UserBadgeAcheiveRepository
@@ -72,10 +71,10 @@ class MemberDomainService(
                 ?: throw MemberBadgeNotFoundException()
 
         user.apply {
-            this.nickname = updateInfo.nickname ?: user.nickname
-            this.fcmToken = updateInfo.fcmToken ?: user.fcmToken
-            this.profileImg = updateInfo.profileImageUrl ?: user.profileImg
-            this.thumbnailImg = updateInfo.thumbnailImageUrl ?: user.thumbnailImg
+            updateInfo.nickname?.let { this.nickname = it }
+            updateInfo.fcmToken?.let { this.fcmToken = it }
+            updateInfo.profileImageUrl?.let { this.profileImg = it }
+            updateInfo.thumbnailImageUrl?.let { this.thumbnailImg = it }
             this.representativeBadge = userRepresentativeBadge?.id?.toString()
         }
 

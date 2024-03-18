@@ -65,7 +65,7 @@ class UserEntity(
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "profileBelt" , columnDefinition="ENUM('none','passionate')" ,nullable = false)
-    var profileBelt: UserProfileBelt = UserProfileBelt.NONE,
+    var profileBelt: UserProfileBelt = UserProfileBelt.none,
 
     @Size(max = 1)
     @Column(name = "representativeBadge", length = 1)
