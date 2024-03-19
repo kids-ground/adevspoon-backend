@@ -23,5 +23,9 @@ server:
     context-path: /api
 
 springdoc:
+  api-docs:
+    path: /api-docs
   swagger-ui:
     path: /docs
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
