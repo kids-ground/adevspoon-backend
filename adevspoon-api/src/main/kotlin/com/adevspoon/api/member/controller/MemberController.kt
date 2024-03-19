@@ -2,6 +2,7 @@ package com.adevspoon.api.member.controller
 
 import com.adevspoon.api.auth.service.AuthService
 import com.adevspoon.api.common.annotation.RequestUser
+import com.adevspoon.api.common.annotation.SecurityIgnored
 import com.adevspoon.api.common.dto.RequestUserInfo
 import com.adevspoon.api.member.dto.request.MemberActivityRequest
 import com.adevspoon.api.member.dto.request.SocialLoginRequest
@@ -24,6 +25,7 @@ class MemberController(
     private val memberService: MemberService
 ) {
     @Operation(summary = "로그인/회원가입", description = "kakao, apple을 통한 로그인/회원가입")
+    @SecurityIgnored
     @PostMapping
     fun socialLogin(@RequestBody request: SocialLoginRequest) : MemberAndTokenResponse {
         return authService.signIn(request)

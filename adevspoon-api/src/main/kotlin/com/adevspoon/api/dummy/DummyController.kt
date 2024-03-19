@@ -1,6 +1,7 @@
 package com.adevspoon.api.dummy
 
 import com.adevspoon.api.common.annotation.RequestUser
+import com.adevspoon.api.common.annotation.SecurityIgnored
 import com.adevspoon.api.common.dto.RequestUserInfo
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.GetMapping
@@ -12,7 +13,8 @@ import org.springframework.web.bind.annotation.RestController
 class DummyController{
     private val log = LoggerFactory.getLogger(this.javaClass)!!
     @GetMapping
-    fun dummyTest(param: DummyParam, @RequestUser user: RequestUserInfo): String {
+    @SecurityIgnored
+    fun dummyTest(param: DummyParam): String {
         log.info("dummy ㅎ $param")
         return "dummy ㅎ2"
     }
