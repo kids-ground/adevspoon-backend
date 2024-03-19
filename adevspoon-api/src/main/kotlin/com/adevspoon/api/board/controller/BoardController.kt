@@ -64,7 +64,7 @@ class BoardController {
     @DeleteMapping("/post")
     fun deleteBoardPost(
         @RequestUser user: RequestUserInfo,
-        @RequestParam postId: Long,
+        @RequestBody request: BoardDeleteRequest,
     ): PlainResponse {
         TODO("""
             게시판 글 삭제

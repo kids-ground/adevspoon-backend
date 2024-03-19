@@ -37,7 +37,6 @@ class SecurityConfig(
             it.requestMatchers(*allowedSwaggerUrls).permitAll()
                 .requestMatchers(HttpMethod.POST, "/member").permitAll()
                 .requestMatchers(HttpMethod.GET, "/dummy").permitAll()
-//                .requestMatchers(PathRequest.toH2Console()).permitAll()
                 .anyRequest().authenticated()
         }
         .exceptionHandling {
