@@ -1,5 +1,6 @@
 package com.adevspoon.api.member.dto.response
 
+import com.adevspoon.api.auth.dto.response.TokenResponse
 import com.adevspoon.domain.member.dto.response.MemberAndSignup
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.LocalDateTime

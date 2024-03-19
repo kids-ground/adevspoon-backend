@@ -1,4 +1,4 @@
-package com.adevspoon.api
+package com.adevspoon.api.dummy
 
 import com.adevspoon.api.common.annotation.RequestUser
 import com.adevspoon.api.common.dto.RequestUserInfo

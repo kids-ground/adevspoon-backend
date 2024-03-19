@@ -3,10 +3,9 @@ package com.adevspoon.api.auth.service
 import com.adevspoon.api.common.annotation.ApplicationService
 import com.adevspoon.api.common.dto.JwtTokenInfo
 import com.adevspoon.api.common.dto.JwtTokenType
-import com.adevspoon.api.common.properties.ImageProperties
 import com.adevspoon.api.common.util.JwtProcessor
 import com.adevspoon.api.member.dto.request.SocialLoginRequest
-import com.adevspoon.api.member.dto.response.TokenResponse
+import com.adevspoon.api.auth.dto.response.TokenResponse
 import com.adevspoon.api.member.dto.response.MemberAndTokenResponse
 import com.adevspoon.domain.member.service.MemberDomainService
 import com.adevspoon.infrastructure.oauth.service.OAuthAdapter

@@ -1,4 +1,4 @@
-package com.adevspoon.api.member.dto.response
+package com.adevspoon.api.auth.dto.response
 
 data class TokenResponse (
     val accessToken: String,
