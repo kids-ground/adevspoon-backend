@@ -6,13 +6,15 @@ import com.adevspoon.api.board.dto.response.BoardListResponse
 import com.adevspoon.api.board.dto.response.BoardTagResponse
 import com.adevspoon.api.common.annotation.RequestUser
 import com.adevspoon.api.common.dto.RequestUserInfo
+import com.adevspoon.api.config.swagger.SWAGGER_TAG_BOARD
 import com.adevspoon.common.dto.PlainResponse
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/board")
-@Tag(name = "[게시판]")
+@Tag(name = SWAGGER_TAG_BOARD)
 class BoardController {
     @GetMapping("/tag")
     fun getBoardTagList(): BoardTagResponse {
@@ -23,8 +25,8 @@ class BoardController {
 
     @PostMapping("/post")
     fun registerBoardPost(
-        @RequestBody request: RegisterBoardPostRequest,
         @RequestUser user: RequestUserInfo,
+        @RequestBody @Valid request: RegisterBoardPostRequest,
     ): BoardInfoResponse {
         TODO("""
             게시판 글 등록
@@ -33,8 +35,8 @@ class BoardController {
 
     @GetMapping("/post/{postId}")
     fun getBoardPost(
-        @PathVariable postId: Long,
         @RequestUser user: RequestUserInfo,
+        @PathVariable postId: Long,
     ): BoardInfoResponse {
         TODO("""
             게시판 글 조회
@@ -44,7 +46,7 @@ class BoardController {
     @GetMapping("/post")
     fun getBoardPostList(
         @RequestUser user: RequestUserInfo,
-        request: BoardListRequest,
+        @Valid request: BoardListRequest,
     ): BoardListResponse {
         TODO("""
             게시판 글 리스트 조회
@@ -54,7 +56,7 @@ class BoardController {
     @PatchMapping("/post")
     fun updateBoardPost(
         @RequestUser user: RequestUserInfo,
-        @RequestBody request: UpdateBoardPostRequest,
+        @RequestBody @Valid request: UpdateBoardPostRequest,
     ): BoardInfoResponse {
         TODO("""
             게시판 글 수정
@@ -64,7 +66,7 @@ class BoardController {
     @DeleteMapping("/post")
     fun deleteBoardPost(
         @RequestUser user: RequestUserInfo,
-        @RequestBody request: BoardDeleteRequest,
+        @RequestBody @Valid request: BoardDeleteRequest,
     ): PlainResponse {
         TODO("""
             게시판 글 삭제
@@ -74,7 +76,7 @@ class BoardController {
     @PostMapping("/like")
     fun likeBoardPost(
         @RequestUser user: RequestUserInfo,
-        @RequestBody request: LikeBoardContentRequest
+        @RequestBody @Valid request: LikeBoardContentRequest
     ): PlainResponse {
         TODO("""
             게시판 글 좋아요
@@ -85,7 +87,7 @@ class BoardController {
     @PostMapping("/report")
     fun reportBoardPost(
         @RequestUser user: RequestUserInfo,
-        @RequestBody request: ReportBoardContentRequest
+        @RequestBody @Valid request: ReportBoardContentRequest
     ): PlainResponse {
         TODO("""
             게시판 글 신고

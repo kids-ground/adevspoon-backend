@@ -2,22 +2,24 @@ package com.adevspoon.api.question.controller
 
 import com.adevspoon.api.common.annotation.RequestUser
 import com.adevspoon.api.common.dto.RequestUserInfo
+import com.adevspoon.api.config.swagger.SWAGGER_TAG_QUESTION
 import com.adevspoon.api.question.dto.request.QuestionCategoryListRequest
 import com.adevspoon.api.question.dto.response.QuestionCategoryResponse
 import com.adevspoon.api.question.dto.response.QuestionInfoResponse
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.*
 
 
 @RestController
 @RequestMapping("/question")
-@Tag(name = "[질문]")
+@Tag(name = SWAGGER_TAG_QUESTION)
 class QuestionController {
     @GetMapping
     fun getQuestion(
+        @RequestUser user: RequestUserInfo,
         @RequestParam("type", required = false) type: String = "today",
         @RequestParam("questionId", required = false) questionId: Long?,
-        @RequestUser user: RequestUserInfo
     ): QuestionInfoResponse {
         TODO("""
             - type = today, date(ex. 2024-03-18)
@@ -31,8 +33,8 @@ class QuestionController {
 
     @GetMapping("/question/{questionId}")
     fun getQuestionDetail(
+        @RequestUser user: RequestUserInfo,
         @PathVariable questionId: Long,
-        @RequestUser user: RequestUserInfo
     ): QuestionInfoResponse {
         TODO("""
             - user가 발급받은 question을 Id기반으로 가져오기
@@ -42,7 +44,7 @@ class QuestionController {
     @GetMapping("/question/category")
     fun getQuestionCategoryList(
         @RequestUser user: RequestUserInfo,
-        request: QuestionCategoryListRequest
+        @Valid request: QuestionCategoryListRequest
     ): List<QuestionCategoryResponse> {
         TODO("""
             - limit 기본값 30개, offset 기본값 0개

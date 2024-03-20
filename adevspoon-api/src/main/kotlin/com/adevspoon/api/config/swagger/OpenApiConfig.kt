@@ -1,4 +1,4 @@
-package com.adevspoon.api.config
+package com.adevspoon.api.config.swagger
 
 import com.adevspoon.api.common.annotation.SecurityIgnored
 import io.swagger.v3.oas.models.Components
@@ -26,7 +26,10 @@ class OpenApiConfig {
 
     private fun apiInfo() = Info()
         .title("Adevspoon API 명세")
-        .description("Adevspoon API 명세서")
+        .description("""
+            Adevspoon(개발 한 스푼) 어플리케이션을 위한 API 명세서입니다.
+            - 모든 API의 Path는 '/api'로 시작합니다.
+        """.trimIndent())
         .version("v1.0.0")
 
     private fun apiSecurityScheme() = SecurityScheme()

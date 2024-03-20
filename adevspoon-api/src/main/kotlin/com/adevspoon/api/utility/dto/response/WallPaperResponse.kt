@@ -1,4 +1,4 @@
-package com.adevspoon.api.wallPaper.dto
+package com.adevspoon.api.utility.dto.response
 
 data class WallPaperResponse(
     val id: Long,

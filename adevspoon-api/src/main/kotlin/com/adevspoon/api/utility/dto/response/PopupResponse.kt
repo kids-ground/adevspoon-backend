@@ -1,4 +1,4 @@
-package com.adevspoon.api.popup.dto
+package com.adevspoon.api.utility.dto.response
 
 import java.time.LocalDate
 

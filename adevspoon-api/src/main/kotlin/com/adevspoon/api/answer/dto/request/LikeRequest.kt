@@ -3,7 +3,7 @@ package com.adevspoon.api.answer.dto.request
 import com.fasterxml.jackson.annotation.JsonValue
 
 data class LikeRequest(
-    val type: Long,
+    val type: LikeType,
     val like: Boolean = true
 )
 

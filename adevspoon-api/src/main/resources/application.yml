@@ -27,5 +27,7 @@ springdoc:
     path: /api-docs
   swagger-ui:
     path: /docs
+    tags-sorter: alpha
   default-consumes-media-type: application/json
   default-produces-media-type: application/json
+  writer-with-order-by-keys: true

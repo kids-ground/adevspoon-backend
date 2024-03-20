@@ -1,4 +1,4 @@
-package com.adevspoon.api.banner.dto
+package com.adevspoon.api.utility.dto.response
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.LocalDate

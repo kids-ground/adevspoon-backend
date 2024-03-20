@@ -5,18 +5,20 @@ import com.adevspoon.api.answer.dto.request.*
 import com.adevspoon.api.answer.dto.response.AnswerInfoResponse
 import com.adevspoon.api.common.annotation.RequestUser
 import com.adevspoon.api.common.dto.RequestUserInfo
+import com.adevspoon.api.config.swagger.SWAGGER_TAG_QUESTION_ANSWER
 import com.adevspoon.common.dto.PlainResponse
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/post")
-@Tag(name = "[질문 - 답변]")
+@Tag(name = SWAGGER_TAG_QUESTION_ANSWER)
 class AnswerController {
     @PostMapping
     fun registerAnswer(
-        @RequestBody request: RegisterAnswerRequest,
         @RequestUser user: RequestUserInfo,
+        @RequestBody @Valid request: RegisterAnswerRequest,
     ): AnswerInfoResponse {
         TODO("""
             - 답변을 등록한다.
@@ -25,9 +27,9 @@ class AnswerController {
 
     @GetMapping("/{answerId}")
     fun getAnswerDetail(
-        @PathVariable answerId: Long,
-        @RequestParam("type") postType: PostType = PostType.ANSWER,
         @RequestUser user: RequestUserInfo,
+        @PathVariable answerId: Long,
+        @RequestParam("type") postType: AnswerType = AnswerType.ANSWER, // TODO: Converter 및 Validation 필요
     ): AnswerInfoResponse {
         TODO("""
             - 특정 답변을 가져온다.
@@ -36,9 +38,9 @@ class AnswerController {
 
     @PutMapping("/{answerId}")
     fun modifyAnswer(
-        @PathVariable answerId: Long,
-        @RequestBody request: AnswerUpdateRequest,
         @RequestUser user: RequestUserInfo,
+        @PathVariable answerId: Long,
+        @RequestBody @Valid request: AnswerUpdateRequest,
     ): AnswerInfoResponse {
         TODO("""
             - 답변을 수정한다.
@@ -47,9 +49,9 @@ class AnswerController {
 
     @PostMapping("/{answerId}/report")
     fun reportAnswer(
-        @PathVariable answerId: Long,
-        @RequestBody request: AnswerReportRequest,
         @RequestUser user: RequestUserInfo,
+        @PathVariable answerId: Long,
+        @RequestBody @Valid request: AnswerReportRequest,
     ): PlainResponse {
         TODO("""
             - 답변을 신고한다.
@@ -60,9 +62,9 @@ class AnswerController {
 
     @PostMapping("/{id}/favorite")
     fun likeAnswer(
-        @PathVariable id: Long,
-        @RequestBody request: LikeRequest,
         @RequestUser user: RequestUserInfo,
+        @PathVariable id: Long,
+        @RequestBody @Valid request: LikeRequest,
     ): PlainResponse {
         TODO("""
             - 답변/게시글을 좋아요한다.

@@ -1,6 +1,5 @@
 package com.adevspoon.api.member.dto.response
 
-import com.adevspoon.api.answer.dto.request.PostType
 import java.time.LocalDate
 
 data class MemberFavoriteResponse(
