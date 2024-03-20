@@ -24,7 +24,7 @@ class SecurityConfig(
     private val objectMapper: ObjectMapper,
     private val handlerMapping: RequestMappingHandlerMapping
 ) {
-    private val allowedSwaggerUrls = arrayOf("/docs", "/api-docs", "/swagger-ui/**", "/v3/**")
+    private val allowedSwaggerUrls = arrayOf("/docs", "/api-docs", "/api-docs/**", "/swagger-ui/**", "/v3/**")
     private val log = LoggerFactory.getLogger(this.javaClass)!!
 
     @Bean

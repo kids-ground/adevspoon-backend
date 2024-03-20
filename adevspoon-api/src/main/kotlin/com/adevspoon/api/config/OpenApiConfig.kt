@@ -1,12 +1,16 @@
 package com.adevspoon.api.config
 
+import com.adevspoon.api.common.annotation.SecurityIgnored
 import io.swagger.v3.oas.models.Components
 import io.swagger.v3.oas.models.OpenAPI
+import io.swagger.v3.oas.models.Operation
 import io.swagger.v3.oas.models.info.Info
 import io.swagger.v3.oas.models.security.SecurityRequirement
 import io.swagger.v3.oas.models.security.SecurityScheme
+import org.springdoc.core.customizers.OperationCustomizer
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.web.method.HandlerMethod
 
 private const val SECURITY_SCHEME_NAME: String = "JWT 토큰"
 
@@ -15,7 +19,9 @@ class OpenApiConfig {
     @Bean
     fun openApi(): OpenAPI = OpenAPI()
         .info(apiInfo())
-        .components(Components().addSecuritySchemes(SECURITY_SCHEME_NAME, apiSecurityScheme()))
+        .components(
+            Components().addSecuritySchemes(SECURITY_SCHEME_NAME, apiSecurityScheme())
+        )
         .security(apiSecurityRequirementList())
 
     private fun apiInfo() = Info()
@@ -28,4 +34,14 @@ class OpenApiConfig {
         .`in`(SecurityScheme.In.HEADER).name("Authorization")
 
     private fun apiSecurityRequirementList() = listOf(SecurityRequirement().addList(SECURITY_SCHEME_NAME))
+
+    @Bean
+    fun customOperationCustomizer(): OperationCustomizer {
+        return OperationCustomizer { operation: Operation, handlerMethod: HandlerMethod ->
+            val hasSecurityIgnored = handlerMethod.hasMethodAnnotation(SecurityIgnored::class.java)
+            if (hasSecurityIgnored) operation.security = emptyList()
+
+            operation
+        }
+    }
 }
