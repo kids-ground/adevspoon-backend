@@ -31,7 +31,7 @@ class PlainResponseAdviceHandler: ResponseBodyAdvice<Any> {
         val resolve = HttpStatus.resolve(status) ?: return body
 
         return if (resolve.is2xxSuccessful && body is PlainResponse) {
-            SuccessResponse(message = body.text, data = null)
+            SuccessResponse(message = body.message, data = null)
         } else body
     }
 }
