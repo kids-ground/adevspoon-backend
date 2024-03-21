@@ -33,13 +33,17 @@ class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
     }
 
     // Validation 예외 처리
-    @ExceptionHandler(MethodArgumentNotValidException::class)
-    fun validException(e: MethodArgumentNotValidException): ResponseEntity<ErrorResponse?> {
+    override fun handleMethodArgumentNotValid(
+        ex: MethodArgumentNotValidException,
+        headers: HttpHeaders,
+        status: HttpStatusCode,
+        request: WebRequest
+    ): ResponseEntity<Any>? {
         return ResponseEntity
             .status(HTTP_BAD_REQUEST)
             .body(ErrorResponse(
                 CommonErrorCode.BAD_REQUEST.getErrorInfo().code,
-                e.bindingResult.allErrors.first()?.defaultMessage ?: ""
+                ex.bindingResult.allErrors.map { it.defaultMessage }.joinToString { "\n" }
             ))
     }
 
