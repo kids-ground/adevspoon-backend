@@ -6,6 +6,7 @@ import com.adevspoon.api.config.swagger.SWAGGER_TAG_QUESTION
 import com.adevspoon.api.question.dto.request.QuestionCategoryListRequest
 import com.adevspoon.api.question.dto.response.QuestionCategoryResponse
 import com.adevspoon.api.question.dto.response.QuestionInfoResponse
+import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.*
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/question")
 @Tag(name = SWAGGER_TAG_QUESTION)
 class QuestionController {
+
+    @Operation(summary = "질문 가져오기", description = "오늘의 질문 또는 질문 발급 받은 날짜를 이용해 특정 질문을 가져온다.")
     @GetMapping
     fun getQuestion(
         @RequestUser user: RequestUserInfo,
@@ -31,6 +34,7 @@ class QuestionController {
         """.trimIndent())
     }
 
+    @Operation(summary = "질문 id 기반으로 상세정보 가져오기")
     @GetMapping("/question/{questionId}")
     fun getQuestionDetail(
         @RequestUser user: RequestUserInfo,
@@ -41,6 +45,7 @@ class QuestionController {
         """.trimIndent())
     }
 
+    @Operation(summary = "질문 카테고리 리스트 가져오기")
     @GetMapping("/question/category")
     fun getQuestionCategoryList(
         @RequestUser user: RequestUserInfo,

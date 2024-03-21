@@ -8,6 +8,7 @@ import com.adevspoon.api.common.annotation.RequestUser
 import com.adevspoon.api.common.dto.RequestUserInfo
 import com.adevspoon.api.config.swagger.SWAGGER_TAG_BOARD_COMMENT
 import com.adevspoon.common.dto.PlainResponse
+import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/board/comment")
 @Tag(name = SWAGGER_TAG_BOARD_COMMENT)
 class BoardCommentController {
+    @Operation(summary = "게시판 댓글 리스트 조회", description = "게시글 id를 쿼리로 받아 게시판 댓글 리스트 조회")
     @GetMapping
     fun getBoardCommentList(
         @RequestUser user: RequestUserInfo,
@@ -32,6 +34,7 @@ class BoardCommentController {
         """.trimIndent())
     }
 
+    @Operation(summary = "게시글의 댓글 등록")
     @PostMapping
     fun registerBoardComment(
         @RequestUser user: RequestUserInfo,
@@ -42,6 +45,7 @@ class BoardCommentController {
         """.trimIndent())
     }
 
+    @Operation(summary = "게시글의 댓글 삭제")
     @DeleteMapping
     fun deleteBoardComment(
         @RequestUser user: RequestUserInfo,

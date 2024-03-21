@@ -7,6 +7,7 @@ import com.adevspoon.api.common.annotation.RequestUser
 import com.adevspoon.api.common.dto.RequestUserInfo
 import com.adevspoon.api.config.swagger.SWAGGER_TAG_QUESTION_ANSWER
 import com.adevspoon.common.dto.PlainResponse
+import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.*
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/post")
 @Tag(name = SWAGGER_TAG_QUESTION_ANSWER)
 class AnswerController {
+
+    @Operation(summary = "답변 등록", description = "답변을 등록하고 답변 정보를 반환한다.")
     @PostMapping
     fun registerAnswer(
         @RequestUser user: RequestUserInfo,
@@ -25,6 +28,7 @@ class AnswerController {
         """.trimIndent())
     }
 
+    @Operation(summary = "답변 정보", description = "id를 기반으로 답변 정보를 반환한다.")
     @GetMapping("/{answerId}")
     fun getAnswerDetail(
         @RequestUser user: RequestUserInfo,
@@ -36,6 +40,7 @@ class AnswerController {
         """.trimIndent())
     }
 
+    @Operation(summary = "답변 수정", description = "답변을 수정하고 수정된 답변 정보를 반환한다.")
     @PutMapping("/{answerId}")
     fun modifyAnswer(
         @RequestUser user: RequestUserInfo,
@@ -47,6 +52,7 @@ class AnswerController {
         """.trimIndent())
     }
 
+    @Operation(summary = "답변 신고", description = "올바르지 않은 답변에 대해 신고를 한다.")
     @PostMapping("/{answerId}/report")
     fun reportAnswer(
         @RequestUser user: RequestUserInfo,
@@ -60,6 +66,7 @@ class AnswerController {
         """.trimIndent())
     }
 
+    @Operation(summary = "답변 좋아요", description = "답변을 좋아요 or 좋아요 취소한다.")
     @PostMapping("/{id}/favorite")
     fun likeAnswer(
         @RequestUser user: RequestUserInfo,
