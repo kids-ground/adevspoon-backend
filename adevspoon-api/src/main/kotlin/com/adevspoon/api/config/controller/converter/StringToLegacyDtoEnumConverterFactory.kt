@@ -9,6 +9,7 @@ class StringToLegacyDtoEnumConverterFactory<F>: ConverterFactory<String, F> wher
         return StringToEnumConverter(targetType)
     }
 
+    @Suppress("UNCHECKED_CAST")
     private class StringToEnumConverter<T : Enum<*>?>(private val enumType: Class<T>) : Converter<String, T> {
         override fun convert(source: String): T {
             val type = enumType as Class<out Enum<*>>

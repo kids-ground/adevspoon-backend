@@ -1,6 +1,6 @@
 package com.adevspoon.domain.member.domain
 
-import com.adevspoon.domain.domain.BaseEntity
+import com.adevspoon.domain.common.entity.BaseEntity
 import jakarta.persistence.*
 import java.io.Serializable
 

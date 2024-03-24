@@ -1,6 +1,6 @@
 package com.adevspoon.domain.post.techAnswer.domain
 
-import com.adevspoon.domain.domain.LegacyBaseEntity
+import com.adevspoon.domain.common.entity.LegacyBaseEntity
 import com.adevspoon.domain.post.techAnswer.domain.enums.AnswerStatus
 import com.adevspoon.domain.techQuestion.domain.QuestionEntity
 import com.adevspoon.domain.member.domain.UserEntity

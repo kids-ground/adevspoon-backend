@@ -18,11 +18,12 @@ class LegacyDtoEnumCombinedSerializer {
     class LegacyDtoEnumDeserializer<T>(vc: Class<*>?): StdDeserializer<T>(vc), ContextualDeserializer where T : LegacyDtoEnum, T: Enum<*> {
         constructor() : this(null)
 
+        @Suppress("UNCHECKED_CAST")
         override fun deserialize(p: JsonParser, ctxt: DeserializationContext): T {
             val jsonNode: JsonNode = p.codec.readTree(p)
-            val text: String = jsonNode.asText().uppercase()
+            val value: String = jsonNode.asText()
             val enumType = _valueClass as Class<out Enum<*>>
-            return java.lang.Enum.valueOf(enumType, text) as T
+            return java.lang.Enum.valueOf(enumType, value.uppercase()) as T
         }
 
         override fun createContextual(ctxt: DeserializationContext, property: BeanProperty): JsonDeserializer<*> {

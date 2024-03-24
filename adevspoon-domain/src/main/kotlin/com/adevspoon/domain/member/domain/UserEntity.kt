@@ -1,6 +1,6 @@
 package com.adevspoon.domain.member.domain
 
-import com.adevspoon.domain.domain.LegacyBaseEntity
+import com.adevspoon.domain.common.entity.LegacyBaseEntity
 import com.adevspoon.domain.member.domain.enums.UserOAuth
 import com.adevspoon.domain.member.domain.enums.UserProfileBelt
 import com.adevspoon.domain.member.domain.enums.UserStatus
