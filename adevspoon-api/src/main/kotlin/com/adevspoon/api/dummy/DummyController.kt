@@ -28,12 +28,28 @@ class DummyController{
         return DummyResponse("dummy", DummyEnum.DUMMY1)
     }
 
+    @Operation(summary = "non-security GET 테스트용", description = "Security 필요없음")
+    @GetMapping("/nullable")
+    @SecurityIgnored
+    fun dummyEnumNullableTest(param: DummyQueryRequest): DummyResponse {
+        log.info("dummy ㅎ $param")
+        return DummyResponse("dummy", DummyEnum.DUMMY1)
+    }
+
     @Operation(summary = "non-security POST 테스트용", description = "Security 필요없음")
     @PostMapping
     @SecurityIgnored
     fun dummyPostTest(@RequestBody request: DummyRequest): DummyResponse {
-        log.info("dummy ㅎ $request")
-        return DummyResponse("dummy", DummyEnum.DUMMY1)
+        log.info("dummyPostTest : $request")
+        return DummyResponse("dummy", request.enum)
+    }
+
+    @Operation(summary = "non-security POST 테스트용", description = "Security 필요없음")
+    @PostMapping("/nullable")
+    @SecurityIgnored
+    fun dummyPostEnumNullableTest(@RequestBody request: DummyEnumNullableRequest): DummyResponse {
+        log.info("dummyPostEnumNullableTest : $request")
+        return DummyResponse("dummy", request.enum ?: DummyEnum.DUMMY3)
     }
 
     @Operation(summary = "security 테스트용", description = "Security 필요함")
@@ -43,10 +59,14 @@ class DummyController{
     }
 }
 
-
 data class DummyRequest(
     var name: String? = null,
-    var enum: DummyEnum? = null,
+    var enum: DummyEnum,
+)
+
+data class DummyEnumNullableRequest(
+    var name: String? = null,
+    var enum: DummyEnum?,
 )
 
 data class DummyQueryRequest(

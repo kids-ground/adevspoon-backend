@@ -1,6 +1,7 @@
 package com.adevspoon.api.config.controller.serializer
 
 import com.adevspoon.api.common.dto.LegacyDtoEnum
+import com.adevspoon.api.common.exception.ApiInvalidEnumException
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.*
@@ -18,12 +19,17 @@ class LegacyDtoEnumCombinedSerializer {
     class LegacyDtoEnumDeserializer<T>(vc: Class<*>?): StdDeserializer<T>(vc), ContextualDeserializer where T : LegacyDtoEnum, T: Enum<*> {
         constructor() : this(null)
 
+        // 해당 요청 필드에 값이 존재할때만 들어옴
         @Suppress("UNCHECKED_CAST")
         override fun deserialize(p: JsonParser, ctxt: DeserializationContext): T {
             val jsonNode: JsonNode = p.codec.readTree(p)
-            val value: String = jsonNode.asText()
-            val enumType = _valueClass as Class<out Enum<*>>
-            return java.lang.Enum.valueOf(enumType, value.uppercase()) as T
+            val value: String = jsonNode.asText().uppercase()
+            val enumValue = (_valueClass as Class<out Enum<*>>)
+                .enumConstants
+                .firstOrNull { it.name == value }
+                ?: throw ApiInvalidEnumException(p.currentName)
+
+            return enumValue as T
         }
 
         override fun createContextual(ctxt: DeserializationContext, property: BeanProperty): JsonDeserializer<*> {
