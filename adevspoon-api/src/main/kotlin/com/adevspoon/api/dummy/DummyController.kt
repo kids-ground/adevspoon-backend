@@ -7,6 +7,8 @@ import com.adevspoon.api.common.dto.RequestUserInfo
 import com.adevspoon.api.config.swagger.SWAGGER_TAG_EXAMPLE
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
+import jakarta.validation.constraints.Size
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -23,7 +25,7 @@ class DummyController{
     @Operation(summary = "non-security GET 테스트용", description = "Security 필요없음")
     @GetMapping
     @SecurityIgnored
-    fun dummyTest(param: DummyQueryRequest): DummyResponse {
+    fun dummyTest(@Valid param: DummyQueryRequest): DummyResponse {
         log.info("dummy ㅎ $param")
         return DummyResponse("dummy", DummyEnum.DUMMY1)
     }
@@ -31,7 +33,7 @@ class DummyController{
     @Operation(summary = "non-security GET 테스트용", description = "Security 필요없음")
     @GetMapping("/nullable")
     @SecurityIgnored
-    fun dummyEnumNullableTest(param: DummyQueryRequest): DummyResponse {
+    fun dummyEnumNullableTest(@Valid param: DummyQueryNullableRequest): DummyResponse {
         log.info("dummy ㅎ $param")
         return DummyResponse("dummy", DummyEnum.DUMMY1)
     }
@@ -70,8 +72,14 @@ data class DummyEnumNullableRequest(
 )
 
 data class DummyQueryRequest(
+    @field:Size(min =3, message = "최소 3자")
+    var name: String,
+    var enum: DummyEnum,
+)
+
+data class DummyQueryNullableRequest(
     var name: String? = null,
-    var enum: DummyEnum? = null,
+    var enum: DummyEnum?,
 )
 
 data class DummyResponse(

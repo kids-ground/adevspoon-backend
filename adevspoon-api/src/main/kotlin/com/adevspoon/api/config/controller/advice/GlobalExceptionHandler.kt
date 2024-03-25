@@ -21,23 +21,24 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @RestControllerAdvice
 class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
-    // Validation 예외 처리
+    // Validation & Query Parameter 바인딩(ex. enum) 예외
     override fun handleMethodArgumentNotValid(
         ex: MethodArgumentNotValidException,
         headers: HttpHeaders,
         status: HttpStatusCode,
         request: WebRequest
     ): ResponseEntity<Any>? {
-        val errorMessage = ex.bindingResult.allErrors.map { it.defaultMessage }.joinToString { "\n" }
-        logger.warn("Validation 실패 : $errorMessage")
+        val errorMessage = ex.bindingResult.fieldErrors.joinToString(", ") { it.field } + "필드의 값이 잘못되었습니다."
+        logger.warn("잘못된 요청 정보 : $errorMessage")
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
             .body(ErrorResponse(
                 CommonErrorCode.BAD_REQUEST.getErrorInfo().code,
-                ex.bindingResult.allErrors.map { it.defaultMessage }.joinToString { "\n" }
+                errorMessage
             ))
     }
 
+    // JSON 파싱에서의 예외
     override fun handleHttpMessageNotReadable(
         ex: HttpMessageNotReadableException,
         headers: HttpHeaders,

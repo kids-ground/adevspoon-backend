@@ -1,6 +1,7 @@
 package com.adevspoon.api.config.controller.converter
 
 import com.adevspoon.api.common.dto.LegacyDtoEnum
+import com.adevspoon.api.common.exception.ApiInvalidEnumException
 import org.springframework.core.convert.converter.Converter
 import org.springframework.core.convert.converter.ConverterFactory
 
@@ -12,8 +13,12 @@ class StringToLegacyDtoEnumConverterFactory<F>: ConverterFactory<String, F> wher
     @Suppress("UNCHECKED_CAST")
     private class StringToEnumConverter<T : Enum<*>?>(private val enumType: Class<T>) : Converter<String, T> {
         override fun convert(source: String): T {
-            val type = enumType as Class<out Enum<*>>
-            return java.lang.Enum.valueOf(type, source.uppercase()) as T
+            val value = source.uppercase()
+            val enumValue = (enumType as Class<out Enum<*>>)
+                .enumConstants
+                .firstOrNull { it.name == value }
+                ?: throw ApiInvalidEnumException()
+            return enumValue as T
         }
     }
 }
