@@ -1,7 +1,7 @@
 package com.adevspoon.domain.techQuestion.domain
 
 import com.adevspoon.domain.common.entity.LegacyBaseEntity
-import com.adevspoon.domain.config.converter.IntToStringConverter
+import com.adevspoon.domain.common.converter.IntToStringConverter
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size

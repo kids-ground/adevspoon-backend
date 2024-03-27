@@ -1,4 +1,4 @@
-package com.adevspoon.domain.config.converter
+package com.adevspoon.domain.common.converter
 
 import jakarta.persistence.AttributeConverter
 import jakarta.persistence.Converter

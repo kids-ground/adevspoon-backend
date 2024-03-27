@@ -1,7 +1,7 @@
 package com.adevspoon.domain.member.domain.enums
 
 import com.adevspoon.domain.common.entity.LegacyEntityEnum
-import com.adevspoon.domain.config.converter.LegacyEntityEnumConverter
+import com.adevspoon.domain.common.converter.LegacyEntityEnumConverter
 import jakarta.persistence.Converter
 
 enum class UserStatus: LegacyEntityEnum {

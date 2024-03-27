@@ -1,4 +1,4 @@
-package com.adevspoon.domain.config.converter
+package com.adevspoon.domain.common.converter
 
 import com.adevspoon.domain.common.exception.DomainInvalidAttributeException
 import com.adevspoon.domain.member.domain.enums.AuthRole

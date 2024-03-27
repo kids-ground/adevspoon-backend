@@ -1,6 +1,6 @@
 package com.adevspoon.domain.member.domain
 
-import com.adevspoon.domain.config.converter.AuthRoleToStringConverter
+import com.adevspoon.domain.common.converter.AuthRoleToStringConverter
 import com.adevspoon.domain.member.domain.enums.AuthRole
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
