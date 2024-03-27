@@ -1,6 +1,6 @@
 package com.adevspoon.domain.post.techAnswer.domain
 
-import com.adevspoon.domain.domain.LegacyBaseEntity
+import com.adevspoon.domain.common.entity.LegacyBaseEntity
 import com.adevspoon.domain.post.techAnswer.domain.enums.AnswerStatus
 import com.adevspoon.domain.techQuestion.domain.QuestionEntity
 import com.adevspoon.domain.member.domain.UserEntity
@@ -36,7 +36,6 @@ class AnswerEntity(
     @JoinColumn(name = "user_id", nullable = false)
     val user: UserEntity? = null,
 
-    @Column(name = "status")
-    @Enumerated(EnumType.STRING)
-    var status: AnswerStatus? = null
+    @Column(name = "status", columnDefinition="ENUM('private','public')")
+    var status: AnswerStatus = AnswerStatus.PUBLIC
 ): LegacyBaseEntity()

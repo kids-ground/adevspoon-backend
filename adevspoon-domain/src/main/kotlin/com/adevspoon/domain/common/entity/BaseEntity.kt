@@ -1,4 +1,4 @@
-package com.adevspoon.domain.domain
+package com.adevspoon.domain.common.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.EntityListeners
@@ -11,12 +11,12 @@ import java.time.LocalDateTime
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener::class)
-abstract class LegacyBaseEntity (
+abstract class BaseEntity (
     @CreatedDate
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "createdAt", updatable = false)
     var createdAt: LocalDateTime? = null,
 
     @LastModifiedDate
-    @Column(name = "updated_at")
+    @Column(name = "updatedAt")
     var updatedAt: LocalDateTime? = null
 )

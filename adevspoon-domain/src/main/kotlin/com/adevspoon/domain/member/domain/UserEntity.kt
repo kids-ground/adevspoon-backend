@@ -1,6 +1,7 @@
 package com.adevspoon.domain.member.domain
 
-import com.adevspoon.domain.domain.LegacyBaseEntity
+import com.adevspoon.domain.common.entity.LegacyBaseEntity
+import com.adevspoon.domain.config.converter.IntToStringConverter
 import com.adevspoon.domain.member.domain.enums.UserOAuth
 import com.adevspoon.domain.member.domain.enums.UserProfileBelt
 import com.adevspoon.domain.member.domain.enums.UserStatus
@@ -17,10 +18,8 @@ class UserEntity(
     val id: Long = 0,
 
     @Column(name = "status" , columnDefinition="ENUM('active','exit')")
-    @Enumerated(EnumType.STRING)
-    var status: UserStatus? = null,
+    var status: UserStatus = UserStatus.ACTIVE,
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "oAuth" , columnDefinition="ENUM('kakao','apple')")
     var oAuth: UserOAuth? = null,
 
@@ -63,13 +62,12 @@ class UserEntity(
     var email: String = "",
 
     @NotNull
-    @Enumerated(EnumType.STRING)
     @Column(name = "profileBelt" , columnDefinition="ENUM('none','passionate')" ,nullable = false)
-    var profileBelt: UserProfileBelt = UserProfileBelt.none,
+    var profileBelt: UserProfileBelt = UserProfileBelt.NONE,
 
-    @Size(max = 1)
     @Column(name = "representativeBadge", length = 1)
-    var representativeBadge: String? = null,
+    @Convert(converter = IntToStringConverter::class)
+    var representativeBadge: Int? = null,
 
     @Size(max = 50)
     @Column(name = "statusMessage", length = 50)
@@ -79,5 +77,4 @@ class UserEntity(
     @NotNull
     @Column(name = "careerDescription", nullable = false)
     var careerDescription: String = ""
-): LegacyBaseEntity() {
-}
+): LegacyBaseEntity()

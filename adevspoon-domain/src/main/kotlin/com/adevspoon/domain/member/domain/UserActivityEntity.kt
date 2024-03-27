@@ -1,6 +1,6 @@
 package com.adevspoon.domain.member.domain
 
-import com.adevspoon.domain.domain.BaseEntity
+import com.adevspoon.domain.common.entity.BaseEntity
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id

@@ -1,7 +1,7 @@
 package com.adevspoon.domain.techQuestion.domain
 
-import com.adevspoon.domain.domain.LegacyBaseEntity
-import com.adevspoon.domain.techQuestion.domain.enums.QuestionDifficulty
+import com.adevspoon.domain.common.entity.LegacyBaseEntity
+import com.adevspoon.domain.config.converter.IntToStringConverter
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
@@ -18,9 +18,9 @@ class QuestionEntity(
     @Column(name = "question", nullable = false)
     val question: String? = null,
 
-    @Column(name = "difficulty")
-    @Enumerated(EnumType.STRING)
-    var difficulty: QuestionDifficulty? = null,
+    @Column(name = "difficulty", columnDefinition="ENUM('0','1','2','3')")
+    @Convert(converter = IntToStringConverter::class)
+    var difficulty: Int? = null,
 
     @Column(name = "study_link")
     var studyLink: String? = null,

@@ -1,6 +1,6 @@
 package com.adevspoon.domain.post.common.domain
 
-import com.adevspoon.domain.domain.LegacyBaseEntity
+import com.adevspoon.domain.common.entity.LegacyBaseEntity
 import com.adevspoon.domain.post.common.domain.enums.ReportReason
 import com.adevspoon.domain.post.techAnswer.domain.AnswerEntity
 import com.adevspoon.domain.member.domain.UserEntity
@@ -28,8 +28,7 @@ class ReportEntity(
     @JoinColumn(name = "user_id")
     val user: UserEntity? = null,
 
-    @Column(name = "reason")
-    @Enumerated(EnumType.STRING)
+    @Column(name = "reason", columnDefinition="ENUM('abuse','spammer','obscene','scam', 'political_agitation', 'illegal_ads_and_sales', 'etc')")
     val reason: ReportReason? = null,
 
     @Column(name = "is_read")

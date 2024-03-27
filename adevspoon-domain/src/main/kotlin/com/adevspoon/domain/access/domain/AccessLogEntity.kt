@@ -1,7 +1,7 @@
 package com.adevspoon.domain.access.domain
 
 import com.adevspoon.domain.access.domain.enums.AccessLogType
-import com.adevspoon.domain.domain.BaseEntity
+import com.adevspoon.domain.common.entity.BaseEntity
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
@@ -20,7 +20,6 @@ class AccessLogId(
     @Size(max = 50)
     @NotNull
     @Column(name = "type", nullable = false, columnDefinition = "varchar(50)")
-    @Enumerated(EnumType.STRING)
     val type: AccessLogType,
 
     @NotNull

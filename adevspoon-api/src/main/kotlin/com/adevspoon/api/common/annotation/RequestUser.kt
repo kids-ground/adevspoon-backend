@@ -1,10 +1,10 @@
 package com.adevspoon.api.common.annotation
 
-import org.springframework.stereotype.Service
+import io.swagger.v3.oas.annotations.media.Schema
 
 
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.RUNTIME)
 @MustBeDocumented
-@Service
+@Schema(hidden = true)
 annotation class RequestUser()

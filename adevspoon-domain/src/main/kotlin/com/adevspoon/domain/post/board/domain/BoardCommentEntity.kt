@@ -1,6 +1,6 @@
 package com.adevspoon.domain.post.board.domain
 
-import com.adevspoon.domain.domain.BaseEntity
+import com.adevspoon.domain.common.entity.BaseEntity
 import com.adevspoon.domain.member.domain.UserEntity
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
