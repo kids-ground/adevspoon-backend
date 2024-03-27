@@ -14,12 +14,15 @@
 - [어노테이션만으로 Security 설정 off 시키기(Swagger에도 표시하기)]()
 - [요청, 응답, Entity에 포함된 Legacy Enum 효율적으로 관리하기]()
 
+<br />
 
 ## 개발환경
 ### 🔨 Tech Stack
 *기존 서버리스 아키텍쳐(AWS APIGateway, Lambda)에서 Spring Boot로 마이그레이션*  
 - Spring Boot, Kotlin, Docker, JPA, MySQL, AWS
 - 로컬&테스트 한정 - JUnit, Mockk, TestContainer, LocalStack
+
+<br />
 
 ### ⚖️ Project Structure
 멀티 모듈 구조로 외부 시스템과의 느슨한 연결에 집중하여 패키지를 분리.  
@@ -54,6 +57,7 @@
          └──         # client, config, util 등 필요에따라 패키지 분리 
 ```
 
+<br />
 
 ### 🪜 Infra Structure
 AWS & Terraform 기반으로 배포. 프리티어 내에서 최대한 비용 효율적으로 구성
@@ -88,7 +92,7 @@ AWS & Terraform 기반으로 배포. 프리티어 내에서 최대한 비용 효
 </div>
 </details>
 
-
+<br />
 
 ## Rule
 ### 📎 Issue & Branch & Commit
@@ -104,6 +108,8 @@ AWS & Terraform 기반으로 배포. 프리티어 내에서 최대한 비용 효
   - `hotfix/#{issue}` : (긴급 수정) main 브랜치에서 생성
 - **Commit** 
   - `[브랜치이름] {gitmoji} 메세지` : Gitmoji 기반으로 메시지 작성
+
+<br />
 
 ### 🖇️ Pull Request
 PR Template 기반으로 작성
