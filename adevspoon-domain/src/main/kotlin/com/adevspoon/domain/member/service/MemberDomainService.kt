@@ -11,7 +11,7 @@ import com.adevspoon.domain.member.dto.response.MemberProfile
 import com.adevspoon.domain.member.exception.MemberBadgeNotFoundException
 import com.adevspoon.domain.member.exception.MemberNotFoundException
 import com.adevspoon.domain.member.repository.UserActivityRepository
-import com.adevspoon.domain.member.repository.UserBadgeAcheiveRepository
+import com.adevspoon.domain.member.repository.UserBadgeAchieveRepository
 import com.adevspoon.domain.member.repository.UserRepository
 import com.adevspoon.domain.techQuestion.service.QuestionDomainService
 import org.slf4j.LoggerFactory
@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional
 @DomainService
 class MemberDomainService(
     private val userRepository: UserRepository,
-    private val userBadgeAcheiveRepository: UserBadgeAcheiveRepository,
+    private val userBadgeAchieveRepository: UserBadgeAchieveRepository,
     private val userActivityRepository: UserActivityRepository,
     private val questionDomainService: QuestionDomainService,
     private val nicknameDomainService: NicknameDomainService,
@@ -49,9 +49,9 @@ class MemberDomainService(
     @Transactional
     fun getMemberProfile(userId: Long): MemberProfile {
         val user = userRepository.findByIdOrNull(userId) ?: throw MemberNotFoundException()
-        val userBadgeList = userBadgeAcheiveRepository.findUserBadgeList(userId)
+        val userBadgeList = userBadgeAchieveRepository.findUserBadgeList(userId)
         val userRepresentativeBadge = userBadgeList.firstOrNull {
-            it.id?.toString()?.equals(user.representativeBadge) ?: false
+            it.id?.equals(user.representativeBadge) ?: false
         }
 
         return MemberProfile.from(user, userBadgeList, userRepresentativeBadge)
@@ -61,9 +61,9 @@ class MemberDomainService(
     fun updateMemberProfile(updateInfo: MemberUpdateRequireDto): MemberProfile {
         val user = userRepository.findByIdOrNull(updateInfo.memberId) ?: throw MemberBadgeNotFoundException()
         logger.warn("유정정보 확인 : ${user.oAuth}")
-        val userBadgeList = userBadgeAcheiveRepository.findUserBadgeList(updateInfo.memberId)
+        val userBadgeList = userBadgeAchieveRepository.findUserBadgeList(updateInfo.memberId)
         var userRepresentativeBadge = userBadgeList.firstOrNull {
-            it.id?.toString()?.equals(user.representativeBadge) ?: false
+            it.id?.equals(user.representativeBadge) ?: false
         }
 
         if (!updateInfo.categoryIds.isNullOrEmpty())
@@ -78,7 +78,7 @@ class MemberDomainService(
             updateInfo.fcmToken?.let { this.fcmToken = it }
             updateInfo.profileImageUrl?.let { this.profileImg = it }
             updateInfo.thumbnailImageUrl?.let { this.thumbnailImg = it }
-            this.representativeBadge = userRepresentativeBadge?.id?.toString()
+            this.representativeBadge = userRepresentativeBadge?.id
         }
 
         return MemberProfile.from(user, userBadgeList, userRepresentativeBadge)

@@ -1,5 +1,12 @@
 package com.adevspoon.domain.post.techAnswer.domain.enums
 
-enum class AnswerStatus {
-    private, public
+import com.adevspoon.domain.common.entity.LegacyEntityEnum
+import com.adevspoon.domain.config.converter.LegacyEntityEnumConverter
+import jakarta.persistence.Converter
+
+enum class AnswerStatus: LegacyEntityEnum {
+    PRIVATE, PUBLIC;
+
+    @Converter(autoApply = true)
+    class AnswerStatusConverter: LegacyEntityEnumConverter<AnswerStatus>(AnswerStatus::class.java)
 }

@@ -6,7 +6,7 @@ import com.adevspoon.domain.member.domain.UserBadgeAcheiveId
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 
-interface UserBadgeAcheiveRepository: JpaRepository<UserBadgeAcheiveEntity, UserBadgeAcheiveId> {
+interface UserBadgeAchieveRepository: JpaRepository<UserBadgeAcheiveEntity, UserBadgeAcheiveId> {
     @Query(
         "SELECT uba.id.badge " +
                 "FROM UserBadgeAcheiveEntity uba " +

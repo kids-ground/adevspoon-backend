@@ -28,8 +28,7 @@ class ReportEntity(
     @JoinColumn(name = "user_id")
     val user: UserEntity? = null,
 
-    @Column(name = "reason")
-    @Enumerated(EnumType.STRING)
+    @Column(name = "reason", columnDefinition="ENUM('abuse','spammer','obscene','scam', 'political_agitation', 'illegal_ads_and_sales', 'etc')")
     val reason: ReportReason? = null,
 
     @Column(name = "is_read")

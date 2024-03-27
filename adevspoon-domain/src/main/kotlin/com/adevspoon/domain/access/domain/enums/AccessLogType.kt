@@ -1,5 +1,12 @@
 package com.adevspoon.domain.access.domain.enums
 
-enum class AccessLogType {
-    board_post
+import com.adevspoon.domain.common.entity.LegacyEntityEnum
+import com.adevspoon.domain.config.converter.LegacyEntityEnumConverter
+import jakarta.persistence.Converter
+
+enum class AccessLogType: LegacyEntityEnum {
+    BOARD_POST;
+
+    @Converter(autoApply = true)
+    class LegacyConverter: LegacyEntityEnumConverter<AccessLogType>(AccessLogType::class.java, false)
 }

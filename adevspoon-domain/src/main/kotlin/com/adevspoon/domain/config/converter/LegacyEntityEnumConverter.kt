@@ -3,6 +3,7 @@ package com.adevspoon.domain.config.converter
 import com.adevspoon.domain.common.entity.LegacyEntityEnum
 import com.adevspoon.domain.common.exception.DomainInvalidAttributeException
 import jakarta.persistence.AttributeConverter
+import jakarta.persistence.Converter
 
 /**
  * 각 Enum에서 Converter 구현하기
@@ -10,6 +11,7 @@ import jakarta.persistence.AttributeConverter
  */
 
 
+@Converter
 abstract class LegacyEntityEnumConverter<T>(
     private var enumType: Class<T>,
     private var nullable: Boolean = false

@@ -1,5 +1,7 @@
 package com.adevspoon.domain.member.domain
 
+import com.adevspoon.domain.config.converter.AuthRoleToStringConverter
+import com.adevspoon.domain.member.domain.enums.AuthRole
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
@@ -15,5 +17,6 @@ class AuthGroupEntity(
     @Size(max = 25)
     @NotNull
     @Column(name = "auth_group_name", nullable = false, length = 25)
-    val authGroupName: String? = null
+    @Convert(converter = AuthRoleToStringConverter::class)
+    val authGroupName: AuthRole
 )

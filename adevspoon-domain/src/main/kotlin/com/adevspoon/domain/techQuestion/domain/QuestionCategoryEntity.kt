@@ -18,9 +18,8 @@ class QuestionCategoryEntity(
     val category: String? = null,
 
     @NotNull
-    @Column(name = "topic", nullable = false)
-    @Enumerated(EnumType.STRING)
-    val topic: QuestionCategoryTopic? = null,
+    @Column(name = "topic", columnDefinition="ENUM('cs','language','tech')", nullable = false)
+    val topic: QuestionCategoryTopic,
 
     @Size(max = 16)
     @NotNull

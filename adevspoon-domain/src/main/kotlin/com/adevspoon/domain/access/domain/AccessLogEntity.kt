@@ -20,7 +20,6 @@ class AccessLogId(
     @Size(max = 50)
     @NotNull
     @Column(name = "type", nullable = false, columnDefinition = "varchar(50)")
-    @Enumerated(EnumType.STRING)
     val type: AccessLogType,
 
     @NotNull

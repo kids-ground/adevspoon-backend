@@ -36,7 +36,6 @@ class AnswerEntity(
     @JoinColumn(name = "user_id", nullable = false)
     val user: UserEntity? = null,
 
-    @Column(name = "status")
-    @Enumerated(EnumType.STRING)
-    var status: AnswerStatus? = null
+    @Column(name = "status", columnDefinition="ENUM('private','public')")
+    var status: AnswerStatus = AnswerStatus.PUBLIC
 ): LegacyBaseEntity()

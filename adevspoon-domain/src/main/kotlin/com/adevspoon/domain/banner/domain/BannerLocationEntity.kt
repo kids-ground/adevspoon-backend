@@ -1,5 +1,6 @@
 package com.adevspoon.domain.banner.domain
 
+import com.adevspoon.domain.banner.domain.enums.BannerLocationType
 import jakarta.persistence.*
 import jakarta.validation.constraints.Size
 
@@ -13,5 +14,5 @@ class BannerLocationEntity (
 
     @Size(max = 50)
     @Column(name = "name", length = 50)
-    val name: String? = null
+    val name: BannerLocationType = BannerLocationType.HOME,
 )

@@ -1,5 +1,12 @@
 package com.adevspoon.domain.member.domain.enums
 
-enum class UserProfileBelt {
-    none, passionate, NONE, PASSIONATE
+import com.adevspoon.domain.common.entity.LegacyEntityEnum
+import com.adevspoon.domain.config.converter.LegacyEntityEnumConverter
+import jakarta.persistence.Converter
+
+enum class UserProfileBelt: LegacyEntityEnum {
+    NONE, PASSIONATE;
+
+    @Converter(autoApply = true)
+    class LegacyConverter: LegacyEntityEnumConverter<UserProfileBelt>(UserProfileBelt::class.java)
 }
