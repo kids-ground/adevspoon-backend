@@ -1,10 +1,8 @@
 package com.adevspoon.api.board.dto.request
 
-import com.fasterxml.jackson.annotation.JsonValue
+import com.adevspoon.api.common.dto.LegacyDtoEnum
 
-enum class BoardContentType(
-    @JsonValue val value: String
-) {
-    BOARD_COMMENT("board_comment"),
-    BOARD_POST("board_post"),
+enum class BoardContentType: LegacyDtoEnum {
+    BOARD_COMMENT,
+    BOARD_POST,
 }

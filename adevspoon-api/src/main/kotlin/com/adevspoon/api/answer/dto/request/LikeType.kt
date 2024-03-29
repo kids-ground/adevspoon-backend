@@ -2,6 +2,7 @@ package com.adevspoon.api.answer.dto.request
 
 import com.adevspoon.api.common.dto.LegacyDtoEnum
 
-enum class AnswerType: LegacyDtoEnum {
-    ANSWER
+enum class LikeType: LegacyDtoEnum {
+    ANSWER,
+    BOARD_POST,
 }

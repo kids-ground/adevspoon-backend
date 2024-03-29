@@ -1,10 +1,9 @@
 package com.adevspoon.api.question.dto.request
 
-import com.fasterxml.jackson.annotation.JsonValue
+import com.adevspoon.api.common.dto.LegacyDtoEnum
 
-enum class QuestionSortType(
-    @JsonValue val value: String
-) {
-    NEWEST("newest"),
-    OLDEST("oldest");
+
+enum class QuestionSortType: LegacyDtoEnum {
+    NEWEST,
+    OLDEST
 }
