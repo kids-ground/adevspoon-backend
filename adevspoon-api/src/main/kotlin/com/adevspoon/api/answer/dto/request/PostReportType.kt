@@ -1,6 +1,8 @@
 package com.adevspoon.api.answer.dto.request
 
-enum class PostReportType {
+import com.adevspoon.api.common.dto.LegacyDtoEnum
+
+enum class PostReportType: LegacyDtoEnum {
     ABUSE,
     SPAMMER,
     OBSCENE,

@@ -1,10 +1,8 @@
 package com.adevspoon.api.member.dto.response
 
-import com.fasterxml.jackson.annotation.JsonValue
+import com.adevspoon.api.common.dto.LegacyDtoEnum
 
-enum class PostType(
-    @JsonValue val value: String
-) {
-    ANSWER("answer"),
-    BOARD_POST("board_post")
+enum class PostType: LegacyDtoEnum {
+    ANSWER,
+    BOARD_POST
 }
