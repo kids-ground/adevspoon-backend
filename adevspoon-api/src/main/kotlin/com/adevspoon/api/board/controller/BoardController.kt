@@ -7,7 +7,6 @@ import com.adevspoon.api.board.dto.response.BoardTagResponse
 import com.adevspoon.api.common.annotation.RequestUser
 import com.adevspoon.api.common.dto.RequestUserInfo
 import com.adevspoon.api.config.swagger.SWAGGER_TAG_BOARD
-import com.adevspoon.common.dto.PlainResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
@@ -74,7 +73,7 @@ class BoardController {
     fun deleteBoardPost(
         @RequestUser user: RequestUserInfo,
         @RequestBody @Valid request: BoardDeleteRequest,
-    ): PlainResponse {
+    ): String {
         TODO("""
             게시판 글 삭제
         """.trimIndent())
@@ -85,7 +84,7 @@ class BoardController {
     fun likeBoardPost(
         @RequestUser user: RequestUserInfo,
         @RequestBody @Valid request: LikeBoardContentRequest
-    ): PlainResponse {
+    ): String {
         TODO("""
             게시판 글 좋아요
             - post, comment 둘 다 있음
@@ -97,7 +96,7 @@ class BoardController {
     fun reportBoardPost(
         @RequestUser user: RequestUserInfo,
         @RequestBody @Valid request: ReportBoardContentRequest
-    ): PlainResponse {
+    ): String {
         TODO("""
             게시판 글 신고
         """.trimIndent())

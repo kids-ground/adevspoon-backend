@@ -6,7 +6,6 @@ import com.adevspoon.api.common.annotation.RequestUser
 import com.adevspoon.api.common.annotation.SecurityIgnored
 import com.adevspoon.api.common.dto.RequestUserInfo
 import com.adevspoon.api.config.swagger.SWAGGER_TAG_ACCOUNT
-import com.adevspoon.common.dto.PlainResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
@@ -35,7 +34,7 @@ class AuthController {
     @PostMapping("/logout")
     fun logout(
         @RequestUser user: RequestUserInfo
-    ): PlainResponse {
+    ): String {
         TODO("""
             - 로그아웃
         """.trimIndent())

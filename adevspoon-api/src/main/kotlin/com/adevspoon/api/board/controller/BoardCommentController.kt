@@ -7,7 +7,6 @@ import com.adevspoon.api.board.dto.response.BoardCommentResponse
 import com.adevspoon.api.common.annotation.RequestUser
 import com.adevspoon.api.common.dto.RequestUserInfo
 import com.adevspoon.api.config.swagger.SWAGGER_TAG_BOARD_COMMENT
-import com.adevspoon.common.dto.PlainResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
@@ -50,7 +49,7 @@ class BoardCommentController {
     fun deleteBoardComment(
         @RequestUser user: RequestUserInfo,
         @RequestBody @Valid request: BoardCommentDeleteRequest,
-    ): PlainResponse {
+    ): String {
         TODO("""
             게시판 댓글 삭제
         """.trimIndent())

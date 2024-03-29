@@ -23,6 +23,13 @@ class DummyController{
     private val log = LoggerFactory.getLogger(this.javaClass)!!
 
     @Operation(summary = "non-security GET 테스트용", description = "Security 필요없음")
+    @GetMapping("/plain")
+    @SecurityIgnored
+    fun dummyStringTest(): String {
+        return "Text test"
+    }
+
+    @Operation(summary = "non-security GET 테스트용", description = "Security 필요없음")
     @GetMapping
     @SecurityIgnored
     fun dummyTest(@Valid param: DummyQueryRequest): DummyResponse {
