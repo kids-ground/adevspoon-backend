@@ -9,7 +9,7 @@ import org.springframework.web.method.support.HandlerMethodReturnValueHandler
 import org.springframework.web.method.support.ModelAndViewContainer
 
 class StringLiteralReturnValueHandler(
-    var delegate: HandlerMethodReturnValueHandler? = null
+    private val delegate: HandlerMethodReturnValueHandler
 ): HandlerMethodReturnValueHandler {
 
     override fun supportsReturnType(returnType: MethodParameter): Boolean {
@@ -29,6 +29,6 @@ class StringLiteralReturnValueHandler(
         webRequest: NativeWebRequest
     ) {
         val realReturnValue = SuccessResponse(message = returnValue as String, data = null)
-        delegate?.handleReturnValue(realReturnValue, returnType, mavContainer, webRequest)
+        delegate.handleReturnValue(realReturnValue, returnType, mavContainer, webRequest)
     }
 }
