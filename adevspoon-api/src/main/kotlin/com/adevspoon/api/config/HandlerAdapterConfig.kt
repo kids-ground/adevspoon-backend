@@ -6,32 +6,24 @@ import org.springframework.context.ApplicationContextAware
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter
+import org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor
 
 @Configuration
 class HandlerAdapterConfig (
     private val handlerAdapter: RequestMappingHandlerAdapter,
 ): ApplicationContextAware {
     override fun setApplicationContext(applicationContext: ApplicationContext) {
-        injectReturnValueHandlerDependency()
-        changeReturnValueHandlersOrder()
+        addStringLiteralReturnValueHandler()
     }
 
-    private fun injectReturnValueHandlerDependency () {
-        // TODO : StringLiteral 에 RequestResponseBodyMethodProcessor 주입
-    }
-
-    private fun changeReturnValueHandlersOrder() {
+    // StringLiteralReturnValueHandler 의존성 해결, 최우선순위로 등록
+    private fun addStringLiteralReturnValueHandler() {
         val newReturnValueHandlers = mutableListOf<HandlerMethodReturnValueHandler>()
-        handlerAdapter.returnValueHandlers
-            ?.forEach {
-                if (it is StringLiteralReturnValueHandler) {
-                    newReturnValueHandlers.add(0, it)
-                } else {
-                    newReturnValueHandlers.add(it)
-                }
-            }
-
+        val responseBodyReturnHandler = (handlerAdapter.returnValueHandlers
+            ?.firstOrNull { it is RequestResponseBodyMethodProcessor }
+            ?: return)
+        newReturnValueHandlers.add(StringLiteralReturnValueHandler(responseBodyReturnHandler))
+        newReturnValueHandlers.addAll(handlerAdapter.returnValueHandlers ?: emptyList())
         handlerAdapter.returnValueHandlers = newReturnValueHandlers
-        println("HandlerAdapter: $handlerAdapter")
     }
 }
