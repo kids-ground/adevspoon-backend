@@ -8,7 +8,7 @@ import org.springframework.web.context.request.NativeWebRequest
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler
 import org.springframework.web.method.support.ModelAndViewContainer
 
-class StringToSuccessResponseReturnValueHandler(
+class StringLiteralReturnValueHandler(
     var delegate: HandlerMethodReturnValueHandler? = null
 ): HandlerMethodReturnValueHandler {
 

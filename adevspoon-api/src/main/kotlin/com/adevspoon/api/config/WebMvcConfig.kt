@@ -1,7 +1,7 @@
 package com.adevspoon.api.config
 
 import com.adevspoon.api.config.controller.converter.StringToLegacyDtoEnumConverterFactory
-import com.adevspoon.api.config.controller.handler.StringToSuccessResponseReturnValueHandler
+import com.adevspoon.api.config.controller.handler.StringLiteralReturnValueHandler
 import com.adevspoon.api.config.controller.resolver.RequestUserArgumentResolver
 import org.springframework.context.annotation.Configuration
 import org.springframework.format.FormatterRegistry
@@ -23,7 +23,7 @@ class WebMvcConfig: WebMvcConfigurer {
     }
 
     override fun addReturnValueHandlers(handlers: MutableList<HandlerMethodReturnValueHandler>) {
-        handlers.add(StringToSuccessResponseReturnValueHandler())
+        handlers.add(StringLiteralReturnValueHandler())
     }
 
     // String 공통응답처리를 위한 ReturnValueHandler에 delegate를 설정
@@ -33,8 +33,8 @@ class WebMvcConfig: WebMvcConfigurer {
             ?.let { it.returnValueHandlers?.handlers }
             ?.also { handler ->
                 val responseBodyHandler = handler.firstOrNull { it is RequestResponseBodyMethodProcessor }
-                handler.firstOrNull { it is StringToSuccessResponseReturnValueHandler }
-                    ?.let { it as StringToSuccessResponseReturnValueHandler }
+                handler.firstOrNull { it is StringLiteralReturnValueHandler }
+                    ?.let { it as StringLiteralReturnValueHandler }
                     ?.let {
                         it.delegate = responseBodyHandler
                     }
