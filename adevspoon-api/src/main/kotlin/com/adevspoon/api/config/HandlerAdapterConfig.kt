@@ -1,6 +1,6 @@
 package com.adevspoon.api.config
 
-import com.adevspoon.api.config.controller.handler.StringLiteralReturnValueHandler
+import com.adevspoon.api.config.controller.handler.StringResponseBodyReturnValueHandler
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
 import org.springframework.context.annotation.Configuration
@@ -22,7 +22,7 @@ class HandlerAdapterConfig (
         val responseBodyReturnHandler = (handlerAdapter.returnValueHandlers
             ?.firstOrNull { it is RequestResponseBodyMethodProcessor }
             ?: return)
-        newReturnValueHandlers.add(StringLiteralReturnValueHandler(responseBodyReturnHandler))
+        newReturnValueHandlers.add(StringResponseBodyReturnValueHandler(responseBodyReturnHandler))
         newReturnValueHandlers.addAll(handlerAdapter.returnValueHandlers ?: emptyList())
         handlerAdapter.returnValueHandlers = newReturnValueHandlers
     }

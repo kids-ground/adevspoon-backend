@@ -5,6 +5,7 @@ import com.adevspoon.api.common.annotation.SecurityIgnored
 import com.adevspoon.api.common.dto.LegacyDtoEnum
 import com.adevspoon.api.common.dto.RequestUserInfo
 import com.adevspoon.api.config.swagger.SWAGGER_TAG_EXAMPLE
+import com.adevspoon.domain.dummy.DummyOuterService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
@@ -19,14 +20,16 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/dummy")
 @Tag(name = SWAGGER_TAG_EXAMPLE)
-class DummyController{
+class DummyController(
+    private val dummyService: DummyOuterService
+){
     private val log = LoggerFactory.getLogger(this.javaClass)!!
 
     @Operation(summary = "non-security GET 테스트용", description = "Security 필요없음")
     @GetMapping("/plain")
     @SecurityIgnored
     fun dummyStringTest(): String {
-        return "Text test"
+        return "Test Text"
     }
 
     @Operation(summary = "non-security GET 테스트용", description = "Security 필요없음")
