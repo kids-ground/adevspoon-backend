@@ -1,7 +1,7 @@
 ---
 name: Issue Template
 about: Default issue Template
-title: "[Feature] "
+title: "Feat#No. "
 labels: feature
 assignees: RokwonK
 
