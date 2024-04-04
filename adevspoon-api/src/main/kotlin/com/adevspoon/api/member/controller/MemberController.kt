@@ -13,7 +13,6 @@ import com.adevspoon.api.member.dto.response.MemberActivityResponse
 import com.adevspoon.api.member.dto.response.MemberAndTokenResponse
 import com.adevspoon.api.member.dto.response.MemberProfileResponse
 import com.adevspoon.api.member.service.MemberService
-import com.adevspoon.common.dto.PlainResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
@@ -55,7 +54,7 @@ class MemberController(
 
     @Operation(summary = "회원탈퇴", description = "유저 활동 기록도 지워짐 주의!")
     @DeleteMapping
-    fun withdrawal(@RequestUser requestUser: RequestUserInfo): PlainResponse {
+    fun withdrawal(@RequestUser requestUser: RequestUserInfo): String {
         TODO("""
             - 회원탈퇴
             - 어디까지 삭제해야하나?

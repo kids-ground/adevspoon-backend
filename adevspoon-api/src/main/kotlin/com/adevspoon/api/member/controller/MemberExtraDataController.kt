@@ -5,7 +5,6 @@ import com.adevspoon.api.common.dto.RequestUserInfo
 import com.adevspoon.api.config.swagger.SWAGGER_TAG_USER_ETC
 import com.adevspoon.api.member.dto.request.MemberFavoriteListRequest
 import com.adevspoon.api.member.dto.response.MemberFavoriteListResponse
-import com.adevspoon.common.dto.PlainResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
@@ -23,7 +22,7 @@ class MemberExtraDataController {
     fun checkNickname(
         @RequestUser user: RequestUserInfo,
         @RequestParam @Size(min = 1, max = 10, message = "1자 이상 10자 이하여야 합니다") nickname: String = "",
-    ): PlainResponse {
+    ): String {
         TODO("""
             - 닉네임 중복체크
             - 무조건 true로 리턴

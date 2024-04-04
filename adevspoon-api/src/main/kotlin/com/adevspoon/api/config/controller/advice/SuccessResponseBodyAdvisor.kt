@@ -14,9 +14,10 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice
 
 
 @RestControllerAdvice(basePackages = ["com.adevspoon"])
-class ResponseAdviceHandler: ResponseBodyAdvice<Any> {
+class SuccessResponseBodyAdvisor: ResponseBodyAdvice<Any> {
     override fun supports(returnType: MethodParameter, converterType: Class<out HttpMessageConverter<*>>): Boolean {
-        return MappingJackson2HttpMessageConverter::class.java.isAssignableFrom(converterType)
+        return returnType.parameterType != String::class.java &&
+                MappingJackson2HttpMessageConverter::class.java.isAssignableFrom(converterType)
     }
 
     override fun beforeBodyWrite(

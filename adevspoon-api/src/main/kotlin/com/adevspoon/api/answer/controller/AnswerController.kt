@@ -6,7 +6,6 @@ import com.adevspoon.api.answer.dto.response.AnswerInfoResponse
 import com.adevspoon.api.common.annotation.RequestUser
 import com.adevspoon.api.common.dto.RequestUserInfo
 import com.adevspoon.api.config.swagger.SWAGGER_TAG_QUESTION_ANSWER
-import com.adevspoon.common.dto.PlainResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
@@ -58,7 +57,7 @@ class AnswerController {
         @RequestUser user: RequestUserInfo,
         @PathVariable answerId: Long,
         @RequestBody @Valid request: AnswerReportRequest,
-    ): PlainResponse {
+    ): String {
         TODO("""
             - 답변을 신고한다.
             - 내 답변인 경우 신고할 수 없다.
@@ -72,7 +71,7 @@ class AnswerController {
         @RequestUser user: RequestUserInfo,
         @PathVariable id: Long,
         @RequestBody @Valid request: LikeRequest,
-    ): PlainResponse {
+    ): String {
         TODO("""
             - 답변/게시글을 좋아요한다.
         """.trimIndent())
