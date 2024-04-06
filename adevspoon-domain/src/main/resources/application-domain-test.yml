@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    url: jdbc:tc:mysql:8:///
+  jpa:
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        highlight_sql: true
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: debug
+
+default:
+  profile-url: https://kgo.googleusercontent.com/profile_vrt_raw_bytes_1587515358_10512.png
+  thumbnail-url: https://kgo.googleusercontent.com/profile_vrt_raw_bytes_1587515358_10512.png

@@ -1,0 +1,17 @@
+spring:
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 0B # 파일을 디스크에 저장하지 않고 메모리에 저장하는 최소 크기 (default: 0B)
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+jwt:
+  secretKey: testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest
+  access-expiration-hours: 876000
+  refresh-expiration-hours: 876000
+  issuer: adevspoon
+
+custom:
+  image:
+    temp-dir: /Users/rokwon/Downloads/image-temp
