@@ -43,4 +43,6 @@ build
 **/src/**/*.yml
 **/src/**/*.json
 !src/**/application.yml
+!src/**/*-local.yml
+!src/**/*-test.yml
 !src/test/**/*.yml
