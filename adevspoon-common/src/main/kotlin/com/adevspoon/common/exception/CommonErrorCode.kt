@@ -1,11 +1,10 @@
 package com.adevspoon.common.exception
 
-import com.adevspoon.common.dto.ErrorInfo
 
 enum class CommonErrorCode(
-    private val status: Int,
-    private val code: Int,
-    private val message: String,
+    override val status: Int,
+    override val code: Int,
+    override val message: String,
 ): AdevspoonErrorCode {
     // code = {status}_{service|domain}_{num}
     BAD_REQUEST(400, 400_000_000, "잘못된 요청입니다"),
@@ -17,10 +16,4 @@ enum class CommonErrorCode(
     NOT_FOUND(404, 404_000_000, "요청 정보를 찾을 수 없습니다"),
 
     INTERNAL_SERVER_ERROR(500, 500_000_000, "서버 내부 오류입니다. 관리자에게 문의하세요");
-
-    override fun getErrorInfo() = ErrorInfo(
-        status = status,
-        code = code,
-        message = message
-    )
 }
