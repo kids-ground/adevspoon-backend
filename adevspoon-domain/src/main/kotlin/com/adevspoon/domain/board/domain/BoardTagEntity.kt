@@ -1,4 +1,4 @@
-package com.adevspoon.domain.post.board.domain
+package com.adevspoon.domain.board.domain
 
 import com.adevspoon.domain.common.entity.BaseEntity
 import jakarta.persistence.*

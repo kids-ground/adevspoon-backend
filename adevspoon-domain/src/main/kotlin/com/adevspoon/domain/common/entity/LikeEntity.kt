@@ -1,6 +1,6 @@
-package com.adevspoon.domain.post.common.domain
+package com.adevspoon.domain.common.entity
 
-import com.adevspoon.domain.post.techAnswer.domain.AnswerEntity
+import com.adevspoon.domain.techQuestion.domain.AnswerEntity
 import com.adevspoon.domain.member.domain.UserEntity
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
@@ -15,33 +15,33 @@ import java.time.LocalDateTime
 @Table(name = "likes", schema = "adevspoon")
 @EntityListeners(AuditingEntityListener::class)
 class LikeEntity(
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     val id: Long = 0,
 
-    @ManyToOne(fetch = FetchType.LAZY)
+        @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id")
     val user: UserEntity? = null,
 
-    @Size(max = 50)
+        @Size(max = 50)
     @NotNull
     @Column(name = "post_type", nullable = false, length = 50)
     val postType: String? = null,
 
-    @CreatedDate
+        @CreatedDate
     @Column(name = "created_at", updatable = false)
     val createdAt: LocalDateTime? = null,
 
-    @ManyToOne(fetch = FetchType.LAZY)
+        @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "post_id")
     val post: AnswerEntity? = null,
 
-    @Column(name = "boardPostId")
+        @Column(name = "boardPostId")
     val boardPostId: Long? = null,
 
-    @Column(name = "boardCommentId")
+        @Column(name = "boardCommentId")
     val boardCommentId: Long? = null
 )

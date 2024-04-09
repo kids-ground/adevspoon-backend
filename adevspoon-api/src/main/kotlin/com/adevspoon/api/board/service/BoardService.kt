@@ -5,7 +5,7 @@ import com.adevspoon.api.board.dto.response.BoardInfoResponse
 import com.adevspoon.api.board.dto.response.BoardTagResponse
 import com.adevspoon.api.common.annotation.ApplicationService
 import com.adevspoon.domain.member.service.MemberDomainService
-import com.adevspoon.domain.post.board.service.BoardPostDomainService
+import com.adevspoon.domain.board.service.BoardPostDomainService
 
 @ApplicationService
 class BoardService (

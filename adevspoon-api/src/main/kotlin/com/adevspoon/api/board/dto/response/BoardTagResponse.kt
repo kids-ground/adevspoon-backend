@@ -1,6 +1,6 @@
 package com.adevspoon.api.board.dto.response
 
-import com.adevspoon.domain.post.board.domain.BoardTagEntity
+import com.adevspoon.domain.board.domain.BoardTagEntity
 import io.swagger.v3.oas.annotations.media.Schema
 
 data class BoardTagResponse(

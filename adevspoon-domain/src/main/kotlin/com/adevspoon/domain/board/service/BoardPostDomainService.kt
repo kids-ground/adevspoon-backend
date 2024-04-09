@@ -1,12 +1,12 @@
-package com.adevspoon.domain.post.board.service
+package com.adevspoon.domain.board.service
 
 import com.adevspoon.domain.common.annotation.DomainService
 import com.adevspoon.domain.member.exception.MemberNotFoundException
 import com.adevspoon.domain.member.repository.UserRepository
-import com.adevspoon.domain.post.board.domain.BoardPostEntity
-import com.adevspoon.domain.post.board.exception.BoardTageNotFoundException
-import com.adevspoon.domain.post.board.repository.BoardPostRepository
-import com.adevspoon.domain.post.board.repository.BoardTagRepository
+import com.adevspoon.domain.board.domain.BoardPostEntity
+import com.adevspoon.domain.board.exception.BoardTageNotFoundException
+import com.adevspoon.domain.board.repository.BoardPostRepository
+import com.adevspoon.domain.board.repository.BoardTagRepository
 import org.springframework.data.repository.findByIdOrNull
 
 @DomainService

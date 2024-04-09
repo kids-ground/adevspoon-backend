@@ -1,4 +1,4 @@
-package com.adevspoon.domain.post.board.domain
+package com.adevspoon.domain.board.domain
 
 import com.adevspoon.domain.common.entity.BaseEntity
 import com.adevspoon.domain.member.domain.UserEntity
@@ -11,39 +11,39 @@ import org.hibernate.annotations.OnDeleteAction
 @Entity
 @Table(name = "BoardPost", schema = "adevspoon")
 class BoardPostEntity(
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "postId", nullable = false)
     val id: Long = 0,
 
-    @Size(max = 255)
+        @Size(max = 255)
     @Column(name = "title")
     var title: String? = null,
 
-    @NotNull
+        @NotNull
     @Column(name = "content", nullable = false)
     var content: String? = null,
 
-    @NotNull
+        @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "userId", nullable = false)
     val user: UserEntity? = null,
 
-    @NotNull
+        @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "categoryId", nullable = false)
     var tag: BoardTagEntity? = null,
 
-    @NotNull
+        @NotNull
     @Column(name = "likeCount", nullable = false)
     var likeCount: Int? = null,
 
-    @NotNull
+        @NotNull
     @Column(name = "commentCount", nullable = false)
     var commentCount: Int? = null,
 
-    @NotNull
+        @NotNull
     @Column(name = "viewCount", nullable = false)
     var viewCount: Int? = null
 ): BaseEntity()

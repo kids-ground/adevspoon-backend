@@ -1,4 +1,4 @@
-package com.adevspoon.domain.post.board.exception
+package com.adevspoon.domain.board.exception
 
 import com.adevspoon.common.dto.ErrorInfo
 import com.adevspoon.common.exception.AdevspoonErrorCode

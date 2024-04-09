@@ -1,7 +1,7 @@
 package com.adevspoon.api.board.dto.response
 
 import com.adevspoon.domain.member.dto.response.MemberProfile
-import com.adevspoon.domain.post.board.domain.BoardPostEntity
+import com.adevspoon.domain.board.domain.BoardPostEntity
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
 
