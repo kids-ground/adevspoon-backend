@@ -1,5 +1,5 @@
 ---
-title: "Feat#No. "
+title: "Feat#{이슈번호}. 내용"
 
 ---
 
