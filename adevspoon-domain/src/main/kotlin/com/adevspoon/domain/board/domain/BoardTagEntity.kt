@@ -22,4 +22,4 @@ class BoardTagEntity(
     @NotNull
     @Column(name = "emoji", nullable = false, length = 10)
     val emoji: String? = null
-): BaseEntity()
+) : BaseEntity()

@@ -4,19 +4,18 @@ import com.adevspoon.api.board.dto.request.RegisterBoardPostRequest
 import com.adevspoon.api.board.dto.response.BoardInfoResponse
 import com.adevspoon.api.board.dto.response.BoardTagResponse
 import com.adevspoon.api.common.annotation.ApplicationService
-import com.adevspoon.domain.member.service.MemberDomainService
+import com.adevspoon.api.member.dto.response.MemberProfileResponse
 import com.adevspoon.domain.board.service.BoardPostDomainService
 
 @ApplicationService
 class BoardService (
-        private val memberDomainService: MemberDomainService,
         private val boardPostDomainService: BoardPostDomainService,
 ){
     fun registerBoardPost(userId: Long, request: RegisterBoardPostRequest): BoardInfoResponse {
-        val memberProfile = memberDomainService.getMemberProfile(userId)
         val boardPost = boardPostDomainService.registerBoardPost(userId, request.tagId, request.title, request.content)
         val boardTag = BoardTagResponse.from(boardPost.tag)
-        return BoardInfoResponse.from(boardPost, boardTag, memberProfile);
+        val memberProfileResponse = MemberProfileResponse.from(boardPost.user)
+        return BoardInfoResponse.from(boardPost, boardTag, memberProfileResponse)
     }
 
 }
