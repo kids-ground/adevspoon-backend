@@ -12,35 +12,35 @@ import org.hibernate.annotations.OnDeleteAction
 @Entity
 @Table(name = "reports", schema = "adevspoon")
 class ReportEntity(
-        @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     val id: Long = 0,
 
-        @Size(max = 50)
+    @Size(max = 50)
     @NotNull
     @Column(name = "post_type", nullable = false, length = 50)
     val postType: String? = null,
 
-        @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "user_id")
     val user: UserEntity? = null,
 
-        @Column(name = "reason", columnDefinition="ENUM('abuse','spammer','obscene','scam', 'political_agitation', 'illegal_ads_and_sales', 'etc')")
+    @Column(name = "reason", columnDefinition = "ENUM('abuse','spammer','obscene','scam', 'political_agitation', 'illegal_ads_and_sales', 'etc')")
     val reason: ReportReason? = null,
 
-        @Column(name = "is_read")
+    @Column(name = "is_read")
     var isRead: Boolean? = null,
 
-        @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "post_id")
     val post: AnswerEntity? = null,
 
-        @Column(name = "boardPostId")
+    @Column(name = "boardPostId")
     val boardPostId: Long? = null,
 
-        @Column(name = "boardCommentId")
+    @Column(name = "boardCommentId")
     val boardCommentId: Long? = null
-): LegacyBaseEntity()
+) : LegacyBaseEntity()

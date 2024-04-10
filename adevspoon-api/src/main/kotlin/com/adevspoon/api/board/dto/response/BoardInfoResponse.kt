@@ -14,7 +14,7 @@ data class BoardInfoResponse(
     val likeCount: Int,
     val commentCount: Int,
     @Schema(description = "좋아요를 눌렀는지 여부")
-    val isLiked: Boolean,
+    val isLiked: Boolean?,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime,
     @Schema(description = "게시글 작성자 프로필정보")
