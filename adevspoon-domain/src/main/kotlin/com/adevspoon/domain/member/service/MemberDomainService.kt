@@ -48,7 +48,7 @@ class MemberDomainService(
 
     @Transactional
     fun getMemberProfile(userId: Long): MemberProfile {
-        val user = userRepository.findByIdOrNull(userId) ?: throw MemberNotFoundException()
+        val user = getUserEntity(userId)
         val userBadgeList = userBadgeAchieveRepository.findUserBadgeList(userId)
         val userRepresentativeBadge = userBadgeList.firstOrNull {
             it.id?.equals(user.representativeBadge) ?: false
@@ -57,10 +57,14 @@ class MemberDomainService(
         return MemberProfile.from(user, userBadgeList, userRepresentativeBadge)
     }
 
+    fun getUserEntity(userId: Long): UserEntity {
+        return userRepository.findByIdOrNull(userId) ?: throw MemberNotFoundException()
+    }
+
     @Transactional
     fun updateMemberProfile(updateInfo: MemberUpdateRequireDto): MemberProfile {
-        val user = userRepository.findByIdOrNull(updateInfo.memberId) ?: throw MemberBadgeNotFoundException()
-        logger.warn("유정정보 확인 : ${user.oAuth}")
+        val user = getUserEntity(updateInfo.memberId)
+        logger.warn("유저정보 확인 : ${user.oAuth}")
         val userBadgeList = userBadgeAchieveRepository.findUserBadgeList(updateInfo.memberId)
         var userRepresentativeBadge = userBadgeList.firstOrNull {
             it.id?.equals(user.representativeBadge) ?: false
@@ -86,7 +90,7 @@ class MemberDomainService(
 
     @Transactional
     fun updateMemberToken(userId: Long, refreshToken: String) {
-        val user = userRepository.findByIdOrNull(userId) ?: throw MemberNotFoundException()
+        val user = getUserEntity(userId)
         user.apply {
             this.refreshToken = refreshToken
         }
