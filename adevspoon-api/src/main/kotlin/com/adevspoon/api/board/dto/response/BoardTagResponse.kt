@@ -11,9 +11,9 @@ data class BoardTagResponse(
 ) {
     companion object {
         fun from(tag: BoardTagEntity?) = BoardTagResponse(
-                id = tag?.id,
-                name = tag?.name ?: "",
-                emoji = tag?.emoji ?: ""
+            id = tag?.id,
+            name = tag?.name ?: "",
+            emoji = tag?.emoji ?: ""
         )
     }
 }

@@ -8,9 +8,9 @@ import com.adevspoon.api.member.dto.response.MemberProfileResponse
 import com.adevspoon.domain.board.service.BoardPostDomainService
 
 @ApplicationService
-class BoardService (
-        private val boardPostDomainService: BoardPostDomainService,
-){
+class BoardService(
+    private val boardPostDomainService: BoardPostDomainService,
+) {
     fun registerBoardPost(userId: Long, request: RegisterBoardPostRequest): BoardInfoResponse {
         val boardPost = boardPostDomainService.registerBoardPost(userId, request.tagId, request.title, request.content)
         val boardTag = BoardTagResponse.from(boardPost.tag)

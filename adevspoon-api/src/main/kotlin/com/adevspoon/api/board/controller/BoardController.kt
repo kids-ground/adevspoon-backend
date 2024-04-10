@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/board")
 @Tag(name = SWAGGER_TAG_BOARD)
-class BoardController (
-        private val boardService: BoardService
-){
+class BoardController(
+    private val boardService: BoardService
+) {
     @Operation(summary = "게시판 전체 태그 리스트 조회")
     @GetMapping("/tag")
     fun getBoardTagList(): BoardTagResponse {
@@ -31,8 +31,8 @@ class BoardController (
     @Operation(summary = "게시글 등록")
     @PostMapping("/post")
     fun registerBoardPost(
-            @RequestUser requestUser: RequestUserInfo,
-            @RequestBody @Valid request: RegisterBoardPostRequest,
+        @RequestUser requestUser: RequestUserInfo,
+        @RequestBody @Valid request: RegisterBoardPostRequest,
     ): BoardInfoResponse {
         return boardService.registerBoardPost(requestUser.userId, request)
     }

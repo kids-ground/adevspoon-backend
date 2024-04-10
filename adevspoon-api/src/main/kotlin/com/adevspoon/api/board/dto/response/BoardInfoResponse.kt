@@ -22,16 +22,16 @@ data class BoardInfoResponse(
 ) {
     companion object {
         fun from(board: BoardPost, tag: BoardTagResponse, user: MemberProfileResponse) = BoardInfoResponse(
-                id = board.id,
-                tag = tag,
-                title = board.title,
-                content = board.content,
-                likeCount = board.likeCount,
-                commentCount = board.commentCount,
-                isLiked = false,
-                createdAt = board.createdAt,
-                updatedAt = board.updatedAt,
-                user = user
+            id = board.id,
+            tag = tag,
+            title = board.title,
+            content = board.content,
+            likeCount = board.likeCount,
+            commentCount = board.commentCount,
+            isLiked = false,
+            createdAt = board.createdAt,
+            updatedAt = board.updatedAt,
+            user = user
         )
     }
 }
