@@ -1,7 +1,7 @@
-package com.adevspoon.domain.post.common.domain.enums
+package com.adevspoon.domain.common.entity.enums
 
-import com.adevspoon.domain.common.entity.LegacyEntityEnum
 import com.adevspoon.domain.common.converter.LegacyEntityEnumConverter
+import com.adevspoon.domain.common.entity.LegacyEntityEnum
 import jakarta.persistence.Converter
 
 enum class ReportReason: LegacyEntityEnum {

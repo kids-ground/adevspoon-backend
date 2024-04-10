@@ -4,18 +4,22 @@ import com.adevspoon.api.board.dto.request.*
 import com.adevspoon.api.board.dto.response.BoardInfoResponse
 import com.adevspoon.api.board.dto.response.BoardListResponse
 import com.adevspoon.api.board.dto.response.BoardTagResponse
+import com.adevspoon.api.board.service.BoardService
 import com.adevspoon.api.common.annotation.RequestUser
 import com.adevspoon.api.common.dto.RequestUserInfo
 import com.adevspoon.api.config.swagger.SWAGGER_TAG_BOARD
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
+import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/board")
 @Tag(name = SWAGGER_TAG_BOARD)
-class BoardController {
+class BoardController(
+    private val boardService: BoardService
+) {
     @Operation(summary = "게시판 전체 태그 리스트 조회")
     @GetMapping("/tag")
     fun getBoardTagList(): BoardTagResponse {
@@ -27,18 +31,16 @@ class BoardController {
     @Operation(summary = "게시글 등록")
     @PostMapping("/post")
     fun registerBoardPost(
-        @RequestUser user: RequestUserInfo,
+        @RequestUser requestUser: RequestUserInfo,
         @RequestBody @Valid request: RegisterBoardPostRequest,
     ): BoardInfoResponse {
-        TODO("""
-            게시판 글 등록
-        """.trimIndent())
+        return boardService.registerBoardPost(requestUser.userId, request)
     }
 
     @Operation(summary = "게시글 id기반 게시글 조회")
     @GetMapping("/post/{postId}")
     fun getBoardPost(
-        @RequestUser user: RequestUserInfo,
+        @RequestUser requestUser: RequestUserInfo,
         @PathVariable postId: Long,
     ): BoardInfoResponse {
         TODO("""
@@ -49,7 +51,7 @@ class BoardController {
     @Operation(summary = "게시글 리스트 조회")
     @GetMapping("/post")
     fun getBoardPostList(
-        @RequestUser user: RequestUserInfo,
+        @RequestUser requestUser: RequestUserInfo,
         @Valid request: BoardListRequest,
     ): BoardListResponse {
         TODO("""
@@ -60,7 +62,7 @@ class BoardController {
     @Operation(summary = "게시글 수정")
     @PatchMapping("/post")
     fun updateBoardPost(
-        @RequestUser user: RequestUserInfo,
+        @RequestUser requestUser: RequestUserInfo,
         @RequestBody @Valid request: UpdateBoardPostRequest,
     ): BoardInfoResponse {
         TODO("""
@@ -71,7 +73,7 @@ class BoardController {
     @Operation(summary = "게시글 삭제")
     @DeleteMapping("/post")
     fun deleteBoardPost(
-        @RequestUser user: RequestUserInfo,
+        @RequestUser requestUser: RequestUserInfo,
         @RequestBody @Valid request: BoardDeleteRequest,
     ): String {
         TODO("""
@@ -82,7 +84,7 @@ class BoardController {
     @Operation(summary = "게시글 좋아요")
     @PostMapping("/like")
     fun likeBoardPost(
-        @RequestUser user: RequestUserInfo,
+        @RequestUser requestUser: RequestUserInfo,
         @RequestBody @Valid request: LikeBoardContentRequest
     ): String {
         TODO("""
@@ -94,7 +96,7 @@ class BoardController {
     @Operation(summary = "게시글 신고")
     @PostMapping("/report")
     fun reportBoardPost(
-        @RequestUser user: RequestUserInfo,
+        @RequestUser requestUser: RequestUserInfo,
         @RequestBody @Valid request: ReportBoardContentRequest
     ): String {
         TODO("""

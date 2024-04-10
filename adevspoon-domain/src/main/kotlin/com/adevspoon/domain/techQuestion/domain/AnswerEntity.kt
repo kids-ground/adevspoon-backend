@@ -1,7 +1,7 @@
-package com.adevspoon.domain.post.techAnswer.domain
+package com.adevspoon.domain.techQuestion.domain
 
 import com.adevspoon.domain.common.entity.LegacyBaseEntity
-import com.adevspoon.domain.post.techAnswer.domain.enums.AnswerStatus
+import com.adevspoon.domain.techQuestion.domain.enums.AnswerStatus
 import com.adevspoon.domain.techQuestion.domain.QuestionEntity
 import com.adevspoon.domain.member.domain.UserEntity
 import jakarta.persistence.*

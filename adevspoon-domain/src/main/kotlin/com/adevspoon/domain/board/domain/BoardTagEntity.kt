@@ -1,4 +1,4 @@
-package com.adevspoon.domain.post.board.domain
+package com.adevspoon.domain.board.domain
 
 import com.adevspoon.domain.common.entity.BaseEntity
 import jakarta.persistence.*
@@ -22,4 +22,4 @@ class BoardTagEntity(
     @NotNull
     @Column(name = "emoji", nullable = false, length = 10)
     val emoji: String? = null
-): BaseEntity()
+) : BaseEntity()

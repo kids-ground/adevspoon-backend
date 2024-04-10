@@ -1,4 +1,4 @@
-package com.adevspoon.domain.post.techAnswer.domain.enums
+package com.adevspoon.domain.techQuestion.domain.enums
 
 import com.adevspoon.domain.common.entity.LegacyEntityEnum
 import com.adevspoon.domain.common.converter.LegacyEntityEnumConverter

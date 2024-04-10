@@ -1,6 +1,6 @@
-package com.adevspoon.domain.post.common.domain
+package com.adevspoon.domain.common.entity
 
-import com.adevspoon.domain.post.techAnswer.domain.AnswerEntity
+import com.adevspoon.domain.techQuestion.domain.AnswerEntity
 import com.adevspoon.domain.member.domain.UserEntity
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull

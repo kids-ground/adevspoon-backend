@@ -1,4 +1,4 @@
-package com.adevspoon.domain.post.board.domain
+package com.adevspoon.domain.board.domain
 
 import com.adevspoon.domain.common.entity.BaseEntity
 import com.adevspoon.domain.member.domain.UserEntity
@@ -33,4 +33,4 @@ class BoardCommentEntity(
     @NotNull
     @Column(name = "likeCount", nullable = false)
     var likeCount: Int = 0
-): BaseEntity()
+) : BaseEntity()

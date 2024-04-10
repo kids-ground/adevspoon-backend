@@ -1,8 +1,7 @@
-package com.adevspoon.domain.post.common.domain
+package com.adevspoon.domain.common.entity
 
-import com.adevspoon.domain.common.entity.LegacyBaseEntity
-import com.adevspoon.domain.post.common.domain.enums.ReportReason
-import com.adevspoon.domain.post.techAnswer.domain.AnswerEntity
+import com.adevspoon.domain.common.entity.enums.ReportReason
+import com.adevspoon.domain.techQuestion.domain.AnswerEntity
 import com.adevspoon.domain.member.domain.UserEntity
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
@@ -28,7 +27,7 @@ class ReportEntity(
     @JoinColumn(name = "user_id")
     val user: UserEntity? = null,
 
-    @Column(name = "reason", columnDefinition="ENUM('abuse','spammer','obscene','scam', 'political_agitation', 'illegal_ads_and_sales', 'etc')")
+    @Column(name = "reason", columnDefinition = "ENUM('abuse','spammer','obscene','scam', 'political_agitation', 'illegal_ads_and_sales', 'etc')")
     val reason: ReportReason? = null,
 
     @Column(name = "is_read")
@@ -44,4 +43,4 @@ class ReportEntity(
 
     @Column(name = "boardCommentId")
     val boardCommentId: Long? = null
-): LegacyBaseEntity()
+) : LegacyBaseEntity()
