@@ -1,7 +1,7 @@
 ---
 name: Bug Issue template
 about: Bug issue Template
-title: "Bug#No. "
+title: "Bug. 내용"
 labels: bugfix
 assignees: RokwonK
 

@@ -107,12 +107,14 @@ AWS & Terraform 기반으로 배포. 프리티어 내에서 최대한 비용 효
   - `bugfix/#{issue}` : (버그 수정) 
   - `hotfix/#{issue}` : (긴급 수정) main 브랜치에서 생성
 - **Commit** 
-  - `[브랜치이름] {gitmoji} 메세지` : Gitmoji 기반으로 메시지 작성
+  - `{깃모지} 메세지` : Gitmoji 기반으로 메시지 작성
 
 <br />
 
 ### 🖇️ Pull Request
 PR Template 기반으로 작성
-- PR Title - 한 문장 요약
-- close #issue번호로 연결시키기
-- summary 및 주의깊게 볼 사항 작성
+- PR Title - `Feat#{issue}. 내용`
+- 본문
+  - Issue : `close #issue번호`로 이슈 연결시키기
+  - Summary : 기능/버그 요약
+  - Description : 설명이 필요한 부분 작성
