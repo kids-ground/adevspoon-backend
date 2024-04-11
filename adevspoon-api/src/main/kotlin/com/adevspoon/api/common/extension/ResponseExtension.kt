@@ -12,7 +12,7 @@ fun HttpServletResponse.writeErrorResponse(errorCode: AdevspoonErrorCode, object
     this.contentType = MediaType.APPLICATION_JSON_VALUE
     this.writer.write(
         errorCode
-            .getErrorInfo()
+            .errorInfo
             .also { this.status = it.status }
             .let { ErrorResponse(it.code, it.message) }
             .let {

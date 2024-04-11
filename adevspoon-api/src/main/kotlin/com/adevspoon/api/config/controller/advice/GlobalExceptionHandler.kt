@@ -3,7 +3,7 @@ package com.adevspoon.api.config.controller.advice
 
 import com.adevspoon.common.dto.ErrorResponse
 import com.adevspoon.common.exception.AdevspoonException
-import com.adevspoon.common.exception.CommonErrorCode
+import com.adevspoon.common.exception.common.CommonErrorCode
 import com.adevspoon.common.exception.ExternalException
 import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import org.springframework.http.HttpHeaders
@@ -33,7 +33,7 @@ class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
             .body(ErrorResponse(
-                CommonErrorCode.BAD_REQUEST.getErrorInfo().code,
+                CommonErrorCode.BAD_REQUEST.errorInfo.code,
                 errorMessage
             ))
     }
@@ -48,9 +48,9 @@ class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
         val errorInfo = when (val cause = ex.rootCause) {
             is AdevspoonException -> cause.errorInfo
             is MismatchedInputException -> CommonErrorCode.BAD_REQUEST
-                .getErrorInfo()
+                .errorInfo
                 .also { it.message = "유효하지 않은 값입니다: ${cause.path.map { it.fieldName }.joinToString(".")}" }
-            else -> CommonErrorCode.BAD_REQUEST.getErrorInfo()
+            else -> CommonErrorCode.BAD_REQUEST.errorInfo
         }
         logger.warn("잘못된 요청 타입매핑 : ${errorInfo.message}")
         return ResponseEntity

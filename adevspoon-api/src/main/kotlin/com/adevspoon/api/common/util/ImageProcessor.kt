@@ -3,7 +3,10 @@ package com.adevspoon.api.common.util
 import com.adevspoon.api.common.properties.ImageProperties
 import com.adevspoon.common.enums.FileExtension
 import com.adevspoon.common.enums.ImageType
-import com.adevspoon.common.exception.*
+import com.adevspoon.common.exception.file.FileExtensionEmptyException
+import com.adevspoon.common.exception.file.FileExtensionNotSupportedException
+import com.adevspoon.common.exception.file.FileNameEmptyException
+import com.adevspoon.common.exception.file.FileResizeImageFailedException
 import net.coobird.thumbnailator.Thumbnails
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
