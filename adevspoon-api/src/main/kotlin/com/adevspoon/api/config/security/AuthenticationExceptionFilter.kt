@@ -2,7 +2,7 @@ package com.adevspoon.api.config.security
 
 import com.adevspoon.api.common.extension.writeErrorResponse
 import com.adevspoon.common.exception.AdevspoonException
-import com.adevspoon.common.exception.CommonErrorCode
+import com.adevspoon.common.exception.common.CommonErrorCode
 import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest

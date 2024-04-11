@@ -3,8 +3,8 @@ package com.adevspoon.api.config.security
 import com.adevspoon.api.common.annotation.SecurityIgnored
 import com.adevspoon.api.common.extension.writeErrorResponse
 import com.adevspoon.api.common.util.JwtProcessor
-import com.adevspoon.common.exception.AuthErrorCode
-import com.adevspoon.common.exception.CommonErrorCode
+import com.adevspoon.common.exception.auth.AuthErrorCode
+import com.adevspoon.common.exception.common.CommonErrorCode
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean

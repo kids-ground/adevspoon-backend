@@ -4,8 +4,7 @@ import com.adevspoon.api.common.dto.JwtTokenInfo
 import com.adevspoon.api.common.dto.JwtTokenType
 import com.adevspoon.api.common.enums.ServiceRole
 import com.adevspoon.api.common.properties.JwtProperties
-import com.adevspoon.common.exception.CommonErrorCode
-import com.adevspoon.common.exception.CommonUnauthorizedException
+import com.adevspoon.common.exception.common.CommonUnauthorizedException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.stereotype.Component

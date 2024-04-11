@@ -1,9 +1,9 @@
 package com.adevspoon.api.common.util
 
 import com.adevspoon.api.common.properties.ImageProperties
-import com.adevspoon.common.exception.FileExtensionEmptyException
-import com.adevspoon.common.exception.FileExtensionNotSupportedException
-import com.adevspoon.common.exception.FileNameEmptyException
+import com.adevspoon.common.exception.file.FileExtensionEmptyException
+import com.adevspoon.common.exception.file.FileExtensionNotSupportedException
+import com.adevspoon.common.exception.file.FileNameEmptyException
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*

@@ -1,4 +1,6 @@
-package com.adevspoon.common.exception
+package com.adevspoon.common.exception.common
+
+import com.adevspoon.common.exception.AdevspoonException
 
 class CommonBadRequestException: AdevspoonException(CommonErrorCode.BAD_REQUEST)
 class CommonUnauthorizedException: AdevspoonException(CommonErrorCode.UNAUTHORIZED)
