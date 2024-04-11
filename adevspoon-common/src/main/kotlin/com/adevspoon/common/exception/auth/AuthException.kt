@@ -1,4 +1,6 @@
-package com.adevspoon.common.exception
+package com.adevspoon.common.exception.auth
+
+import com.adevspoon.common.exception.AdevspoonException
 
 class AuthMissingAuthException: AdevspoonException(AuthErrorCode.MISSING_AUTH)
 class AuthIllegalAuthArgumentException: AdevspoonException(AuthErrorCode.ILLEGAL_AUTH_ARGUMENT_ERROR)

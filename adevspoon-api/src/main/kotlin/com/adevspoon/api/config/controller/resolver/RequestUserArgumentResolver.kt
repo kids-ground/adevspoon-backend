@@ -2,8 +2,7 @@ package com.adevspoon.api.config.controller.resolver
 
 import com.adevspoon.api.common.annotation.RequestUser
 import com.adevspoon.api.common.dto.RequestUserInfo
-import com.adevspoon.common.exception.AuthErrorCode
-import com.adevspoon.common.exception.AuthIllegalAuthArgumentException
+import com.adevspoon.common.exception.auth.AuthIllegalAuthArgumentException
 import org.springframework.core.MethodParameter
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.support.WebDataBinderFactory
