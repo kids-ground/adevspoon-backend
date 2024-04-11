@@ -46,4 +46,8 @@ class BoardPostEntity(
     @NotNull
     @Column(name = "viewCount", nullable = false)
     var viewCount: Int? = null
-) : BaseEntity()
+) : BaseEntity() {
+    fun increaseViewCount() {
+        this.viewCount = (this.viewCount ?: 0) + 1
+    }
+}

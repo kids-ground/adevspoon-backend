@@ -18,4 +18,11 @@ class BoardService(
         return BoardInfoResponse.from(boardPost, boardTag, memberProfileResponse)
     }
 
+    fun getBoardPost(userId: Long, postId: Long): BoardInfoResponse {
+        val boardPost = boardPostDomainService.getBoardPost(userId, postId)
+        val boardTag = BoardTagResponse.from(boardPost.tag)
+        val memberProfileResponse = MemberProfileResponse.from(boardPost.user)
+        return BoardInfoResponse.from(boardPost, boardTag, memberProfileResponse)
+    }
+
 }

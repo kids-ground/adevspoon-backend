@@ -5,27 +5,26 @@ import com.adevspoon.api.board.dto.response.BoardInfoResponse
 import com.adevspoon.api.board.dto.response.BoardListResponse
 import com.adevspoon.api.board.dto.response.BoardTagResponse
 import com.adevspoon.api.board.service.BoardService
+import com.adevspoon.api.board.service.BoardTagService
 import com.adevspoon.api.common.annotation.RequestUser
 import com.adevspoon.api.common.dto.RequestUserInfo
 import com.adevspoon.api.config.swagger.SWAGGER_TAG_BOARD
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
-import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/board")
 @Tag(name = SWAGGER_TAG_BOARD)
 class BoardController(
+    private val boardTagService: BoardTagService,
     private val boardService: BoardService
 ) {
     @Operation(summary = "게시판 전체 태그 리스트 조회")
     @GetMapping("/tag")
-    fun getBoardTagList(): BoardTagResponse {
-        TODO("""
-            게시판 전체 태그 리스트 조회
-        """.trimIndent())
+    fun getBoardTagList(): List<BoardTagResponse> {
+        return boardTagService.getBoardTagResponses()
     }
 
     @Operation(summary = "게시글 등록")
@@ -43,9 +42,7 @@ class BoardController(
         @RequestUser requestUser: RequestUserInfo,
         @PathVariable postId: Long,
     ): BoardInfoResponse {
-        TODO("""
-            게시판 글 조회
-        """.trimIndent())
+        return boardService.getBoardPost(requestUser.userId, postId)
     }
 
     @Operation(summary = "게시글 리스트 조회")
