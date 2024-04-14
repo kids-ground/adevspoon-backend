@@ -2,6 +2,7 @@ package com.adevspoon.domain.board.service
 
 import com.adevspoon.domain.board.domain.BoardPostEntity
 import com.adevspoon.domain.board.dto.response.BoardPost
+import com.adevspoon.domain.board.exception.BoardPostNotFoundException
 import com.adevspoon.domain.board.exception.BoardTageNotFoundException
 import com.adevspoon.domain.board.repository.BoardPostRepository
 import com.adevspoon.domain.board.repository.BoardTagRepository
@@ -24,6 +25,15 @@ class BoardPostDomainService(
         val boardPost = BoardPostEntity(user = user, tag = tag, title = title, content = content, likeCount = 0, commentCount = 0, viewCount = 0)
         val savedBoardPost = boardPostRepository.save(boardPost)
         return BoardPost.from(savedBoardPost, memberProfile)
+    }
+
+    @Transactional
+    fun getBoardPost(userId: Long, postId: Long): BoardPost {
+        val boardPost = boardPostRepository.findByIdOrNull(postId) ?: throw BoardPostNotFoundException()
+        boardPost.increaseViewCount()
+        boardPostRepository.save(boardPost)
+        val memberProfile = memberDomainService.getMemberProfile(userId)
+        return BoardPost.from(boardPost, memberProfile)
     }
 
 }

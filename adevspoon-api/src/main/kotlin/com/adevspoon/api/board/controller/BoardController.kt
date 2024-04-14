@@ -42,9 +42,7 @@ class BoardController(
         @RequestUser requestUser: RequestUserInfo,
         @PathVariable postId: Long,
     ): BoardInfoResponse {
-        TODO("""
-            게시판 글 조회
-        """.trimIndent())
+        return boardService.getBoardPost(requestUser.userId, postId)
     }
 
     @Operation(summary = "게시글 리스트 조회")

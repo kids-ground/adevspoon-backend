@@ -21,9 +21,9 @@ data class BoardInfoResponse(
     val user: MemberProfileResponse
 ) {
     companion object {
-        fun from(board: BoardPost, tag: BoardTagResponse, user: MemberProfileResponse) = BoardInfoResponse(
+        fun from(board: BoardPost) = BoardInfoResponse(
             id = board.id,
-            tag = tag,
+            tag = BoardTagResponse.from(board.tag),
             title = board.title,
             content = board.content,
             likeCount = board.likeCount,
@@ -31,7 +31,7 @@ data class BoardInfoResponse(
             isLiked = false,
             createdAt = board.createdAt,
             updatedAt = board.updatedAt,
-            user = user
+            user = MemberProfileResponse.from(board.user)
         )
     }
 }
