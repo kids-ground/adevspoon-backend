@@ -7,7 +7,12 @@ import com.adevspoon.domain.board.exception.BoardTageNotFoundException
 import com.adevspoon.domain.board.repository.BoardPostRepository
 import com.adevspoon.domain.board.repository.BoardTagRepository
 import com.adevspoon.domain.common.annotation.DomainService
+import com.adevspoon.domain.common.utils.CursorPageable
+import com.adevspoon.domain.common.utils.PageWithCursor
+import com.adevspoon.domain.member.exception.MemberNotFoundException
 import com.adevspoon.domain.member.service.MemberDomainService
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.transaction.annotation.Transactional
 
@@ -28,12 +33,46 @@ class BoardPostDomainService(
     }
 
     @Transactional
-    fun getBoardPost(userId: Long, postId: Long): BoardPost {
+    fun getBoardPost(postId: Long): BoardPost {
         val boardPost = boardPostRepository.findByIdOrNull(postId) ?: throw BoardPostNotFoundException()
         boardPost.increaseViewCount()
         boardPostRepository.save(boardPost)
+
+        val userId = boardPost.user?.id
+        userId?.let { BoardPost.from(boardPost, memberDomainService.getMemberProfile(it)) } ?: throw MemberNotFoundException()
+
         val memberProfile = memberDomainService.getMemberProfile(userId)
         return BoardPost.from(boardPost, memberProfile)
     }
 
+    fun getBoardPostsByTags(tags: List<Int>, pageSize: Int, startPostId: Long?, targetUserId: Long?): PageWithCursor<BoardPost> {
+        val pageable = CursorPageable(startPostId, pageSize)
+        val page = fetchPostBasedOnTageExistence(tags, startPostId, targetUserId, pageable)
+
+        val boardPosts = page.content
+        val nextCursorId = if (boardPosts.size < pageSize) null else page.lastOrNull()?.id
+
+        return PageWithCursor(
+            data = boardPosts.map { boardPost ->
+                val userId = boardPost.user?.id
+                userId?.let { BoardPost.from(boardPost, memberDomainService.getMemberProfile(it)) } ?: throw MemberNotFoundException()
+            },
+            nextCursorId = nextCursorId
+        )
+    }
+
+    private fun fetchPostBasedOnTageExistence(tags: List<Int>, startPostId: Long?, targetUserId: Long?, pageable: Pageable) : Page<BoardPostEntity> {
+        if (tags.isEmpty()) {
+            return fetchAllPosts(startPostId, targetUserId, pageable)
+        }
+        return fetchPostsByTags(tags, startPostId, targetUserId, pageable)
+    }
+
+    private fun fetchAllPosts(startPostId: Long?, targetUserId: Long?, pageable: Pageable) : Page<BoardPostEntity> {
+        return boardPostRepository.findAllBoardPosts(startPostId, targetUserId, pageable)
+    }
+
+    private fun fetchPostsByTags(tags: List<Int>, startPostId: Long?, targetUserId: Long?, pageable: Pageable) : Page<BoardPostEntity> {
+        return boardPostRepository.findByTagsAndUserIdWitchCursor(tags, startPostId, targetUserId, pageable)
+    }
 }

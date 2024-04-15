@@ -42,7 +42,7 @@ class BoardController(
         @RequestUser requestUser: RequestUserInfo,
         @PathVariable postId: Long,
     ): BoardInfoResponse {
-        return boardService.getBoardPost(requestUser.userId, postId)
+        return boardService.getBoardPost(postId)
     }
 
     @Operation(summary = "게시글 리스트 조회")
@@ -51,9 +51,7 @@ class BoardController(
         @RequestUser requestUser: RequestUserInfo,
         @Valid request: BoardListRequest,
     ): BoardListResponse {
-        TODO("""
-            게시판 글 리스트 조회
-        """.trimIndent())
+        return boardService.getBoardPostsByTags(request.tag, request.take, request.startId, request.targetUserId)
     }
 
     @Operation(summary = "게시글 수정")
