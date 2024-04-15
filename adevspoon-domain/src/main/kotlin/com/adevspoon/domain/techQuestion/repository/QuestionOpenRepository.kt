@@ -9,17 +9,20 @@ import org.springframework.data.jpa.repository.Query
 interface QuestionOpenRepository: JpaRepository<QuestionOpenEntity, Long> {
     @Query("SELECT qo " +
             "FROM QuestionOpenEntity qo " +
-                "join fetch qo.question " +
-                "join fetch qo.answer " +
-            "WHERE qo.user.id = :memberId " +
+                "LEFT JOIN FETCH qo.question " +
+                "LEFT JOIN FETCH qo.answer " +
+            "WHERE qo.user = :user " +
             "ORDER BY qo.createdAt DESC " +
             "LIMIT 1")
-    fun findLatest(memberId: Long): QuestionOpenEntity?
+    fun findLatest(user: UserEntity): QuestionOpenEntity?
 
     @Query("SELECT qo " +
             "FROM QuestionOpenEntity qo " +
-                "join fetch qo.question " +
-                "join fetch qo.answer " +
+                "LEFT JOIN FETCH qo.question " +
+                "LEFT JOIN FETCH qo.answer " +
             "WHERE qo.question = :question AND qo.user = :user ")
     fun findByQuestionAndUser(question: QuestionEntity, user: UserEntity): QuestionOpenEntity?
+
+    @Query("SELECT qo.question.id FROM QuestionOpenEntity qo WHERE qo.user = :user")
+    fun findAllIssuedQuestionIds(user: UserEntity): Set<Long>
 }
