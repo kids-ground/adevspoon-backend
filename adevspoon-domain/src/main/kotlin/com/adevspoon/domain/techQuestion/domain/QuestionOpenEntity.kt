@@ -22,17 +22,17 @@ class QuestionOpenEntity(
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "question_id", nullable = false)
-    val question: QuestionEntity? = null,
+    val question: QuestionEntity,
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id", nullable = false)
-    val user: UserEntity? = null,
+    val user: UserEntity,
 
     @NotNull
     @Column(name = "open_date", nullable = false)
-    var openDate: LocalDateTime? = null,
+    var openDate: LocalDateTime,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.SET_NULL)

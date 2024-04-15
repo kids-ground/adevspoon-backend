@@ -30,8 +30,8 @@ class QuestionEntity(
     var notionId: String? = null,
 
     // QuestionCategory
-    @Column(name = "category_id")
-    val categoryId: Long? = null,
+    @Column(name = "category_id", nullable = false)
+    val categoryId: Long,
 
     @Column(name = "sequence")
     var sequence: Int? = null
