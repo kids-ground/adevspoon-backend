@@ -2,6 +2,7 @@ package com.adevspoon.api.question.service
 
 import com.adevspoon.api.common.annotation.ApplicationService
 import com.adevspoon.api.question.dto.response.QuestionInfoResponse
+import com.adevspoon.domain.techQuestion.dto.request.GetTodayQuestion
 import com.adevspoon.domain.techQuestion.service.QuestionDomainService
 import java.time.LocalDate
 
@@ -10,7 +11,7 @@ class QuestionService(
     private val questionDomainService: QuestionDomainService
 ) {
     fun getTodayQuestion(memberId: Long): QuestionInfoResponse {
-        return questionDomainService.getOrCreateTodayQuestion(memberId, LocalDate.now())
+        return questionDomainService.getOrCreateTodayQuestion(GetTodayQuestion(memberId, LocalDate.now()))
             .let {
                 QuestionInfoResponse.from(it)
             }

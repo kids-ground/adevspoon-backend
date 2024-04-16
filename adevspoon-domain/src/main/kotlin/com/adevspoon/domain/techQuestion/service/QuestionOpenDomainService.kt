@@ -46,11 +46,11 @@ class QuestionOpenDomainService(
                 ?: throw QuestionExhaustedException()
 
         val issuedQuestionId = candidateIssuableQuestionIds.random()
-        val issuedQuestion = questionRepository.findByIdOrNull(issuedQuestionId) ?: throw QuestionNotFoundException()
-        val questionOpen = QuestionOpenEntity(user = user, question = issuedQuestion, openDate = today.atStartOfDay())
-        questionOpenRepository.save(questionOpen)
+        val question = questionRepository.findByIdOrNull(issuedQuestionId) ?: throw QuestionNotFoundException()
+        val issuedQuestion = QuestionOpenEntity(user = user, question = question, openDate = today.atStartOfDay())
+        questionOpenRepository.save(issuedQuestion)
 
-        return makeQuestionInfo(questionOpen, candidateIssuableQuestionIds.size == 1)
+        return makeQuestionInfo(issuedQuestion, candidateIssuableQuestionIds.size == 1)
     }
 
     private fun makeQuestionInfo(questionOpen: QuestionOpenEntity, isLast: Boolean = false): QuestionInfo {

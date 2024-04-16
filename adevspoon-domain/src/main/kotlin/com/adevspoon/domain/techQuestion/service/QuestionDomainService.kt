@@ -1,5 +1,6 @@
 package com.adevspoon.domain.techQuestion.service
 
+import com.adevspoon.domain.common.annotation.DistributedLock
 import com.adevspoon.domain.common.annotation.DomainService
 import com.adevspoon.domain.member.domain.UserEntity
 import com.adevspoon.domain.member.exception.MemberNotFoundException
@@ -7,6 +8,7 @@ import com.adevspoon.domain.member.repository.UserRepository
 import com.adevspoon.domain.techQuestion.domain.QuestionOpenEntity
 import com.adevspoon.domain.techQuestion.domain.UserCustomizedQuestionCategoryEntity
 import com.adevspoon.domain.techQuestion.domain.UserCustomizedQuestionCategoryId
+import com.adevspoon.domain.techQuestion.dto.request.GetTodayQuestion
 import com.adevspoon.domain.techQuestion.dto.response.QuestionInfo
 import com.adevspoon.domain.techQuestion.exception.QuestionCategoryNotFoundException
 import com.adevspoon.domain.techQuestion.exception.QuestionNotFoundException
@@ -15,10 +17,8 @@ import com.adevspoon.domain.techQuestion.repository.QuestionCategoryRepository
 import com.adevspoon.domain.techQuestion.repository.QuestionOpenRepository
 import com.adevspoon.domain.techQuestion.repository.QuestionRepository
 import com.adevspoon.domain.techQuestion.repository.UserCustomizedQuestionCategoryRepository
-import org.slf4j.LoggerFactory
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.transaction.annotation.Transactional
-import java.time.LocalDate
 
 @DomainService
 class QuestionDomainService(
@@ -29,7 +29,7 @@ class QuestionDomainService(
     private val userCustomizedQuestionCategoryRepository: UserCustomizedQuestionCategoryRepository,
     private val questionOpenDomainService: QuestionOpenDomainService,
 ) {
-    private val logger = LoggerFactory.getLogger(this.javaClass)!!
+
     @Transactional(readOnly = true)
     fun getQuestion(memberId: Long, questionId: Long): QuestionInfo {
         val user = userRepository.findByIdOrNull(memberId) ?: throw throw MemberNotFoundException()
@@ -41,14 +41,15 @@ class QuestionDomainService(
 
     // TODO: Distributed Lock 필요 (트랜잭션 전에 GetLock, 트랜잭션 후에 ReleaseLock)
     @Transactional
-    fun getOrCreateTodayQuestion(memberId: Long, today: LocalDate): QuestionInfo {
-        val user = userRepository.findByIdOrNull(memberId) ?: throw throw MemberNotFoundException()
+    @DistributedLock(keyClass = [GetTodayQuestion::class])
+    fun getOrCreateTodayQuestion(request: GetTodayQuestion): QuestionInfo {
+        val user = userRepository.findByIdOrNull(request.memberId) ?: throw throw MemberNotFoundException()
         val latestIssuedQuestion = questionOpenRepository.findLatest(user)
 
-        val isTodayQuestion = (latestIssuedQuestion?.openDate?.toLocalDate()?.compareTo(today) ?: -1) == 0
+        val isTodayQuestion = (latestIssuedQuestion?.openDate?.toLocalDate()?.compareTo(request.today) ?: -1) == 0
 
         return if(isTodayQuestion) makeQuestionInfo(latestIssuedQuestion!!)
-        else questionOpenDomainService.issueQuestion(memberId, today)
+        else questionOpenDomainService.issueQuestion(request.memberId, request.today)
     }
 
     @Transactional
