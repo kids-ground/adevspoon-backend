@@ -51,7 +51,7 @@ class BoardController(
         @RequestUser requestUser: RequestUserInfo,
         @Valid request: BoardListRequest,
     ): BoardListResponse {
-        return boardService.getBoardPostsByTags(request.tag, request.take, request.startId, request.targetUserId)
+        return boardService.getBoardPostsByTags(request.tag, request.take, request.startId, request.userId)
     }
 
     @Operation(summary = "게시글 수정")

@@ -13,5 +13,5 @@ data class BoardListRequest(
     @field:Positive(message = "0보다 큰 수를 입력해주세요")
     val startId: Long? = null,
     @Schema(description = "유저 Id(게시글 작성자 Id)로 필터링", nullable = true, defaultValue = "null")
-    val targetUserId: Long?,
+    val userId: Long?,
 )
