@@ -45,6 +45,7 @@ class BoardPostDomainService(
         return BoardPost.from(boardPost, memberProfile)
     }
 
+    @Transactional(readOnly = true)
     fun getBoardPostsByTags(tags: List<Int>, pageSize: Int, startPostId: Long?, targetUserId: Long?): PageWithCursor<BoardPost> {
         val pageable = CursorPageable(startPostId, pageSize)
         val page = fetchPostBasedOnTageExistence(tags, startPostId, targetUserId, pageable)
