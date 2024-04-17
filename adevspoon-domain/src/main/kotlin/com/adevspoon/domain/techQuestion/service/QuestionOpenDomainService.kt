@@ -28,7 +28,6 @@ class QuestionOpenDomainService(
 ) {
     private val logger = LoggerFactory.getLogger(this.javaClass)!!
 
-    // TODO: 발급받은 Question Count 증가 필요 (@Transactional 내에서 실행, commit 이후에 Event로 처리 되어야함)
     @Transactional(propagation = Propagation.MANDATORY)
     fun issueQuestion(memberId: Long, today: LocalDate): QuestionInfo {
         // 정책 - 1일 1회 Random 발급
@@ -48,6 +47,8 @@ class QuestionOpenDomainService(
         val question = questionRepository.findByIdOrNull(issuedQuestionId) ?: throw QuestionNotFoundException()
         val issuedQuestion = QuestionOpenEntity(user = user, question = question, openDate = today.atStartOfDay())
         questionOpenRepository.save(issuedQuestion)
+
+        user.apply { questionCnt += 1 }
 
         return makeQuestionInfo(issuedQuestion, candidateIssuableQuestionIds.size == 1)
     }
