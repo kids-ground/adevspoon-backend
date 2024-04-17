@@ -15,13 +15,13 @@ class BoardService(
         return BoardInfoResponse.from(boardPost)
     }
 
-    fun getBoardPost(postId: Long): BoardInfoResponse {
-        val boardPost = boardPostDomainService.getBoardPost(postId)
+    fun getBoardPost(postId: Long, userId: Long): BoardInfoResponse {
+        val boardPost = boardPostDomainService.getBoardPost(postId, userId)
         return BoardInfoResponse.from(boardPost)
     }
 
-    fun getBoardPostsByTags(tags: List<Int>, pageSize: Int, startPostId: Long?, targetUserId: Long?) : BoardListResponse  {
-        val pageWithCursor = boardPostDomainService.getBoardPostsByTags(tags, pageSize, startPostId, targetUserId)
+    fun getBoardPostsByTags(tags: List<Int>, pageSize: Int, startPostId: Long?, targetUserId: Long?, loginUserId: Long) : BoardListResponse  {
+        val pageWithCursor = boardPostDomainService.getBoardPostsWithCriteria(tags, pageSize, startPostId, targetUserId, loginUserId)
         return BoardListResponse.from(pageWithCursor.data, pageWithCursor.nextCursorId)
     }
 

@@ -10,23 +10,23 @@ import org.springframework.data.repository.query.Param
 interface BoardPostRepository : JpaRepository<BoardPostEntity, Long> {
 
     @Query("SELECT bp FROM BoardPostEntity bp " +
-        "WHERE (:startPostId IS NULL OR bp.id <= :startPostId) " +
+        "WHERE (:startPostId IS NULL OR bp.id < :startPostId) " +
         "AND (:targetUserId IS NULL OR bp.user.id = :targetUserId)"
     )
-    fun findAllBoardPosts(
+    fun findWithNoTagsAndUserIdWithCursor(
         @Param("startPostId") startPostId: Long?,
         @Param("targetUserId") targetUserId: Long?,
         pageable: Pageable) : Page<BoardPostEntity>
 
     @Query("SELECT bp FROM BoardPostEntity bp " +
         "JOIN bp.tag t " +
-        "WHERE (:tags IS NULL OR t.id IN :tags) " +
-        "AND (:startPostId IS NULL OR bp.id <= :startPostId) " +
+        "WHERE (t.id IN :tags) " +
+        "AND (:startPostId IS NULL OR bp.id < :startPostId) " +
         "AND (:targetUserId IS NULL OR bp.user.id = :targetUserId) "
         )
-    fun findByTagsAndUserIdWitchCursor(
+    fun findByTagsAndUserIdWithCursor(
         @Param("tags") tags: List<Int>,
         @Param("startPostId") startPostId: Long?,
         @Param("targetUserId") targetUserId: Long?,
-        pageable: Pageable) : Page<BoardPostEntity>
+        pageable: Pageable): Page<BoardPostEntity>
 }

@@ -32,56 +32,56 @@ class BoardPostDomainService(
         val boardPost = BoardPostEntity(user = user, tag = tag, title = title, content = content, likeCount = 0, commentCount = 0, viewCount = 0)
 
         val savedBoardPost = boardPostRepository.save(boardPost)
-        val isUserLikedBoardPost = likeDomainService.isUserLikedPost(user.id, boardPost.id)
-        return BoardPost.from(savedBoardPost, memberProfile, isUserLikedBoardPost)
+        return BoardPost.from(savedBoardPost, memberProfile, false)
     }
 
     @Transactional
-    fun getBoardPost(postId: Long): BoardPost {
+    fun getBoardPost(postId: Long, userId: Long): BoardPost {
         val boardPost = boardPostRepository.findByIdOrNull(postId) ?: throw BoardPostNotFoundException()
         boardPost.increaseViewCount()
         boardPostRepository.save(boardPost)
 
-        val user = boardPost.user
-        val isUserLikedBoardPost = likeDomainService.isUserLikedPost(user.id, boardPost.id)
+        val isUserLikedBoardPost = likeDomainService.isUserLikedPost(userId, boardPost.id)
 
-        val memberProfile = memberDomainService.getMemberProfile(user.id)
+        val memberProfile = memberDomainService.getMemberProfile(boardPost.user.id)
         return BoardPost.from(boardPost, memberProfile, isUserLikedBoardPost)
     }
 
     @Transactional(readOnly = true)
-    fun getBoardPostsByTags(tags: List<Int>, pageSize: Int, startPostId: Long?, targetUserId: Long?): PageWithCursor<BoardPost> {
+    fun getBoardPostsWithCriteria(tags: List<Int>, pageSize: Int, startPostId: Long?, targetUserId: Long?, loginUserId: Long): PageWithCursor<BoardPost> {
         val pageable = CursorPageable(pageSize)
         val page = fetchPostBasedOnTageExistence(tags, startPostId, targetUserId, pageable)
 
         val boardPosts = page.content
         val nextCursorId = if (boardPosts.size < pageSize) null else page.lastOrNull()?.id
-
-
-
+        val likedPostIds = getLikedPostsByUser(loginUserId, boardPosts.map { it.id }.toList()).toSet()
+        val boardPostDto = boardPosts.map { boardPost ->
+            val isUserLikedBoardPost = likedPostIds.contains(boardPost.id)
+            BoardPost.from(boardPost, memberDomainService.getMemberProfile(boardPost.user.id), isUserLikedBoardPost)
+        }
 
         return PageWithCursor(
-            data = boardPosts.map { boardPost ->
-                val user = boardPost.user
-                val isUserLikedBoardPost = likeDomainService.isUserLikedPost(user.id, boardPost.id)
-                BoardPost.from(boardPost, memberDomainService.getMemberProfile(user.id), isUserLikedBoardPost)
-            },
+            data = boardPostDto,
             nextCursorId = nextCursorId
         )
     }
 
+    private fun getLikedPostsByUser(loginUserId: Long, postIds: List<Long>) : Set<Long> {
+        return likeDomainService.getLikedPostIdsByUser(loginUserId, postIds).toSet()
+    }
+
     private fun fetchPostBasedOnTageExistence(tags: List<Int>, startPostId: Long?, targetUserId: Long?, pageable: Pageable) : Page<BoardPostEntity> {
         if (tags.isEmpty()) {
-            return fetchAllPosts(startPostId, targetUserId, pageable)
+            return retrievePostsIfNoTags(startPostId, targetUserId, pageable)
         }
-        return fetchPostsByTags(tags, startPostId, targetUserId, pageable)
+        return retrievePostsByTagsIfPresent(tags, startPostId, targetUserId, pageable)
     }
 
-    private fun fetchAllPosts(startPostId: Long?, targetUserId: Long?, pageable: Pageable) : Page<BoardPostEntity> {
-        return boardPostRepository.findAllBoardPosts(startPostId, targetUserId, pageable)
+    private fun retrievePostsIfNoTags(startPostId: Long?, targetUserId: Long?, pageable: Pageable) : Page<BoardPostEntity> {
+        return boardPostRepository.findWithNoTagsAndUserIdWithCursor(startPostId, targetUserId, pageable)
     }
 
-    private fun fetchPostsByTags(tags: List<Int>, startPostId: Long?, targetUserId: Long?, pageable: Pageable) : Page<BoardPostEntity> {
-        return boardPostRepository.findByTagsAndUserIdWitchCursor(tags, startPostId, targetUserId, pageable)
+    private fun retrievePostsByTagsIfPresent(tags: List<Int>, startPostId: Long?, targetUserId: Long?, pageable: Pageable) : Page<BoardPostEntity> {
+        return boardPostRepository.findByTagsAndUserIdWithCursor(tags, startPostId, targetUserId, pageable)
     }
 }

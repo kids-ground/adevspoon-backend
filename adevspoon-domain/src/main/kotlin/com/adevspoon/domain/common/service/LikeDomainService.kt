@@ -11,4 +11,8 @@ class LikeDomainService (
         return likeRepository.exitsByUserIdAndBoardPostId(userId, boardPostId)
     }
 
+    fun getLikedPostIdsByUser(loginUserId: Long, boardPostIds: List<Long>): List<Long> {
+        return likeRepository.findLikedPostIdsByUser(loginUserId, boardPostIds)
+    }
+
 }
