@@ -4,7 +4,6 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 
 data class CursorPageable(
-    private val cursorId: Long?,
     private val size: Int,
     private val sort: Sort? = Sort.by(Sort.Direction.DESC, "id")
 ) : Pageable{

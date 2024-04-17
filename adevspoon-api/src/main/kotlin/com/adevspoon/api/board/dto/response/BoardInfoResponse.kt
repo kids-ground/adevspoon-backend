@@ -28,7 +28,7 @@ data class BoardInfoResponse(
             content = board.content,
             likeCount = board.likeCount,
             commentCount = board.commentCount,
-            isLiked = false,
+            isLiked = board.isLiked,
             createdAt = board.createdAt,
             updatedAt = board.updatedAt,
             user = MemberProfileResponse.from(board.user)

@@ -28,26 +28,26 @@ class BoardPostEntity(
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "userId", nullable = false)
-    val user: UserEntity? = null,
+    val user: UserEntity,
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "categoryId", nullable = false)
-    var tag: BoardTagEntity? = null,
+    var tag: BoardTagEntity,
 
     @NotNull
     @Column(name = "likeCount", nullable = false)
-    var likeCount: Int? = null,
+    var likeCount: Int,
 
     @NotNull
     @Column(name = "commentCount", nullable = false)
-    var commentCount: Int? = null,
+    var commentCount: Int,
 
     @NotNull
     @Column(name = "viewCount", nullable = false)
-    var viewCount: Int? = null
+    var viewCount: Int
 ) : BaseEntity() {
     fun increaseViewCount() {
-        this.viewCount = (this.viewCount ?: 0) + 1
+        this.viewCount++
     }
 }
