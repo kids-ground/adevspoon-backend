@@ -29,7 +29,6 @@ class QuestionOpenDomainService(
     private val logger = LoggerFactory.getLogger(this.javaClass)!!
 
     // TODO: 발급받은 Question Count 증가 필요 (@Transactional 내에서 실행, commit 이후에 Event로 처리 되어야함)
-    // 반드시 이전 트랜잭션에서 호출되어야 함(이전 트랜잭션에서 락 걸기 때문에)
     @Transactional(propagation = Propagation.MANDATORY)
     fun issueQuestion(memberId: Long, today: LocalDate): QuestionInfo {
         // 정책 - 1일 1회 Random 발급

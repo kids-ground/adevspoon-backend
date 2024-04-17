@@ -39,7 +39,6 @@ class QuestionDomainService(
         return makeQuestionInfo(issuedQuestion)
     }
 
-    // TODO: Distributed Lock 필요 (트랜잭션 전에 GetLock, 트랜잭션 후에 ReleaseLock)
     @Transactional
     @DistributedLock(keyClass = [GetTodayQuestion::class])
     fun getOrCreateTodayQuestion(request: GetTodayQuestion): QuestionInfo {
