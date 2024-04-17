@@ -1,7 +1,7 @@
 package com.adevspoon.domain.common.entity
 
-import com.adevspoon.domain.techQuestion.domain.AnswerEntity
 import com.adevspoon.domain.member.domain.UserEntity
+import com.adevspoon.domain.techQuestion.domain.AnswerEntity
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
@@ -23,12 +23,12 @@ class LikeEntity(
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id")
-    val user: UserEntity? = null,
+    val user: UserEntity,
 
     @Size(max = 50)
     @NotNull
     @Column(name = "post_type", nullable = false, length = 50)
-    val postType: String? = null,
+    val postType: String,
 
     @CreatedDate
     @Column(name = "created_at", updatable = false)
@@ -37,7 +37,7 @@ class LikeEntity(
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "post_id")
-    val post: AnswerEntity? = null,
+    val answer: AnswerEntity? = null,
 
     @Column(name = "boardPostId")
     val boardPostId: Long? = null,

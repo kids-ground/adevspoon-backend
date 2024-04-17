@@ -14,11 +14,12 @@ data class BoardPost(
     var likeCount: Int,
     var commentCount: Int,
     var viewCount: Int,
+    var isLiked: Boolean,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime,
 ) {
     companion object {
-        fun from(board: BoardPostEntity, memberProfile: MemberProfile) = BoardPost(
+        fun from(board: BoardPostEntity, memberProfile: MemberProfile, isLiked: Boolean) = BoardPost(
             id = board.id,
             title = board.title ?: "",
             content = board.content ?: "",
@@ -27,6 +28,7 @@ data class BoardPost(
             likeCount = board.likeCount ?: 0,
             commentCount = board.commentCount ?: 0,
             viewCount = board.viewCount ?: 0,
+            isLiked = isLiked,
             createdAt = board.createdAt ?: LocalDateTime.now(),
             updatedAt = board.updatedAt ?: LocalDateTime.now()
         )
