@@ -1,6 +1,5 @@
 package com.adevspoon.api.board.service
 
-import com.adevspoon.api.board.dto.request.RegisterBoardPostRequest
 import com.adevspoon.api.board.dto.response.BoardInfoResponse
 import com.adevspoon.api.board.dto.response.BoardListResponse
 import com.adevspoon.api.common.annotation.ApplicationService
@@ -10,8 +9,8 @@ import com.adevspoon.domain.board.service.BoardPostDomainService
 class BoardService(
     private val boardPostDomainService: BoardPostDomainService,
 ) {
-    fun registerBoardPost(userId: Long, request: RegisterBoardPostRequest): BoardInfoResponse {
-        val boardPost = boardPostDomainService.registerBoardPost(userId, request.tagId, request.title, request.content)
+    fun registerBoardPost(title: String, content: String, tagId: Int, userId: Long): BoardInfoResponse {
+        val boardPost = boardPostDomainService.registerBoardPost(title, content, tagId, userId)
         return BoardInfoResponse.from(boardPost)
     }
 
@@ -25,4 +24,8 @@ class BoardService(
         return BoardListResponse.from(pageWithCursor.data, pageWithCursor.nextCursorId)
     }
 
+    fun updateBoardPost(title: String?, content: String, tagId: Int, postId: Long, userId: Long): BoardInfoResponse {
+        val boardPost = boardPostDomainService.updateBoardPost(title, content, tagId, postId, userId)
+        return BoardInfoResponse.from(boardPost)
+    }
 }

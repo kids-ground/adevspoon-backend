@@ -33,7 +33,7 @@ class BoardController(
         @RequestUser requestUser: RequestUserInfo,
         @RequestBody @Valid request: RegisterBoardPostRequest,
     ): BoardInfoResponse {
-        return boardService.registerBoardPost(requestUser.userId, request)
+        return boardService.registerBoardPost(request.title, request.content, request.tagId, requestUser.userId)
     }
 
     @Operation(summary = "게시글 id 기반 게시글 조회")
@@ -60,9 +60,7 @@ class BoardController(
         @RequestUser requestUser: RequestUserInfo,
         @RequestBody @Valid request: UpdateBoardPostRequest,
     ): BoardInfoResponse {
-        TODO("""
-            게시판 글 수정
-        """.trimIndent())
+        return boardService.updateBoardPost(request.title, request.content, request.tagId, request.postId, requestUser.userId)
     }
 
     @Operation(summary = "게시글 삭제")

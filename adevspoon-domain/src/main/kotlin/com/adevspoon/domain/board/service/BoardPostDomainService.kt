@@ -3,6 +3,7 @@ package com.adevspoon.domain.board.service
 import com.adevspoon.domain.board.domain.BoardPostEntity
 import com.adevspoon.domain.board.dto.response.BoardPost
 import com.adevspoon.domain.board.exception.BoardPostNotFoundException
+import com.adevspoon.domain.board.exception.BoardPostOwnershipException
 import com.adevspoon.domain.board.exception.BoardTageNotFoundException
 import com.adevspoon.domain.board.repository.BoardPostRepository
 import com.adevspoon.domain.board.repository.BoardTagRepository
@@ -24,7 +25,7 @@ class BoardPostDomainService(
     val likeDomainService: LikeDomainService
 ) {
     @Transactional
-    fun registerBoardPost(userId: Long, tagId: Int, title: String, content: String): BoardPost {
+    fun registerBoardPost(title: String, content: String, tagId: Int, userId: Long): BoardPost {
         val user = memberDomainService.getUserEntity(userId)
         val memberProfile = memberDomainService.getMemberProfile(userId)
         val tag = boardTagRepository.findByIdOrNull(tagId) ?: throw BoardTageNotFoundException()
@@ -42,8 +43,28 @@ class BoardPostDomainService(
         boardPostRepository.save(boardPost)
 
         val isUserLikedBoardPost = likeDomainService.isUserLikedPost(userId, boardPost.id)
-
         val memberProfile = memberDomainService.getMemberProfile(boardPost.user.id)
+
+        return BoardPost.from(boardPost, memberProfile, isUserLikedBoardPost)
+    }
+
+    @Transactional
+    fun updateBoardPost(title: String?, content: String, tagId: Int, postId: Long, userId: Long): BoardPost {
+        val boardPost = boardPostRepository.findByIdOrNull(postId) ?: throw BoardPostNotFoundException()
+
+        if (boardPost.user.id != userId) throw BoardPostOwnershipException()
+
+        if (boardPost.tag.id != tagId) {
+            val newTag = boardTagRepository.findByIdOrNull(tagId) ?: throw BoardTageNotFoundException()
+            boardPost.updateTag(newTag)
+        }
+
+        boardPost.updateTitleAndContent(title, content)
+        boardPostRepository.save(boardPost)
+
+        val isUserLikedBoardPost = likeDomainService.isUserLikedPost(userId, boardPost.id)
+        val memberProfile = memberDomainService.getMemberProfile(boardPost.user.id)
+
         return BoardPost.from(boardPost, memberProfile, isUserLikedBoardPost)
     }
 
