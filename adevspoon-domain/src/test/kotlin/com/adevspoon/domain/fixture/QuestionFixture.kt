@@ -17,7 +17,7 @@ class QuestionFixture {
             difficulty: Int = 0,
             studyLink: String = "studyLink",
             notionId: String = "notionId",
-            categoryId: Long = 0
+            categoryId: Long = 1
         ) = QuestionEntity(
             id = id ?: 1,
             question = question,
@@ -40,17 +40,17 @@ class QuestionFixture {
         )
 
         fun createQuestionCategory(
-            id: Long? = null,
+            id: Long = 1,
             category: String = "category",
             topic: QuestionCategoryTopic = QuestionCategoryTopic.CS,
             subtitle: String = "subtitle",
             description: String = "description",
             iconUrl: String = "iconUrl",
-            backgroundColor: String = "backgroundColor",
-            accentColor: String = "accentColor",
-            iconColor: String = "iconColor",
+            backgroundColor: String = "colors",
+            accentColor: String = "colors",
+            iconColor: String = "colors",
         ) = QuestionCategoryEntity(
-            id = id ?: 1,
+            id = id,
             category = category,
             topic = topic,
             subtitle = subtitle,
