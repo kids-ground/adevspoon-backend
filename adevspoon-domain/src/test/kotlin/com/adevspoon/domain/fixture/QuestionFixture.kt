@@ -5,6 +5,8 @@ import com.adevspoon.domain.techQuestion.domain.QuestionCategoryEntity
 import com.adevspoon.domain.techQuestion.domain.QuestionEntity
 import com.adevspoon.domain.techQuestion.domain.QuestionOpenEntity
 import com.adevspoon.domain.techQuestion.domain.enums.QuestionCategoryTopic
+import com.adevspoon.domain.techQuestion.dto.response.QuestionInfo
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 class QuestionFixture {
@@ -57,6 +59,32 @@ class QuestionFixture {
             backgroundColor = backgroundColor,
             accentColor = accentColor,
             iconColor = iconColor,
+        )
+
+        fun createQuestionInfo(
+            questionId: Long = 1,
+            question: String = "question",
+            difficulty: Int = 0,
+            studyLink: String = "studyLink",
+            categoryName: String = "category",
+            tag: List<String> = listOf(),
+            openDate: LocalDate = LocalDate.now(),
+            answerId: Long? = null,
+            isLast: Boolean = false,
+            createdAt: LocalDateTime = LocalDateTime.now(),
+            updatedAt: LocalDateTime = LocalDateTime.now(),
+        ) = QuestionInfo(
+            questionId = questionId,
+            question = question,
+            difficulty = difficulty,
+            studyLink = studyLink,
+            categoryName = categoryName,
+            tag = tag,
+            openDate = openDate,
+            answerId = answerId,
+            isLast = isLast,
+            createdAt = createdAt,
+            updatedAt = updatedAt,
         )
     }
 }

@@ -7,9 +7,8 @@ import com.adevspoon.domain.member.domain.UserBadgeAcheiveId
 import com.adevspoon.domain.member.domain.UserEntity
 import com.adevspoon.domain.member.dto.request.MemberUpdateRequireDto
 import com.adevspoon.domain.member.repository.BadgeRepository
-import com.adevspoon.domain.member.repository.UserBadgeAcheiveRepository
+import com.adevspoon.domain.member.repository.UserBadgeAchieveRepository
 import com.adevspoon.domain.member.repository.UserRepository
-import com.adevspoon.domain.techQuestion.service.QuestionDomainService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -19,13 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired
 
 @DomainIntegrationTest
 class MemberDomainServiceIntegrationTest {
-
     @Autowired lateinit var memberDomainService: MemberDomainService
     @Autowired lateinit var userRepository: UserRepository
     @Autowired lateinit var badgeRepository: BadgeRepository
-    @Autowired lateinit var userBadgeAcheiveRepository: UserBadgeAcheiveRepository
-    @Autowired lateinit var questionDomainService: QuestionDomainService
-
+    @Autowired lateinit var userBadgeAchieveRepository: UserBadgeAchieveRepository
 
     @Nested
     inner class UpdateMemberProfile {
@@ -42,11 +38,11 @@ class MemberDomainServiceIntegrationTest {
             val userBadge = UserBadgeAcheiveEntity(UserBadgeAcheiveId(user, badge))
             userRepository.save(user)
             badgeRepository.save(badge)
-            userBadgeAcheiveRepository.save(userBadge)
+            userBadgeAchieveRepository.save(userBadge)
         }
 
         @Test
-        fun `SUCCESS - 플레인 데이터 업데이트 성공`() {
+        fun `SUCCESS - 유저 플레인 데이터 업데이트 성공`() {
             // given
             val updateInfo = MemberUpdateRequireDto(
                 memberId = 1,
