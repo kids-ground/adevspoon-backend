@@ -7,6 +7,8 @@ import com.adevspoon.domain.board.exception.BoardTageNotFoundException
 import com.adevspoon.domain.board.repository.BoardPostRepository
 import com.adevspoon.domain.board.repository.BoardTagRepository
 import com.adevspoon.domain.common.annotation.DomainService
+import com.adevspoon.domain.common.annotation.ActivityEvent
+import com.adevspoon.domain.common.annotation.ActivityEventType
 import com.adevspoon.domain.common.service.LikeDomainService
 import com.adevspoon.domain.common.utils.CursorPageable
 import com.adevspoon.domain.common.utils.PageWithCursor
@@ -23,6 +25,7 @@ class BoardPostDomainService(
     val memberDomainService: MemberDomainService,
     val likeDomainService: LikeDomainService
 ) {
+    @ActivityEvent(ActivityEventType.BOARD_POST)
     @Transactional
     fun registerBoardPost(userId: Long, tagId: Int, title: String, content: String): BoardPost {
         val user = memberDomainService.getUserEntity(userId)
