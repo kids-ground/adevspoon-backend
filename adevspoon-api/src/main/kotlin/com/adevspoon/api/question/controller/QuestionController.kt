@@ -4,8 +4,10 @@ import com.adevspoon.api.common.annotation.RequestUser
 import com.adevspoon.api.common.dto.RequestUserInfo
 import com.adevspoon.api.config.swagger.SWAGGER_TAG_QUESTION
 import com.adevspoon.api.question.dto.request.QuestionCategoryListRequest
+import com.adevspoon.api.question.dto.request.QuestionRequest
 import com.adevspoon.api.question.dto.response.QuestionCategoryResponse
 import com.adevspoon.api.question.dto.response.QuestionInfoResponse
+import com.adevspoon.api.question.service.QuestionService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
@@ -15,23 +17,18 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/question")
 @Tag(name = SWAGGER_TAG_QUESTION)
-class QuestionController {
-
-    @Operation(summary = "질문 가져오기", description = "오늘의 질문 또는 질문 발급 받은 날짜를 이용해 특정 질문을 가져온다.")
+class QuestionController(
+    private val questionService: QuestionService,
+) {
+    @Operation(summary = "질문 가져오기", description = "questionId가 있다면 해당 질문을 가져오고 없다면 오늘의 질문을 가져옵니다.")
     @GetMapping
     fun getQuestion(
         @RequestUser user: RequestUserInfo,
-        @RequestParam("type", required = false) type: String = "today",
-        @RequestParam("questionId", required = false) questionId: Long?,
+        @Valid request: QuestionRequest,
     ): QuestionInfoResponse {
-        TODO("""
-            - type = today, date(ex. 2024-03-18)
-            - type이 "today"일 경우
-                오늘의 질문 리스트를 가져온다.(생성 or get)
-            - type이 date일 경우
-                type == openDate가 해당 날짜인 질문을 가져온다.(날짜가 오늘이면 생성 or get & 없으면 error)
-            - questionId가 있을 경우 question Id로 검색
-        """.trimIndent())
+        return if (request.questionId != null)
+            questionService.getQuestionById(user.userId, request.questionId)
+        else questionService.getTodayQuestion(user.userId)
     }
 
     @Operation(summary = "질문 id 기반으로 상세정보 가져오기")
@@ -40,9 +37,7 @@ class QuestionController {
         @RequestUser user: RequestUserInfo,
         @PathVariable questionId: Long,
     ): QuestionInfoResponse {
-        TODO("""
-            - user가 발급받은 question을 Id기반으로 가져오기
-        """.trimIndent())
+        return questionService.getQuestionById(user.userId, questionId)
     }
 
     @Operation(summary = "질문 카테고리 리스트 가져오기")

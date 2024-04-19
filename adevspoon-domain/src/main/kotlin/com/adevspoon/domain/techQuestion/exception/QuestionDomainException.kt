@@ -2,4 +2,8 @@ package com.adevspoon.domain.techQuestion.exception
 
 import com.adevspoon.common.exception.AdevspoonException
 
+class QuestionNotOpenedException : AdevspoonException(QuestionDomainErrorCode.QUESTION_NOT_OPENED)
+class QuestionExhaustedException : AdevspoonException(QuestionDomainErrorCode.QUESTION_EXHAUSTED)
+
+class QuestionNotFoundException : AdevspoonException(QuestionDomainErrorCode.QUESTION_NOT_FOUND)
 class QuestionCategoryNotFoundException : AdevspoonException(QuestionDomainErrorCode.QUESTION_CATEGORY_NOT_FOUND)
