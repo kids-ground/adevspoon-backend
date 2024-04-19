@@ -55,7 +55,6 @@ class QuestionDomainServiceIntegrationTest {
                 val questionInfo =
                     questionDomainService.getOrCreateTodayQuestion(GetTodayQuestion(1, LocalDate.now()))
                 questionInfoList.add(questionInfo)
-                // 동시성으로 create 메서드 호출
                 latch.countDown()
             }
         }

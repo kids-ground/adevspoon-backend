@@ -9,7 +9,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import javax.sql.DataSource
 
 
@@ -24,18 +23,13 @@ class LockSourceConfig {
     }
 
     @Bean
-    fun lockSource(): DataSource {
+    @LockDataSource
+    fun lockDataSource(): DataSource {
         return HikariDataSource(lockHikariConfig())
     }
 
     @Bean
-    @LockDataSource
-    fun lockJdbcTemplate(): NamedParameterJdbcTemplate {
-        return NamedParameterJdbcTemplate(lockSource())
-    }
-
-    @Bean
     fun lockRepository(): DistributedLockRepository {
-        return SameOriginLockRepository(lockJdbcTemplate())
+        return SameOriginLockRepository(lockDataSource())
     }
 }
