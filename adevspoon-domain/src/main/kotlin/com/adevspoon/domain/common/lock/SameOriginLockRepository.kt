@@ -65,10 +65,7 @@ class SameOriginLockRepository(
         val releaseAllLocksQuery = "SELECT RELEASE_ALL_LOCKS()"
 
         connection.prepareStatement(releaseAllLocksQuery).use { statement ->
-            statement.executeQuery().use { resultSet ->
-                resultSet.next()
-                checkResult(statement, LockType.RELEASE, *keys.map { it.name }.toTypedArray())
-            }
+            checkResult(statement, LockType.RELEASE, *keys.map { it.name }.toTypedArray())
         }
     }
 
