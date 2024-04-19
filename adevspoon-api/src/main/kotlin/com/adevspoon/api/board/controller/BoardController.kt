@@ -36,15 +36,13 @@ class BoardController(
         return boardService.registerBoardPost(requestUser.userId, request)
     }
 
-    @Operation(summary = "게시글 id기반 게시글 조회")
+    @Operation(summary = "게시글 id 기반 게시글 조회")
     @GetMapping("/post/{postId}")
     fun getBoardPost(
         @RequestUser requestUser: RequestUserInfo,
         @PathVariable postId: Long,
     ): BoardInfoResponse {
-        TODO("""
-            게시판 글 조회
-        """.trimIndent())
+        return boardService.getBoardPost(postId, requestUser.userId)
     }
 
     @Operation(summary = "게시글 리스트 조회")
@@ -53,9 +51,7 @@ class BoardController(
         @RequestUser requestUser: RequestUserInfo,
         @Valid request: BoardListRequest,
     ): BoardListResponse {
-        TODO("""
-            게시판 글 리스트 조회
-        """.trimIndent())
+        return boardService.getBoardPostsByTags(request.tag, request.take, request.startId, request.userId, requestUser.userId)
     }
 
     @Operation(summary = "게시글 수정")

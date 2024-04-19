@@ -2,88 +2,112 @@ package com.adevspoon.domain.common.lock
 
 import com.adevspoon.domain.common.annotation.LockDataSource
 import com.adevspoon.domain.common.exception.DomainFailToGetLockException
+import com.adevspoon.domain.common.exception.DomainFailToLockQueryException
 import com.adevspoon.domain.common.exception.DomainFailToReleaseLockException
 import com.adevspoon.domain.common.lock.interfaces.DistributedLockRepository
 import org.slf4j.LoggerFactory
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
+import java.sql.Connection
+import java.sql.PreparedStatement
+import javax.sql.DataSource
 
-private const val GET_LOCK = "SELECT GET_LOCK(:key, :timeout)"
-private const val RELEASE_LOCK = "SELECT RELEASE_LOCK(:key)"
 
 
 class SameOriginLockRepository(
-    @LockDataSource private val jdbcTemplate: NamedParameterJdbcTemplate
+    @LockDataSource private val dataSource: DataSource
 ): DistributedLockRepository {
     private val logger = LoggerFactory.getLogger(this.javaClass)!!
 
     override fun <R> withLock(key: LockKey, block: () -> R?): R? {
-        try {
-            getLock(key)
-            return block()
-        } finally {
-            releaseLock(key)
+        dataSource.connection.use {
+            try {
+                getLock(it, key)
+                return block()
+            } finally {
+                releaseLock(it, key)
+            }
         }
     }
 
     override fun <R> withAllLock(keys: List<LockKey>, block: () -> R?): R? {
-        try {
-            getAllLock(keys)
-            return block()
-        } finally {
-            releaseAllLock(keys)
+        if (keys.isEmpty()) return block()
+        else if (keys.size == 1) return withLock(keys[0], block)
+
+        dataSource.connection.use {connection ->
+            try {
+                keys.map { getLock(connection, it) }
+                return block()
+            } finally {
+                releaseAllLock(connection, keys)
+            }
         }
     }
 
-    override fun getAllLock(keys: List<LockKey>): Boolean {
-        keys.map { getLock(it) }
-        return true
+    private fun getLock(connection: Connection, key: LockKey) {
+        val getLockQuery = "SELECT GET_LOCK(?, ?)"
+
+        connection.prepareStatement(getLockQuery).use { statement ->
+            statement.setString(1, key.name)
+            statement.setInt(2, key.timeout)
+            checkResult(statement, LockType.GET, key.name)
+        }
     }
 
-    override fun releaseAllLock(keys: List<LockKey>): Boolean {
-        keys.map { releaseLock(it) }
-        return true
+    private fun releaseLock(connection: Connection, key: LockKey) {
+        val releaseLockQuery = "SELECT RELEASE_LOCK(?)"
+
+        connection.prepareStatement(releaseLockQuery).use { statement ->
+            statement.setString(1, key.name)
+            checkResult(statement, LockType.RELEASE, key.name)
+        }
     }
 
-    override fun getLock(key: LockKey): Boolean {
-        val params: MutableMap<String, Any?> = mutableMapOf( "key" to key.name, "timeout" to key.timeout)
-        val result = jdbcTemplate.queryForObject(GET_LOCK, params, Int::class.java)
-        return checkResult(result, key.name, LockType.GET)
-    }
+    private fun releaseAllLock(connection: Connection, keys: List<LockKey>) {
+        val releaseAllLocksQuery = "SELECT RELEASE_ALL_LOCKS()"
 
-    override fun releaseLock(key: LockKey): Boolean {
-        val params: MutableMap<String, Any?> = mutableMapOf( "key" to key.name)
-        val result = jdbcTemplate.queryForObject(RELEASE_LOCK, params, Int::class.java)
-        return checkResult(result, key.name, LockType.RELEASE)
+        connection.prepareStatement(releaseAllLocksQuery).use { statement ->
+            checkResult(statement, LockType.RELEASE, *keys.map { it.name }.toTypedArray())
+        }
     }
 
     private fun checkResult(
-        result: Int?,
-        key: String,
-        type: LockType
-    ): Boolean {
-        when(result) {
-            1 -> logger.info("Lock ${type.name} 성공 : $key")
-            null -> {
-                if (type == LockType.GET) {
-                    logger.error("Lock ${type.name} 실패 : $key")
-                    throw DomainFailToGetLockException(key, "에러 발생")
-                }
+        statement: PreparedStatement,
+        type: LockType,
+        vararg key: String,
+    ) {
+        statement.executeQuery().use { resultSet ->
+            if (!resultSet.next()) {
+                logger.error("Lock ${type.name} 실패 : $key")
+                throw DomainFailToLockQueryException()
             }
-            else -> {
-                if (type == LockType.GET) {
-                    logger.error("Lock ${type.name} Timeout : $key, result : $result")
-                    throw DomainFailToGetLockException(key, "타임아웃")
-                } else {
-                    logger.error("Lock ${type.name} Not OWNER : $key, result : $result")
-                    throw DomainFailToReleaseLockException(key, "Key의 주인이 아님")
+
+            val result = resultSet.getInt(1)
+            when(type) {
+                LockType.GET -> {
+                    if (result == 0) {
+                        logger.error("Lock ${type.name} 실패 : $key")
+                        throw DomainFailToGetLockException(key[0], "에러 발생")
+                    }
+                    logger.info("Lock ${type.name} 성공 : $key")
+                }
+                LockType.RELEASE -> {
+                    if (result == 0) {
+                        logger.error("Lock ${type.name} 실패 : $key")
+                        throw DomainFailToReleaseLockException(key[0], "에러 발생")
+                    }
+                    logger.info("Lock ${type.name} 성공 : $key")
+                }
+                LockType.RELEASE_ALL -> {
+                    if (result == 0) {
+                        logger.error("Lock ${type.name} 실패 : $key")
+                        throw DomainFailToReleaseLockException(key.joinToString(", "), "에러 발생")
+                    }
+                    logger.info("Lock ${type.name} 성공 : $key")
                 }
             }
         }
-
-        return true
     }
 
     enum class LockType {
-        GET, RELEASE
+        GET, RELEASE, RELEASE_ALL
     }
 }
