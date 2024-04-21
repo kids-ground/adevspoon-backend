@@ -33,7 +33,7 @@ class BoardController(
         @RequestUser requestUser: RequestUserInfo,
         @RequestBody @Valid request: RegisterBoardPostRequest,
     ): BoardInfoResponse {
-        return boardService.registerBoardPost(request.title, request.content, request.tagId, requestUser.userId)
+        return boardService.registerBoardPost(request, requestUser.userId)
     }
 
     @Operation(summary = "게시글 id 기반 게시글 조회")
@@ -51,7 +51,7 @@ class BoardController(
         @RequestUser requestUser: RequestUserInfo,
         @Valid request: BoardListRequest,
     ): BoardListResponse {
-        return boardService.getBoardPostsByTags(request.tag, request.take, request.startId, request.userId, requestUser.userId)
+        return boardService.getBoardPostsByTags(request, requestUser.userId)
     }
 
     @Operation(summary = "게시글 수정")
@@ -60,7 +60,8 @@ class BoardController(
         @RequestUser requestUser: RequestUserInfo,
         @RequestBody @Valid request: UpdateBoardPostRequest,
     ): BoardInfoResponse {
-        return boardService.updateBoardPost(request.title, request.content, request.tagId, request.postId, requestUser.userId)
+        return boardService.updateBoardPost(request, requestUser.userId)
+
     }
 
     @Operation(summary = "게시글 삭제")

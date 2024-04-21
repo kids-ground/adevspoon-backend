@@ -51,9 +51,9 @@ class BoardPostEntity(
         this.viewCount++
     }
 
-    fun updateTitleAndContent(title: String?, content: String) {
-        this.title = title
-        this.content = content
+    fun updateTitleAndContent(title: String?, content: String?) {
+        title?.let { this.title = it }
+        content?.let { this.content = it }
     }
 
     fun updateTag(newTag: BoardTagEntity) {
