@@ -14,8 +14,8 @@ class QuestionCategoryEntity(
     var id: Long = 0,
 
     @Size(max = 255)
-    @Column(name = "category")
-    val category: String? = null,
+    @Column(name = "category", nullable = false)
+    val category: String,
 
     @NotNull
     @Column(name = "topic", columnDefinition="ENUM('cs','language','tech')", nullable = false)
@@ -31,21 +31,21 @@ class QuestionCategoryEntity(
     @Column(name = "description", nullable = false)
     var description: String? = null,
 
+    @Column(name = "iconUrl")
+    var iconUrl: String,
+
     @Size(max = 6)
     @NotNull
     @Column(name = "backgroundColor", nullable = false, length = 6)
-    var backgroundColor: String? = null,
-
-    @Column(name = "iconUrl")
-    var iconUrl: String? = null,
+    var backgroundColor: String,
 
     @Size(max = 6)
     @NotNull
     @Column(name = "accentColor", nullable = false, length = 6)
-    var accentColor: String? = null,
+    var accentColor: String,
 
     @Size(max = 6)
     @NotNull
     @Column(name = "iconColor", nullable = false, length = 6)
-    var iconColor: String? = null
+    var iconColor: String
 )

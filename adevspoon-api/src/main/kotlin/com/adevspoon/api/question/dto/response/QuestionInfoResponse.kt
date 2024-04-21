@@ -1,5 +1,6 @@
 package com.adevspoon.api.question.dto.response
 
+import com.adevspoon.domain.techQuestion.dto.response.QuestionInfo
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
@@ -18,7 +19,7 @@ data class QuestionInfoResponse(
     @JsonProperty("study_link")
     val studyLink: String,
 
-    @Schema(description = "해당 질문의 카테고리 이름")
+    @Schema(description = "해당 질문의 카테고리 이름", example = "알고리즘")
     @JsonProperty("category")
     val categoryName: String,
 
@@ -29,7 +30,7 @@ data class QuestionInfoResponse(
     val updatedAt: LocalDateTime,
 
     @Schema(description = "해당 질문에 대한 태그 리스트, 현재는 사용되지 않음")
-    val tag: List<String>,
+    val tag: List<String>? = null,
 
     @Schema(description = "질문을 발급받은 날짜", example = "2021-01-01")
     @JsonProperty("open_date")
@@ -41,4 +42,20 @@ data class QuestionInfoResponse(
 
     @Schema(description = "해당 카테고리에 더 이상 받을 질문이 없는지 여부")
     val isLast: Boolean = false,
-)
+) {
+    companion object {
+        fun from(info: QuestionInfo) = QuestionInfoResponse(
+            questionId = info.questionId,
+            question = info.question,
+            difficulty = info.difficulty,
+            studyLink = info.studyLink,
+            categoryName = info.categoryName,
+            createdAt = info.createdAt,
+            updatedAt = info.updatedAt,
+            tag = info.tag,
+            openDate = info.openDate,
+            answerId = info.answerId,
+            isLast = info.isLast,
+        )
+    }
+}

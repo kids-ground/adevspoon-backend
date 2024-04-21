@@ -64,7 +64,6 @@ class MemberDomainService(
     @Transactional
     fun updateMemberProfile(updateInfo: MemberUpdateRequireDto): MemberProfile {
         val user = getUserEntity(updateInfo.memberId)
-        logger.warn("유저정보 확인 : ${user.oAuth}")
         val userBadgeList = userBadgeAchieveRepository.findUserBadgeList(updateInfo.memberId)
         var userRepresentativeBadge = userBadgeList.firstOrNull {
             it.id?.equals(user.representativeBadge) ?: false
