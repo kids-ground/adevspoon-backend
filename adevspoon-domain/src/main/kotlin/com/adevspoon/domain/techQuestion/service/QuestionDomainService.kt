@@ -9,7 +9,7 @@ import com.adevspoon.domain.techQuestion.domain.QuestionOpenEntity
 import com.adevspoon.domain.techQuestion.domain.UserCustomizedQuestionCategoryEntity
 import com.adevspoon.domain.techQuestion.domain.UserCustomizedQuestionCategoryId
 import com.adevspoon.domain.techQuestion.dto.request.GetTodayQuestion
-import com.adevspoon.domain.techQuestion.dto.response.QuestionInfo
+import com.adevspoon.domain.techQuestion.dto.response.*
 import com.adevspoon.domain.techQuestion.exception.QuestionCategoryNotFoundException
 import com.adevspoon.domain.techQuestion.exception.QuestionNotFoundException
 import com.adevspoon.domain.techQuestion.exception.QuestionNotOpenedException
@@ -49,6 +49,26 @@ class QuestionDomainService(
 
         return if(isTodayQuestion) makeQuestionInfo(latestIssuedQuestion!!)
         else questionOpenDomainService.issueQuestion(request.memberId, request.today)
+    }
+
+    @Transactional
+    fun getQuestionCategories(memberId: Long): List<QuestionCategoryInfo> {
+        val user = userRepository.findByIdOrNull(memberId) ?: throw MemberNotFoundException()
+
+        val allCategories = questionCategoryRepository.findAll()
+        val selectedCategories = userCustomizedQuestionCategoryRepository.findAllSelectedCategory(user)
+            .takeIf { it.isNotEmpty() }
+            ?: allCategories
+
+        val categoryQuestionCount = questionRepository.findQuestionCountGroupByCategory()
+        val categoryIssuedQuestionCount = questionOpenRepository.findIssuedQuestionGroupByCategory(user)
+        val categoryRemainQuestionCount = categoryQuestionCount.subtractCount(categoryIssuedQuestionCount)
+
+        return allCategories.map { category ->
+            val isDepleted = categoryRemainQuestionCount.find{ it.categoryId == category.id }?.isDepleted ?: true
+            val isSelected = selectedCategories.contains(category)
+            QuestionCategoryInfo.from(category, isDepleted, isSelected)
+        }
     }
 
     @Transactional
