@@ -2,12 +2,14 @@ package com.adevspoon.api.member.dto.request
 
 import com.adevspoon.domain.member.dto.request.MemberUpdateRequireDto
 import io.swagger.v3.oas.annotations.media.Schema
+import jakarta.validation.constraints.Size
 import org.springframework.web.multipart.MultipartFile
 
 data class MemberProfileUpdateRequest(
     @Schema(description = "수정할 이미지 파일")
     val image: MultipartFile?,
     val fcmToken: String?,
+    @field:Size(min = 2, max = 10, message = "닉네임은 2자 이상 10자 이하로 입력해주세요.")
     val nickname: String?,
     @Schema(description = "수정할 대표 뱃지 id", example = "1")
     val representativeBadge: Int?,
