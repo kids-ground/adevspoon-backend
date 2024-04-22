@@ -4,6 +4,7 @@ import com.adevspoon.domain.fixture.MemberFixture
 import com.adevspoon.domain.fixture.QuestionFixture
 import com.adevspoon.domain.member.domain.UserEntity
 import com.adevspoon.domain.member.repository.UserRepository
+import com.adevspoon.domain.techQuestion.domain.QuestionCategoryEntity
 import com.adevspoon.domain.techQuestion.domain.QuestionEntity
 import com.adevspoon.domain.techQuestion.dto.request.GetTodayQuestion
 import com.adevspoon.domain.techQuestion.exception.QuestionNotOpenedException
@@ -141,6 +142,66 @@ class QuestionDomainServiceUnitTest {
 
             verify { questionOpenRepository.findLatest(user) }
             verify(exactly = 0) { questionOpenDomainService.issueQuestion(any(), any()) }
+        }
+    }
+
+    @Nested
+    inner class GetQuestionCategories {
+        private lateinit var user: UserEntity
+        private lateinit var questionCategory1: QuestionCategoryEntity
+        private lateinit var questionCategory2: QuestionCategoryEntity
+        private lateinit var questionCategory3: QuestionCategoryEntity
+        private lateinit var question1: QuestionEntity
+        private lateinit var question2: QuestionEntity
+        private lateinit var question3: QuestionEntity
+        private lateinit var question4: QuestionEntity
+
+        @BeforeEach
+        fun setup() {
+            user = MemberFixture.createMember(1)
+            questionCategory1 = QuestionFixture.createQuestionCategory(1)
+            questionCategory2 = QuestionFixture.createQuestionCategory(2)
+            questionCategory3 = QuestionFixture.createQuestionCategory(3)
+            question1 = QuestionFixture.createQuestion(1, categoryId = 1)
+            question2 = QuestionFixture.createQuestion(1, categoryId = 1)
+            question3 = QuestionFixture.createQuestion(1, categoryId = 2)
+            question4 = QuestionFixture.createQuestion(1, categoryId = 3)
+
+            every { userRepository.findByIdOrNull(1) } returns user
+        }
+
+        @Test
+        fun `SUCCESS - 사용자의 문제 카테고리 가져오기 (고갈, 선택 포함)`() {
+            // given
+            every { questionCategoryRepository.findAll() } returns listOf(questionCategory1, questionCategory2, questionCategory3)
+            every { userCustomizedQuestionCategoryRepository.findAllSelectedCategory(user) } returns listOf(questionCategory1, questionCategory2)
+
+            every { questionRepository.findQuestionCountGroupByCategory() } returns listOf(
+                QuestionFixture.createQuestionCount(1, 2),
+                QuestionFixture.createQuestionCount(2, 1),
+                QuestionFixture.createQuestionCount(3, 1),
+            )
+            every { questionOpenRepository.findIssuedQuestionGroupByCategory(user) } returns listOf(
+                QuestionFixture.createQuestionCount(1, 2),
+            )
+
+            // when
+            var categories = questionDomainService.getQuestionCategories(user.id)
+            categories = categories.sortedWith(compareBy { it.id })
+
+            // then
+            assertEquals(categories.size, 3, "문제 카테고리 개수는 총 3개")
+            assertEquals(categories[0].id, 1L)
+            assertEquals(categories[0].depleted, true, "카테고리 1은 문제 고갈됨")
+            assertEquals(categories[0].selected, true, "카테고리 1은 선택됨")
+
+            assertEquals(categories[1].id, 2L)
+            assertEquals(categories[1].depleted, false, "카테고리 2는 고갈되지 않음")
+            assertEquals(categories[1].selected, true, "카테고리 2는 선택됨")
+
+            assertEquals(categories[2].id, 3L)
+            assertEquals(categories[2].depleted, false, "카테고리 3은 고갈되지 않음")
+            assertEquals(categories[2].selected, false, "카테고리 3은 선택하지 않음")
         }
     }
 }
