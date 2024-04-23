@@ -13,7 +13,8 @@ class BoardService(
     private val boardPostDomainService: BoardPostDomainService,
 ) {
     fun registerBoardPost(request: RegisterBoardPostRequest, userId: Long): BoardInfoResponse {
-        val boardPost = boardPostDomainService.registerBoardPost(request.title, request.content, request.tagId, userId)
+        val boardPost = boardPostDomainService.registerBoardPost(
+            request.toRegisterPostRequestDto(), userId)
         return BoardInfoResponse.from(boardPost)
     }
 
@@ -23,12 +24,12 @@ class BoardService(
     }
 
     fun getBoardPostsByTags(request: BoardListRequest, loginUserId: Long) : BoardListResponse  {
-        val pageWithCursor = boardPostDomainService.getBoardPostsWithCriteria(request.tag, request.take, request.startId, request.userId, loginUserId)
+        val pageWithCursor = boardPostDomainService.getBoardPostsWithCriteria(request.toGetPostListRequestDto(), loginUserId)
         return BoardListResponse.from(pageWithCursor.data, pageWithCursor.nextCursorId)
     }
 
     fun updateBoardPost(request: UpdateBoardPostRequest, userId: Long): BoardInfoResponse {
-        val boardPost = boardPostDomainService.updateBoardPost(request.title, request.content, request.tagId, request.postId, userId)
+        val boardPost = boardPostDomainService.updateBoardPost(request.toUpdatePostRequestDto(), userId)
         return BoardInfoResponse.from(boardPost)
     }
 }

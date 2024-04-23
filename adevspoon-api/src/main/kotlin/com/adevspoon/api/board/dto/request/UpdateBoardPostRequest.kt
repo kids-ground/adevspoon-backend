@@ -1,5 +1,6 @@
 package com.adevspoon.api.board.dto.request
 
+import com.adevspoon.domain.board.dto.request.UpdatePostRequestDto
 import io.swagger.v3.oas.annotations.media.Schema
 
 data class UpdateBoardPostRequest(
@@ -10,4 +11,11 @@ data class UpdateBoardPostRequest(
     val content: String?,
     @Schema(description = "수정한 태그 id")
     val tagId: Int?,
-)
+) {
+    fun toUpdatePostRequestDto() = UpdatePostRequestDto(
+        postId = this.postId,
+        title = this.title,
+        content = this.content,
+        tagId = this.tagId
+    )
+}

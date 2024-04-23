@@ -1,5 +1,6 @@
 package com.adevspoon.api.board.dto.request
 
+import com.adevspoon.domain.board.dto.request.RegisterPostRequestDto
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotBlank
@@ -18,5 +19,9 @@ data class RegisterBoardPostRequest(
     @field:Min(value = 1, message = "태그 id를 입력해주세요.")
     val tagId: Int,
 ) {
-
+    fun toRegisterPostRequestDto() = RegisterPostRequestDto(
+        title = title,
+        content = content,
+        tagId = tagId
+    )
 }
