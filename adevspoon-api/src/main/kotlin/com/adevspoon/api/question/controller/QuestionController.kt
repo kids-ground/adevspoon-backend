@@ -46,9 +46,6 @@ class QuestionController(
         @RequestUser user: RequestUserInfo,
         @Valid request: QuestionCategoryListRequest
     ): List<QuestionCategoryResponse> {
-        TODO("""
-            - limit 기본값 30개, offset 기본값 0개
-            - Category 가져오기 - 내가 선택한 카테고리인지, 더 이상 받을 질문이 없는지도 체크
-        """.trimIndent())
+        return questionService.getQuestionCategories(user.userId)
     }
 }
