@@ -1,9 +1,13 @@
 package com.adevspoon.domain.board.service
 
 import com.adevspoon.domain.board.domain.BoardPostEntity
+import com.adevspoon.domain.board.dto.request.GetPostListRequestDto
+import com.adevspoon.domain.board.dto.request.RegisterPostRequestDto
+import com.adevspoon.domain.board.dto.request.UpdatePostRequestDto
 import com.adevspoon.domain.board.dto.response.BoardPost
 import com.adevspoon.domain.board.exception.BoardPostNotFoundException
-import com.adevspoon.domain.board.exception.BoardTageNotFoundException
+import com.adevspoon.domain.board.exception.BoardPostOwnershipException
+import com.adevspoon.domain.board.exception.BoardTagNotFoundException
 import com.adevspoon.domain.board.repository.BoardPostRepository
 import com.adevspoon.domain.board.repository.BoardTagRepository
 import com.adevspoon.domain.common.annotation.DomainService
@@ -27,36 +31,65 @@ class BoardPostDomainService(
 ) {
     @ActivityEvent(ActivityEventType.BOARD_POST)
     @Transactional
-    fun registerBoardPost(userId: Long, tagId: Int, title: String, content: String): BoardPost {
+    fun registerBoardPost(request: RegisterPostRequestDto, userId: Long): BoardPost {
         val user = memberDomainService.getUserEntity(userId)
-        val memberProfile = memberDomainService.getMemberProfile(userId)
-        val tag = boardTagRepository.findByIdOrNull(tagId) ?: throw BoardTageNotFoundException()
+        val tag = boardTagRepository.findByIdOrNull(request.tagId) ?: throw BoardTagNotFoundException(request.tagId.toString())
 
-        val boardPost = BoardPostEntity(user = user, tag = tag, title = title, content = content, likeCount = 0, commentCount = 0, viewCount = 0)
-
+        val boardPost = BoardPostEntity(user = user, tag = tag, title = request.title, content = request.content, likeCount = 0, commentCount = 0, viewCount = 0)
         val savedBoardPost = boardPostRepository.save(boardPost)
-        return BoardPost.from(savedBoardPost, memberProfile, false)
+
+        return buildBoardPostResponse(savedBoardPost, userId)
     }
 
     @Transactional
     fun getBoardPost(postId: Long, userId: Long): BoardPost {
-        val boardPost = boardPostRepository.findByIdOrNull(postId) ?: throw BoardPostNotFoundException()
+        val boardPost = boardPostRepository.findByIdOrNull(postId) ?: throw BoardPostNotFoundException(postId.toString())
         boardPost.increaseViewCount()
         boardPostRepository.save(boardPost)
 
-        val isUserLikedBoardPost = likeDomainService.isUserLikedPost(userId, boardPost.id)
+        return buildBoardPostResponse(boardPost, userId)
+    }
 
+    @Transactional
+    fun updateBoardPost(request: UpdatePostRequestDto, userId: Long): BoardPost {
+        val boardPost = getBoardPostEntity(request.postId)
+        validatePostOwnership(boardPost, userId)
+        updatePostTag(boardPost, request.tagId)
+        boardPost.updateTitleAndContent(request.title, request.content)
+        boardPostRepository.save(boardPost)
+
+        return buildBoardPostResponse(boardPost, userId)
+    }
+
+    private fun buildBoardPostResponse(boardPost: BoardPostEntity, userId: Long): BoardPost {
+        val isUserLikedBoardPost = likeDomainService.isUserLikedPost(userId, boardPost.id)
         val memberProfile = memberDomainService.getMemberProfile(boardPost.user.id)
+
         return BoardPost.from(boardPost, memberProfile, isUserLikedBoardPost)
     }
 
+    private fun validatePostOwnership(boardPost: BoardPostEntity, userId: Long) {
+        if (boardPost.user.id != userId) {
+            throw BoardPostOwnershipException(postOwnerId = boardPost.user.id.toString(), loginUserId = userId.toString())
+        }
+    }
+
+    private fun updatePostTag(boardPost: BoardPostEntity, tagId: Int?) {
+        tagId?.let {
+            if (boardPost.tag.id != it) {
+                val newTag = boardTagRepository.findByIdOrNull(it) ?: throw BoardTagNotFoundException(tagId.toString())
+                boardPost.updateTag(newTag)
+            }
+        }
+    }
+
     @Transactional(readOnly = true)
-    fun getBoardPostsWithCriteria(tags: List<Int>, pageSize: Int, startPostId: Long?, targetUserId: Long?, loginUserId: Long): PageWithCursor<BoardPost> {
-        val pageable = CursorPageable(pageSize)
-        val page = fetchPostBasedOnTageExistence(tags, startPostId, targetUserId, pageable)
+    fun getBoardPostsWithCriteria(request: GetPostListRequestDto, loginUserId: Long): PageWithCursor<BoardPost> {
+        val pageable = CursorPageable(request.pageSize)
+        val page = fetchPostBasedOnTageExistence(request.tags, request.startPostId, request.targetUserId, pageable)
 
         val boardPosts = page.content
-        val nextCursorId = if (boardPosts.size < pageSize) null else page.lastOrNull()?.id
+        val nextCursorId = if (boardPosts.size < request.pageSize) null else page.lastOrNull()?.id
         val likedPostIds = getLikedPostsByUser(loginUserId, boardPosts.map { it.id }.toList()).toSet()
         val boardPostDto = boardPosts.map { boardPost ->
             val isUserLikedBoardPost = likedPostIds.contains(boardPost.id)
@@ -87,4 +120,7 @@ class BoardPostDomainService(
     private fun retrievePostsByTagsIfPresent(tags: List<Int>, startPostId: Long?, targetUserId: Long?, pageable: Pageable) : Page<BoardPostEntity> {
         return boardPostRepository.findByTagsAndUserIdWithCursor(tags, startPostId, targetUserId, pageable)
     }
+
+    private fun getBoardPostEntity(postId: Long) =
+        boardPostRepository.findByIdOrNull(postId) ?: throw BoardPostNotFoundException(postId.toString())
 }

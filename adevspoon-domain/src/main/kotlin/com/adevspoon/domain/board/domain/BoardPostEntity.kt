@@ -22,7 +22,7 @@ class BoardPostEntity(
 
     @NotNull
     @Column(name = "content", nullable = false)
-    var content: String? = null,
+    var content: String,
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -49,5 +49,14 @@ class BoardPostEntity(
 ) : BaseEntity() {
     fun increaseViewCount() {
         this.viewCount++
+    }
+
+    fun updateTitleAndContent(title: String?, content: String?) {
+        title?.let { this.title = it }
+        content?.let { this.content = it }
+    }
+
+    fun updateTag(newTag: BoardTagEntity) {
+        tag = newTag
     }
 }
