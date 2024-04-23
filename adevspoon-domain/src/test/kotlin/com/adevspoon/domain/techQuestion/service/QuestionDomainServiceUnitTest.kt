@@ -115,10 +115,15 @@ class QuestionDomainServiceUnitTest {
         fun `SUCCESS - 문제 발급 & 응답`() {
             val today = LocalDate.now()
             val latestIssuedQuestion =
-                QuestionFixture.createQuestionOpen(1, question1, user = user, openDate = LocalDateTime.now().minusDays(1))
+                QuestionFixture.createQuestionOpen(
+                    1,
+                    question1,
+                    user = user,
+                    openDate = LocalDateTime.now().minusDays(1)
+                )
             val newIssuedQuestionInfo = QuestionFixture.createQuestionInfo(questionId = question2.id)
             every { questionOpenRepository.findLatest(user) } returns latestIssuedQuestion
-            every { questionOpenDomainService.issueQuestion(user.id , today) } returns newIssuedQuestionInfo
+            every { questionOpenDomainService.issueQuestion(user.id, today) } returns newIssuedQuestionInfo
 
             val questionInfo = questionDomainService.getOrCreateTodayQuestion(GetTodayQuestion(user.id, today))
 
@@ -173,8 +178,15 @@ class QuestionDomainServiceUnitTest {
         @Test
         fun `SUCCESS - 사용자의 문제 카테고리 가져오기 (고갈, 선택 포함)`() {
             // given
-            every { questionCategoryRepository.findAll() } returns listOf(questionCategory1, questionCategory2, questionCategory3)
-            every { userCustomizedQuestionCategoryRepository.findAllSelectedCategory(user) } returns listOf(questionCategory1, questionCategory2)
+            every { questionCategoryRepository.findAll() } returns listOf(
+                questionCategory1,
+                questionCategory2,
+                questionCategory3
+            )
+            every { userCustomizedQuestionCategoryRepository.findAllSelectedCategory(user) } returns listOf(
+                questionCategory1,
+                questionCategory2
+            )
 
             every { questionRepository.findQuestionCountGroupByCategory() } returns listOf(
                 QuestionFixture.createQuestionCount(1, 2),
@@ -186,22 +198,19 @@ class QuestionDomainServiceUnitTest {
             )
 
             // when
-            var categories = questionDomainService.getQuestionCategories(user.id)
-            categories = categories.sortedWith(compareBy { it.id })
+            val categories = questionDomainService.getQuestionCategories(user.id).sortedWith(compareBy { it.id })
 
             // then
-            assertEquals(categories.size, 3, "문제 카테고리 개수는 총 3개")
-            assertEquals(categories[0].id, 1L)
-            assertEquals(categories[0].depleted, true, "카테고리 1은 문제 고갈됨")
-            assertEquals(categories[0].selected, true, "카테고리 1은 선택됨")
+            val expected = mutableListOf(
+                QuestionFixture.createQuestionCategoryInfo(id = 1, depleted = true, selected = true),
+                QuestionFixture.createQuestionCategoryInfo(id = 2, depleted = false, selected = true),
+                QuestionFixture.createQuestionCategoryInfo(id = 3, depleted = false, selected = false)
+            )
 
-            assertEquals(categories[1].id, 2L)
-            assertEquals(categories[1].depleted, false, "카테고리 2는 고갈되지 않음")
-            assertEquals(categories[1].selected, true, "카테고리 2는 선택됨")
-
-            assertEquals(categories[2].id, 3L)
-            assertEquals(categories[2].depleted, false, "카테고리 3은 고갈되지 않음")
-            assertEquals(categories[2].selected, false, "카테고리 3은 선택하지 않음")
+            expected.forEachIndexed { idx, info ->
+                assertEquals(categories[idx].depleted, info.depleted)
+                assertEquals(categories[idx].selected, info.selected)
+            }
         }
     }
 }
