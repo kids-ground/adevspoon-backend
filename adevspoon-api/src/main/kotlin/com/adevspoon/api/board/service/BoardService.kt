@@ -1,5 +1,6 @@
 package com.adevspoon.api.board.service
 
+import com.adevspoon.api.board.dto.request.BoardDeleteRequest
 import com.adevspoon.api.board.dto.request.BoardListRequest
 import com.adevspoon.api.board.dto.request.RegisterBoardPostRequest
 import com.adevspoon.api.board.dto.request.UpdateBoardPostRequest
@@ -31,5 +32,10 @@ class BoardService(
     fun updateBoardPost(request: UpdateBoardPostRequest, userId: Long): BoardInfoResponse {
         val boardPost = boardPostDomainService.updateBoardPost(request.toUpdatePostRequestDto(), userId)
         return BoardInfoResponse.from(boardPost)
+    }
+
+    fun deleteBoardById(request: BoardDeleteRequest, userId: Long): String {
+        boardPostDomainService.deleteById(request.postId, userId)
+        return "success delete. postId:${request.postId}"
     }
 }

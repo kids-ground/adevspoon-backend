@@ -10,9 +10,9 @@ import com.adevspoon.domain.board.exception.BoardPostOwnershipException
 import com.adevspoon.domain.board.exception.BoardTagNotFoundException
 import com.adevspoon.domain.board.repository.BoardPostRepository
 import com.adevspoon.domain.board.repository.BoardTagRepository
-import com.adevspoon.domain.common.annotation.DomainService
 import com.adevspoon.domain.common.annotation.ActivityEvent
 import com.adevspoon.domain.common.annotation.ActivityEventType
+import com.adevspoon.domain.common.annotation.DomainService
 import com.adevspoon.domain.common.service.LikeDomainService
 import com.adevspoon.domain.common.utils.CursorPageable
 import com.adevspoon.domain.common.utils.PageWithCursor
@@ -119,6 +119,13 @@ class BoardPostDomainService(
 
     private fun retrievePostsByTagsIfPresent(tags: List<Int>, startPostId: Long?, targetUserId: Long?, pageable: Pageable) : Page<BoardPostEntity> {
         return boardPostRepository.findByTagsAndUserIdWithCursor(tags, startPostId, targetUserId, pageable)
+    }
+
+    @Transactional
+    fun deleteById(postId: Long, userId: Long) {
+        val boardPost = getBoardPostEntity(postId)
+        validatePostOwnership(boardPost, userId)
+        boardPostRepository.deleteById(postId)
     }
 
     private fun getBoardPostEntity(postId: Long) =

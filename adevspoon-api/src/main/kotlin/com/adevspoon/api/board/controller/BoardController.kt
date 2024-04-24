@@ -70,9 +70,7 @@ class BoardController(
         @RequestUser requestUser: RequestUserInfo,
         @RequestBody @Valid request: BoardDeleteRequest,
     ): String {
-        TODO("""
-            게시판 글 삭제
-        """.trimIndent())
+        return boardService.deleteBoardById(request, requestUser.userId)
     }
 
     @Operation(summary = "게시글 좋아요")
