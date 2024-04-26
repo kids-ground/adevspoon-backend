@@ -3,4 +3,4 @@ package com.adevspoon.infrastructure
 import org.springframework.boot.autoconfigure.SpringBootApplication
 
 @SpringBootApplication
-class AdevpspoonInfra
+class AdevspoonInfra

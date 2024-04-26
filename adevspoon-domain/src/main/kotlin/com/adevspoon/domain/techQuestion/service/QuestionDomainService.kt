@@ -32,9 +32,9 @@ class QuestionDomainService(
 
     @Transactional(readOnly = true)
     fun getQuestion(memberId: Long, questionId: Long): QuestionInfo {
-        val user = userRepository.findByIdOrNull(memberId) ?: throw throw MemberNotFoundException()
-        val question = questionRepository.findByIdOrNull(questionId) ?: throw throw QuestionNotFoundException()
-        val issuedQuestion = questionOpenRepository.findByQuestionAndUser(question, user) ?: throw throw QuestionNotOpenedException()
+        val user = userRepository.findByIdOrNull(memberId) ?: throw MemberNotFoundException()
+        val question = questionRepository.findByIdOrNull(questionId) ?: throw QuestionNotFoundException()
+        val issuedQuestion = questionOpenRepository.findByQuestionAndUser(question, user) ?: throw QuestionNotOpenedException()
 
         return makeQuestionInfo(issuedQuestion)
     }
@@ -42,7 +42,7 @@ class QuestionDomainService(
     @Transactional
     @DistributedLock(keyClass = [GetTodayQuestion::class])
     fun getOrCreateTodayQuestion(request: GetTodayQuestion): QuestionInfo {
-        val user = userRepository.findByIdOrNull(request.memberId) ?: throw throw MemberNotFoundException()
+        val user = userRepository.findByIdOrNull(request.memberId) ?: throw MemberNotFoundException()
         val latestIssuedQuestion = questionOpenRepository.findLatest(user)
 
         val isTodayQuestion = (latestIssuedQuestion?.openDate?.toLocalDate()?.compareTo(request.today) ?: -1) == 0
