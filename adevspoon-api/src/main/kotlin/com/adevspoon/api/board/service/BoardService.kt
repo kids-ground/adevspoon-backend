@@ -36,8 +36,8 @@ class BoardService(
         return "Successfully delete. postId:${request.postId}"
     }
 
-    fun toggleLike(request: LikeBoardContentRequest, userId: Long): String {
-        boardPostDomainService.toggleLike(request.toUpdatePostLikeStateRequest(), userId)
-        return "Successfully toggled post like"
+    fun toggleLike(request: LikeBoardContentRequest, userId: Long) : String{
+        boardPostDomainService.toggleLike(request.toLikeStateRequest(), userId)
+        return "Successfully toggle like"
     }
 }

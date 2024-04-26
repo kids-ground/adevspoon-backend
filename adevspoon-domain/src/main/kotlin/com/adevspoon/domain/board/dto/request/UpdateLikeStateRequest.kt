@@ -1,6 +1,6 @@
 package com.adevspoon.domain.board.dto.request
 
-data class UpdatePostLikeStateRequest(
+data class UpdateLikeStateRequest(
     val type: String,
     val contentId: Long,
     val like: Boolean

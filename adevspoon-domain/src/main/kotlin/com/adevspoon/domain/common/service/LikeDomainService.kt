@@ -28,7 +28,7 @@ class LikeDomainService(
 
     @Transactional
     fun toggleLike(type: String, contentId: Long, isLike: Boolean, loginUserId: Long) {
-        if (isLike) {
+        if (!isLike) {
             deleteLike(type, contentId, loginUserId)
         } else {
             val user = userRepository.findByIdOrNull(loginUserId) ?: throw MemberNotFoundException()
