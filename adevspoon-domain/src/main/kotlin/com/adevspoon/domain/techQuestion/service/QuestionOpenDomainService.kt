@@ -1,8 +1,10 @@
 package com.adevspoon.domain.techQuestion.service
 
 import com.adevspoon.domain.common.annotation.DomainService
+import com.adevspoon.domain.member.domain.UserEntity
 import com.adevspoon.domain.member.exception.MemberNotFoundException
 import com.adevspoon.domain.member.repository.UserRepository
+import com.adevspoon.domain.techQuestion.domain.QuestionEntity
 import com.adevspoon.domain.techQuestion.domain.QuestionOpenEntity
 import com.adevspoon.domain.techQuestion.dto.response.QuestionInfo
 import com.adevspoon.domain.techQuestion.exception.QuestionCategoryNotFoundException
@@ -32,7 +34,7 @@ class QuestionOpenDomainService(
     fun issueQuestion(memberId: Long, today: LocalDate): QuestionInfo {
         // 정책 - 1일 1회 Random 발급
         logger.info("질문발급 : memberId($memberId), today($today)")
-        val user = userRepository.findByIdOrNull(memberId) ?: throw MemberNotFoundException()
+        val user = getMember(memberId)
         val selectedCategoryIds = userCustomizedQuestionCategoryRepository.findAllSelectedCategoryIds(user)
             .takeIf { it.isNotEmpty() }
             ?: questionCategoryRepository.findAllIds()
@@ -44,13 +46,21 @@ class QuestionOpenDomainService(
                 ?: throw QuestionExhaustedException()
 
         val issuedQuestionId = candidateIssuableQuestionIds.random()
-        val question = questionRepository.findByIdOrNull(issuedQuestionId) ?: throw QuestionNotFoundException()
+        val question = getQuestion(issuedQuestionId)
         val issuedQuestion = QuestionOpenEntity(user = user, question = question, openDate = today.atStartOfDay())
         questionOpenRepository.save(issuedQuestion)
 
         user.apply { questionCnt += 1 }
 
         return makeQuestionInfo(issuedQuestion, candidateIssuableQuestionIds.size == 1)
+    }
+
+    private fun getQuestion(questionId: Long): QuestionEntity {
+        return questionRepository.findByIdOrNull(questionId) ?: throw QuestionNotFoundException()
+    }
+
+    private fun getMember(memberId: Long): UserEntity {
+        return userRepository.findByIdOrNull(memberId) ?: throw MemberNotFoundException()
     }
 
     private fun makeQuestionInfo(questionOpen: QuestionOpenEntity, isLast: Boolean = false): QuestionInfo {

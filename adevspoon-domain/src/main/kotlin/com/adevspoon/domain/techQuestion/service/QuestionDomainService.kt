@@ -5,6 +5,7 @@ import com.adevspoon.domain.common.annotation.DomainService
 import com.adevspoon.domain.member.domain.UserEntity
 import com.adevspoon.domain.member.exception.MemberNotFoundException
 import com.adevspoon.domain.member.repository.UserRepository
+import com.adevspoon.domain.techQuestion.domain.QuestionEntity
 import com.adevspoon.domain.techQuestion.domain.QuestionOpenEntity
 import com.adevspoon.domain.techQuestion.domain.UserCustomizedQuestionCategoryEntity
 import com.adevspoon.domain.techQuestion.domain.UserCustomizedQuestionCategoryId
@@ -32,9 +33,9 @@ class QuestionDomainService(
 
     @Transactional(readOnly = true)
     fun getQuestion(memberId: Long, questionId: Long): QuestionInfo {
-        val user = userRepository.findByIdOrNull(memberId) ?: throw throw MemberNotFoundException()
-        val question = questionRepository.findByIdOrNull(questionId) ?: throw throw QuestionNotFoundException()
-        val issuedQuestion = questionOpenRepository.findByQuestionAndUser(question, user) ?: throw throw QuestionNotOpenedException()
+        val user = getMember(memberId)
+        val question = getQuestion(questionId)
+        val issuedQuestion = getIssuedQuestion(question, user)
 
         return makeQuestionInfo(issuedQuestion)
     }
@@ -42,7 +43,7 @@ class QuestionDomainService(
     @Transactional
     @DistributedLock(keyClass = [GetTodayQuestion::class])
     fun getOrCreateTodayQuestion(request: GetTodayQuestion): QuestionInfo {
-        val user = userRepository.findByIdOrNull(request.memberId) ?: throw throw MemberNotFoundException()
+        val user = getMember(request.memberId)
         val latestIssuedQuestion = questionOpenRepository.findLatest(user)
 
         val isTodayQuestion = (latestIssuedQuestion?.openDate?.toLocalDate()?.compareTo(request.today) ?: -1) == 0
@@ -53,7 +54,7 @@ class QuestionDomainService(
 
     @Transactional
     fun getQuestionCategories(memberId: Long): List<QuestionCategoryInfo> {
-        val user = userRepository.findByIdOrNull(memberId) ?: throw MemberNotFoundException()
+        val user = getMember(memberId)
 
         val allCategories = questionCategoryRepository.findAll()
         val selectedCategories = userCustomizedQuestionCategoryRepository.findAllSelectedCategory(user)
@@ -84,6 +85,18 @@ class QuestionDomainService(
         userCustomizedQuestionCategoryRepository.deleteAllByUser(user)
         // FIXME: saveAll 한 번에 처리 필요(select N번, insert N번 나감)
         userCustomizedQuestionCategoryRepository.saveAll(newCustomizedQuestionCategories)
+    }
+
+    private fun getQuestion(questionId: Long): QuestionEntity {
+        return questionRepository.findByIdOrNull(questionId) ?: throw QuestionNotFoundException()
+    }
+
+    private fun getMember(memberId: Long): UserEntity {
+        return userRepository.findByIdOrNull(memberId) ?: throw MemberNotFoundException()
+    }
+
+    private fun getIssuedQuestion(question: QuestionEntity, member: UserEntity): QuestionOpenEntity {
+        return questionOpenRepository.findByQuestionAndUser(question, member) ?: throw QuestionNotOpenedException()
     }
 
     private fun makeQuestionInfo(questionOpen: QuestionOpenEntity): QuestionInfo {

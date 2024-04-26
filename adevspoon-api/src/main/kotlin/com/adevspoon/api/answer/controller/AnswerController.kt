@@ -3,6 +3,7 @@ package com.adevspoon.api.answer.controller
 import com.adevspoon.api.answer.dto.*
 import com.adevspoon.api.answer.dto.request.*
 import com.adevspoon.api.answer.dto.response.AnswerInfoResponse
+import com.adevspoon.api.answer.service.AnswerService
 import com.adevspoon.api.common.annotation.RequestUser
 import com.adevspoon.api.common.dto.RequestUserInfo
 import com.adevspoon.api.config.swagger.SWAGGER_TAG_QUESTION_ANSWER
@@ -14,17 +15,16 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/post")
 @Tag(name = SWAGGER_TAG_QUESTION_ANSWER)
-class AnswerController {
-
+class AnswerController(
+    private val answerService: AnswerService
+) {
     @Operation(summary = "답변 등록", description = "답변을 등록하고 답변 정보를 반환한다.")
     @PostMapping
     fun registerAnswer(
-        @RequestUser user: RequestUserInfo,
+        @RequestUser requestUser: RequestUserInfo,
         @RequestBody @Valid request: RegisterAnswerRequest,
     ): AnswerInfoResponse {
-        TODO("""
-            - 답변을 등록한다.
-        """.trimIndent())
+        return answerService.registerAnswer(request, requestUser.userId)
     }
 
     @Operation(summary = "답변 정보", description = "id를 기반으로 답변 정보를 반환한다.")
