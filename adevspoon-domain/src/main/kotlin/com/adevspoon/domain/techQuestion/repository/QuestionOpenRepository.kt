@@ -3,6 +3,7 @@ package com.adevspoon.domain.techQuestion.repository
 import com.adevspoon.domain.member.domain.UserEntity
 import com.adevspoon.domain.techQuestion.domain.QuestionEntity
 import com.adevspoon.domain.techQuestion.domain.QuestionOpenEntity
+import com.adevspoon.domain.techQuestion.dto.response.CategoryQuestionCountDto
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 
@@ -25,4 +26,10 @@ interface QuestionOpenRepository: JpaRepository<QuestionOpenEntity, Long> {
 
     @Query("SELECT qo.question.id FROM QuestionOpenEntity qo WHERE qo.user = :user")
     fun findAllIssuedQuestionIds(user: UserEntity): Set<Long>
+
+    @Query("SELECT new com.adevspoon.domain.techQuestion.dto.response.CategoryQuestionCountDto(q.question.categoryId, COUNT(q)) " +
+            "FROM QuestionOpenEntity q " +
+            "WHERE q.user = :user " +
+            "GROUP BY q.question.categoryId ")
+    fun findIssuedQuestionGroupByCategory(user: UserEntity): List<CategoryQuestionCountDto>
 }

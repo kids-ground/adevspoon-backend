@@ -5,6 +5,8 @@ import com.adevspoon.domain.techQuestion.domain.QuestionCategoryEntity
 import com.adevspoon.domain.techQuestion.domain.QuestionEntity
 import com.adevspoon.domain.techQuestion.domain.QuestionOpenEntity
 import com.adevspoon.domain.techQuestion.domain.enums.QuestionCategoryTopic
+import com.adevspoon.domain.techQuestion.dto.response.CategoryQuestionCountDto
+import com.adevspoon.domain.techQuestion.dto.response.QuestionCategoryInfo
 import com.adevspoon.domain.techQuestion.dto.response.QuestionInfo
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -85,6 +87,22 @@ class QuestionFixture {
             isLast = isLast,
             createdAt = createdAt,
             updatedAt = updatedAt,
+        )
+
+        fun createQuestionCount(
+            categoryId: Long = 1,
+            questionCount: Long = 1,
+        ) = CategoryQuestionCountDto(
+            categoryId, questionCount
+        )
+
+        fun createQuestionCategoryInfo(
+            id: Long = 1,
+            depleted: Boolean = false,
+            selected: Boolean = false,
+            name: String = "name",
+        ) = QuestionCategoryInfo(
+            id, name, depleted, selected
         )
     }
 }

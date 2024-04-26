@@ -1,6 +1,10 @@
 package com.adevspoon.api.board.service
 
-import com.adevspoon.api.board.dto.request.*
+
+import com.adevspoon.api.board.dto.request.BoardDeleteRequest
+import com.adevspoon.api.board.dto.request.BoardListRequest
+import com.adevspoon.api.board.dto.request.RegisterBoardPostRequest
+import com.adevspoon.api.board.dto.request.UpdateBoardPostRequest
 import com.adevspoon.api.board.dto.response.BoardInfoResponse
 import com.adevspoon.api.board.dto.response.BoardListResponse
 import com.adevspoon.api.common.annotation.ApplicationService
