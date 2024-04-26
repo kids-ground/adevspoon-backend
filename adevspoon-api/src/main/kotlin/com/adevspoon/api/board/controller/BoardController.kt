@@ -79,10 +79,7 @@ class BoardController(
         @RequestUser requestUser: RequestUserInfo,
         @RequestBody @Valid request: LikeBoardContentRequest
     ): String {
-        TODO("""
-            게시판 글 좋아요
-            - post, comment 둘 다 있음
-        """.trimIndent())
+        return boardService.toggleLike(request, requestUser.userId)
     }
 
     @Operation(summary = "게시글 신고")
