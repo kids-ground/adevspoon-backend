@@ -20,10 +20,10 @@ class UserCustomizedQuestionCategoryId(
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "categoryId", nullable = false)
-    val category: QuestionCategoryEntity? = null,
+    val category: QuestionCategoryEntity,
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "userId", nullable = false)
-    val user: UserEntity? = null
+    val user: UserEntity
 ): Serializable
