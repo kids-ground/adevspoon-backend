@@ -3,6 +3,7 @@ package com.adevspoon.domain.board.service
 import com.adevspoon.domain.board.domain.BoardPostEntity
 import com.adevspoon.domain.board.dto.request.GetPostListRequestDto
 import com.adevspoon.domain.board.dto.request.RegisterPostRequestDto
+import com.adevspoon.domain.board.dto.request.UpdatePostLikeStateRequest
 import com.adevspoon.domain.board.dto.request.UpdatePostRequestDto
 import com.adevspoon.domain.board.dto.response.BoardPost
 import com.adevspoon.domain.board.exception.BoardPostNotFoundException
@@ -126,6 +127,11 @@ class BoardPostDomainService(
         val boardPost = getBoardPostEntity(postId)
         validatePostOwnership(boardPost, userId)
         boardPostRepository.deleteById(postId)
+    }
+
+    @Transactional
+    fun toggleLike(request: UpdatePostLikeStateRequest, userId: Long) {
+        likeDomainService.toggleLike(request.type, request.contentId, request.like, userId)
     }
 
     private fun getBoardPostEntity(postId: Long) =

@@ -1,9 +1,6 @@
 package com.adevspoon.api.board.service
 
-import com.adevspoon.api.board.dto.request.BoardDeleteRequest
-import com.adevspoon.api.board.dto.request.BoardListRequest
-import com.adevspoon.api.board.dto.request.RegisterBoardPostRequest
-import com.adevspoon.api.board.dto.request.UpdateBoardPostRequest
+import com.adevspoon.api.board.dto.request.*
 import com.adevspoon.api.board.dto.response.BoardInfoResponse
 import com.adevspoon.api.board.dto.response.BoardListResponse
 import com.adevspoon.api.common.annotation.ApplicationService
@@ -36,6 +33,11 @@ class BoardService(
 
     fun deleteBoardById(request: BoardDeleteRequest, userId: Long): String {
         boardPostDomainService.deleteById(request.postId, userId)
-        return "success delete. postId:${request.postId}"
+        return "Successfully delete. postId:${request.postId}"
+    }
+
+    fun toggleLike(request: LikeBoardContentRequest, userId: Long): String {
+        boardPostDomainService.toggleLike(request.toUpdatePostLikeStateRequest(), userId)
+        return "Successfully toggled post like"
     }
 }
