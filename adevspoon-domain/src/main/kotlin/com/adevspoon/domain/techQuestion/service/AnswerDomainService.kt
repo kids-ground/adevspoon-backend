@@ -1,5 +1,7 @@
 package com.adevspoon.domain.techQuestion.service
 
+import com.adevspoon.domain.common.annotation.ActivityEvent
+import com.adevspoon.domain.common.annotation.ActivityEventType
 import com.adevspoon.domain.common.annotation.DomainService
 import com.adevspoon.domain.member.domain.UserEntity
 import com.adevspoon.domain.member.exception.MemberNotFoundException
@@ -26,6 +28,7 @@ class AnswerDomainService(
     private val userRepository: UserRepository,
     private val memberDomainService: MemberDomainService,
 ) {
+    @ActivityEvent(type = ActivityEventType.ANSWER)
     @Transactional
     fun registerQuestionAnswer(request: CreateQuestionAnswer): QuestionAnswerInfo {
         val requestMember = getMember(request.requestMemberId)
