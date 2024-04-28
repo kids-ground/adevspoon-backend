@@ -12,3 +12,4 @@ class BoardPostNotFoundException(postId: String): AdevspoonException(
 class BoardPostOwnershipException(postOwnerId: String, loginUserId: String): AdevspoonException(
     BOARD_POST_EDIT_UNAUTHORIZED,
     detailReason = BOARD_POST_EDIT_UNAUTHORIZED.message + " postOwnerId: $postOwnerId, loginUserId: $loginUserId")
+class BoardPostInvalidReturnException: AdevspoonException(BOARD_POST_INVALID_RETURN)
