@@ -32,7 +32,7 @@ class QuestionController(
     }
 
     @Operation(summary = "질문 id 기반으로 상세정보 가져오기")
-    @GetMapping("/question/{questionId}")
+    @GetMapping("/{questionId}")
     fun getQuestionDetail(
         @RequestUser user: RequestUserInfo,
         @PathVariable questionId: Long,
@@ -41,7 +41,7 @@ class QuestionController(
     }
 
     @Operation(summary = "질문 카테고리 리스트 가져오기")
-    @GetMapping("/question/category")
+    @GetMapping("/category")
     fun getQuestionCategoryList(
         @RequestUser user: RequestUserInfo,
         @Valid request: QuestionCategoryListRequest
