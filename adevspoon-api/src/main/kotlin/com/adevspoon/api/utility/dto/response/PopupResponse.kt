@@ -1,5 +1,6 @@
 package com.adevspoon.api.utility.dto.response
 
+import com.adevspoon.domain.utility.dto.PopupInfo
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 
@@ -13,4 +14,15 @@ data class PopupResponse(
     val openDate: LocalDate,
     @Schema(description = "팝업 종료 날짜", example = "2024-01-10")
     val closeDate: LocalDate? = null
-)
+) {
+    companion object {
+        fun from(info: PopupInfo) = PopupResponse(
+            id = info.id,
+            name = info.name,
+            imageUrl = info.imageUrl,
+            url = info.url,
+            openDate = info.openDate,
+            closeDate = info.closeDate
+        )
+    }
+}
