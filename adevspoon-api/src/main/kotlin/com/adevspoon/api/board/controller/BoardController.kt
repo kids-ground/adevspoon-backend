@@ -88,8 +88,6 @@ class BoardController(
         @RequestUser requestUser: RequestUserInfo,
         @RequestBody @Valid request: ReportBoardContentRequest
     ): String {
-        TODO("""
-            게시판 글 신고
-        """.trimIndent())
+        return boardService.report(request, requestUser.userId)
     }
 }
