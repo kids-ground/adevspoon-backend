@@ -19,12 +19,12 @@ class BoardCommentEntity(
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "postId", nullable = false)
-    val post: BoardPostEntity? = null,
+    val post: BoardPostEntity,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "userId")
-    val user: UserEntity? = null,
+    val user: UserEntity,
 
     @NotNull
     @Column(name = "content", nullable = false)
