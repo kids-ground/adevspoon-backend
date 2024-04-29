@@ -47,6 +47,16 @@ class AnswerController(
         return answerService.modifyAnswer(answerId, request, user.userId)
     }
 
+    @Operation(summary = "답변 좋아요", description = "답변을 좋아요 or 좋아요 취소한다.")
+    @PostMapping("/{answerId}/favorite")
+    fun likeAnswer(
+        @RequestUser user: RequestUserInfo,
+        @PathVariable answerId: Long,
+        @RequestBody @Valid request: LikeRequest,
+    ): String {
+        return answerService.likeAnswer(answerId, user.userId, request.like)
+    }
+
     @Operation(summary = "답변 신고", description = "올바르지 않은 답변에 대해 신고를 한다.")
     @PostMapping("/{answerId}/report")
     fun reportAnswer(
@@ -54,22 +64,6 @@ class AnswerController(
         @PathVariable answerId: Long,
         @RequestBody @Valid request: AnswerReportRequest,
     ): String {
-        TODO("""
-            - 답변을 신고한다.
-            - 내 답변인 경우 신고할 수 없다.
-            - 이미 내가 신고한 것인지도 확인해야 한다.
-        """.trimIndent())
-    }
-
-    @Operation(summary = "답변 좋아요", description = "답변을 좋아요 or 좋아요 취소한다.")
-    @PostMapping("/{id}/favorite")
-    fun likeAnswer(
-        @RequestUser user: RequestUserInfo,
-        @PathVariable id: Long,
-        @RequestBody @Valid request: LikeRequest,
-    ): String {
-        TODO("""
-            - 답변/게시글을 좋아요한다.
-        """.trimIndent())
+        return answerService.reportAnswer(answerId, user.userId)
     }
 }
