@@ -44,9 +44,7 @@ class AnswerController(
         @PathVariable answerId: Long,
         @RequestBody @Valid request: AnswerUpdateRequest,
     ): AnswerInfoResponse {
-        TODO("""
-            - 답변을 수정한다.
-        """.trimIndent())
+        return answerService.modifyAnswer(answerId, request, user.userId)
     }
 
     @Operation(summary = "답변 신고", description = "올바르지 않은 답변에 대해 신고를 한다.")
