@@ -12,3 +12,8 @@ class BoardPostNotFoundException(postId: String): AdevspoonException(
 class BoardPostOwnershipException(postOwnerId: String, loginUserId: String): AdevspoonException(
     BOARD_POST_EDIT_UNAUTHORIZED,
     detailReason = BOARD_POST_EDIT_UNAUTHORIZED.message + " postOwnerId: $postOwnerId, loginUserId: $loginUserId")
+
+class BoardCommentNotFoundException(commentId: String) : AdevspoonException(
+    BOARD_COMMENT_NOT_FOUND,
+    detailReason = BOARD_COMMENT_NOT_FOUND.message + " 존재하지 않는 commentId: $commentId"
+)
