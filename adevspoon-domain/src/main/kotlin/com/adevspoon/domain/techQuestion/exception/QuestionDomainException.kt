@@ -5,6 +5,8 @@ import com.adevspoon.common.exception.AdevspoonException
 class QuestionNotOpenedException : AdevspoonException(QuestionDomainErrorCode.QUESTION_NOT_OPENED)
 class QuestionExhaustedException : AdevspoonException(QuestionDomainErrorCode.QUESTION_EXHAUSTED)
 
+class QuestionAnswerEditUnauthorizedException : AdevspoonException(QuestionDomainErrorCode.QUESTION_ANSWER_EDIT_UNAUTHORIZED)
+
 class QuestionNotFoundException : AdevspoonException(QuestionDomainErrorCode.QUESTION_NOT_FOUND)
 class QuestionCategoryNotFoundException : AdevspoonException(QuestionDomainErrorCode.QUESTION_CATEGORY_NOT_FOUND)
 class QuestionAnswerNotFoundException : AdevspoonException(QuestionDomainErrorCode.QUESTION_ANSWER_NOT_FOUND)
