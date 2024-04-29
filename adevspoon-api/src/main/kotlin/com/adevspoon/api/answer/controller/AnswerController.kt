@@ -32,11 +32,9 @@ class AnswerController(
     fun getAnswerDetail(
         @RequestUser user: RequestUserInfo,
         @PathVariable answerId: Long,
-        @RequestParam("type") postType: AnswerType = AnswerType.ANSWER, // TODO: Converter 및 Validation 필요
+        @RequestParam("type") postType: AnswerType = AnswerType.ANSWER,
     ): AnswerInfoResponse {
-        TODO("""
-            - 특정 답변을 가져온다.
-        """.trimIndent())
+        return answerService.getAnswerDetail(answerId, user.userId)
     }
 
     @Operation(summary = "답변 수정", description = "답변을 수정하고 수정된 답변 정보를 반환한다.")
@@ -46,9 +44,7 @@ class AnswerController(
         @PathVariable answerId: Long,
         @RequestBody @Valid request: AnswerUpdateRequest,
     ): AnswerInfoResponse {
-        TODO("""
-            - 답변을 수정한다.
-        """.trimIndent())
+        return answerService.modifyAnswer(answerId, request, user.userId)
     }
 
     @Operation(summary = "답변 신고", description = "올바르지 않은 답변에 대해 신고를 한다.")

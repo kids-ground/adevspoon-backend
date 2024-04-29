@@ -20,7 +20,7 @@ data class MemberProfile(
     val representativeBadge: Badge?,
 ) {
     companion object {
-        fun from(user: UserEntity, hasBadgeList: List<BadgeEntity>, representativeBadge: BadgeEntity?) = MemberProfile(
+        fun from(user: UserEntity, hasBadgeList: List<BadgeEntity>?, representativeBadge: BadgeEntity?) = MemberProfile(
             memberId = user.id,
             nickname = user.nickname ?: "",
             statusMessage = user.statusMessage ?: "",
@@ -32,7 +32,7 @@ data class MemberProfile(
             updatedAt = user.updatedAt ?: LocalDateTime.now(),
             alarmOn = user.fcmToken != null,
             profileBelt = user.profileBelt.name.lowercase(),
-            badges = hasBadgeList.map { Badge.from(it) },
+            badges = hasBadgeList?.map { Badge.from(it) },
             representativeBadge = representativeBadge?.let { Badge.from(it) }
         )
     }
