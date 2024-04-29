@@ -15,6 +15,7 @@ import com.adevspoon.domain.common.annotation.ActivityEvent
 import com.adevspoon.domain.common.annotation.ActivityEventType
 import com.adevspoon.domain.common.annotation.DomainService
 import com.adevspoon.domain.common.entity.ReportEntity
+import com.adevspoon.domain.common.entity.enums.ReportReason
 import com.adevspoon.domain.common.repository.ReportRepository
 import com.adevspoon.domain.common.service.LikeDomainService
 import com.adevspoon.domain.common.utils.CursorPageable
@@ -148,12 +149,11 @@ class BoardPostDomainService(
         when(request.type) {
             "BOARD_POST" -> getBoardPostEntity(request.contentId)
             "BOARD_COMMENT" -> getBoardCommentEntity(request.contentId)
-            else -> IllegalArgumentException("Invalid content type")
         }
         val report = ReportEntity(
             postType = request.type.toString().lowercase(Locale.getDefault()),
             user = user,
-            reason = request.reason,
+            reason = ReportReason.ETC,
             boardPostId = if (request.type == "BOARD_POST") request.contentId else null,
             boardCommentId = if (request.type == "BOARD_COMMENT") request.contentId else null)
         return reportRepository.save(report)

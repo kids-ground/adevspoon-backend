@@ -2,7 +2,6 @@ package com.adevspoon.api.board.dto.request
 
 import com.adevspoon.api.answer.dto.request.PostReportType
 import com.adevspoon.domain.board.dto.request.CreateReportRequest
-import com.adevspoon.domain.common.entity.enums.ReportReason
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotNull
@@ -18,15 +17,11 @@ data class ReportBoardContentRequest(
     @Schema(description = "신고 이유", example = "none", nullable = true, defaultValue = "none")
     val reason: PostReportType = PostReportType.NONE,
 ) {
-    /**
-     * 현재 신고 이유는 항상 etc
-     */
     fun toCreateReportRequest() = CreateReportRequest(
         type = when (type) {
             BoardContentType.BOARD_POST -> BoardContentType.BOARD_POST.toString()
             BoardContentType.BOARD_COMMENT -> BoardContentType.BOARD_COMMENT.toString()
         },
         contentId = this.contentId,
-        reason = ReportReason.ETC
     )
 }
