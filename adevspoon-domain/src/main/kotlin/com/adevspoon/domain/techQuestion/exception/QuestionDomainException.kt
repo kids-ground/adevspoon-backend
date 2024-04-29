@@ -4,6 +4,8 @@ import com.adevspoon.common.exception.AdevspoonException
 
 class QuestionNotOpenedException : AdevspoonException(QuestionDomainErrorCode.QUESTION_NOT_OPENED)
 class QuestionExhaustedException : AdevspoonException(QuestionDomainErrorCode.QUESTION_EXHAUSTED)
+class QuestionAnswerReportNotAllowedException : AdevspoonException(QuestionDomainErrorCode.QUESTION_ANSWER_REPORT_NOT_ALLOWED)
+class QuestionAnswerReportAlreadyExistException : AdevspoonException(QuestionDomainErrorCode.QUESTION_ANSWER_REPORT_ALREADY_EXIST)
 
 class QuestionAnswerEditUnauthorizedException : AdevspoonException(QuestionDomainErrorCode.QUESTION_ANSWER_EDIT_UNAUTHORIZED)
 
