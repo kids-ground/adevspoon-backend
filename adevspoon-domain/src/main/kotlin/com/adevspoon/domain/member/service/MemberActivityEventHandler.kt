@@ -59,11 +59,11 @@ class MemberActivityEventHandler(
                 val answeredDateList = answerRepository.findAnsweredDateList(event.memberId)
                     .map { it.toLocalDate() }
 
-                // 이전날 답변이 있으면 += 1, 아니면 1로 초기화
                 cumulativeAnswerCount += 1
                 consecutiveAnswerCount =
-                    if (consecutiveAnswerCount == 0 || answeredDateList.size <= 1) 1
-                    else if (answeredDateList[0].until(answeredDateList[1], ChronoUnit.DAYS) == 1L) consecutiveAnswerCount + 1
+                    if (answeredDateList.size > 1 &&
+                        answeredDateList[0].until(answeredDateList[1], ChronoUnit.DAYS) == 1L)
+                        consecutiveAnswerCount + 1
                     else 1
                 maxConsecutiveAnswerCount = maxOf(maxConsecutiveAnswerCount, consecutiveAnswerCount)
             }
