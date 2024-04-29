@@ -2,7 +2,6 @@ package com.adevspoon.domain.techQuestion.domain
 
 import com.adevspoon.domain.common.entity.LegacyBaseEntity
 import com.adevspoon.domain.techQuestion.domain.enums.AnswerStatus
-import com.adevspoon.domain.techQuestion.domain.QuestionEntity
 import com.adevspoon.domain.member.domain.UserEntity
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
@@ -28,13 +27,13 @@ class AnswerEntity(
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "question_id", nullable = false)
-    val question: QuestionEntity? = null,
+    val question: QuestionEntity,
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id", nullable = false)
-    val user: UserEntity? = null,
+    val user: UserEntity,
 
     @Column(name = "status", columnDefinition="ENUM('private','public')")
     var status: AnswerStatus = AnswerStatus.PUBLIC

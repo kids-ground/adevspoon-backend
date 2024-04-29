@@ -15,6 +15,7 @@ enum class QuestionDomainErrorCode(
 
     QUESTION_NOT_FOUND(domain code 404 no 0, "없는 Question ID로 조회 시도"),
     QUESTION_CATEGORY_NOT_FOUND(domain code 404 no 1, "없는 카테고리 ID로 등록 시도"),
+    QUESTION_ANSWER_NOT_FOUND(domain code 404 no 2, "없는 Answer ID로 조회 시도"),
 
-    QUESTION_ANSWER_INVALID_RETURN(domain code 500 no 0, "Answer 등록 중 오류가 발생했습니다"),
+    QUESTION_ANSWER_INVALID_RETURN(domain code 500 no 0, "Answer 등록 중 오류가 발생했습니다");
 }

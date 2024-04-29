@@ -6,6 +6,7 @@ import com.adevspoon.domain.common.repository.LikeRepository
 import com.adevspoon.domain.member.domain.UserEntity
 import com.adevspoon.domain.member.exception.MemberNotFoundException
 import com.adevspoon.domain.member.repository.UserRepository
+import com.adevspoon.domain.techQuestion.domain.AnswerEntity
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
@@ -20,6 +21,10 @@ class LikeDomainService(
         return likeRepository.exitsByUserIdAndBoardPostId(userId, boardPostId)
     }
 
+    @Transactional
+    fun isUserLikedAnswer(user: UserEntity, answer: AnswerEntity): Boolean {
+        return likeRepository.findByUserAndAnswer(user, answer) != null
+    }
 
     @Transactional(readOnly = true)
     fun getLikedPostIdsByUser(loginUserId: Long, boardPostIds: List<Long>): List<Long> {

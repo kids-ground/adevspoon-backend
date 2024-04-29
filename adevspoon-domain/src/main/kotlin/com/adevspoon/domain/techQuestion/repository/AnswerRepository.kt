@@ -6,6 +6,13 @@ import org.springframework.data.jpa.repository.Query
 import java.sql.Date
 
 interface AnswerRepository: JpaRepository<AnswerEntity, Long> {
+
+    @Query("SELECT a FROM AnswerEntity a " +
+            "LEFT JOIN FETCH a.question " +
+            "LEFT JOIN FETCH a.user " +
+            "WHERE a.id = :answerId")
+    fun findWithQuestionAndUser(answerId: Long): AnswerEntity?
+
     @Query("SELECT DATE(a.createdAt) " +
             "FROM AnswerEntity a " +
             "WHERE a.user.id = :userId " +

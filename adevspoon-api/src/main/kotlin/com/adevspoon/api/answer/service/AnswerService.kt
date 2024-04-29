@@ -13,4 +13,11 @@ class AnswerService(
         val questionAnswer = answerDomainService.registerQuestionAnswer(request.toCreateQuestionAnswer(memberId))
         return AnswerInfoResponse.from(questionAnswer)
     }
+
+    fun getAnswerDetail(answerId: Long, memberId: Long): AnswerInfoResponse {
+        return AnswerInfoResponse
+            .from(
+                answerDomainService.getAnswerDetail(answerId, memberId)
+            )
+    }
 }

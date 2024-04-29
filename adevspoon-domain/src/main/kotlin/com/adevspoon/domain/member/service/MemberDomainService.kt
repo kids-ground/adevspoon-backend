@@ -10,6 +10,7 @@ import com.adevspoon.domain.member.dto.response.MemberAndSignup
 import com.adevspoon.domain.member.dto.response.MemberProfile
 import com.adevspoon.domain.member.exception.MemberBadgeNotFoundException
 import com.adevspoon.domain.member.exception.MemberNotFoundException
+import com.adevspoon.domain.member.repository.BadgeRepository
 import com.adevspoon.domain.member.repository.UserActivityRepository
 import com.adevspoon.domain.member.repository.UserBadgeAchieveRepository
 import com.adevspoon.domain.member.repository.UserRepository
@@ -24,6 +25,7 @@ class MemberDomainService(
     private val userRepository: UserRepository,
     private val userBadgeAchieveRepository: UserBadgeAchieveRepository,
     private val userActivityRepository: UserActivityRepository,
+    private val badgeRepository: BadgeRepository,
     private val questionDomainService: QuestionDomainService,
     private val nicknameDomainService: NicknameDomainService,
 ) {
@@ -57,8 +59,16 @@ class MemberDomainService(
         return MemberProfile.from(user, userBadgeList, userRepresentativeBadge)
     }
 
-    fun getUserEntity(userId: Long): UserEntity {
-        return userRepository.findByIdOrNull(userId) ?: throw MemberNotFoundException()
+    @Transactional
+    fun getOtherMemberProfile(userId: Long): MemberProfile {
+        val user = getUserEntity(userId)
+        val userRepresentativeBadge = user.representativeBadge
+            ?.let {
+                badgeRepository.findByIdOrNull(user.representativeBadge)
+                    ?: throw MemberBadgeNotFoundException()
+            }
+
+        return MemberProfile.from(user, null, userRepresentativeBadge)
     }
 
     @Transactional
@@ -111,5 +121,9 @@ class MemberDomainService(
         }.let {
             return MemberAndSignup.from(it, true)
         }
+    }
+
+    fun getUserEntity(userId: Long): UserEntity {
+        return userRepository.findByIdOrNull(userId) ?: throw MemberNotFoundException()
     }
 }

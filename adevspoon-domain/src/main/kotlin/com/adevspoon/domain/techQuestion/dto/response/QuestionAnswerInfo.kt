@@ -24,7 +24,7 @@ data class QuestionAnswerInfo(
             isLiked: Boolean = false,
         ) = QuestionAnswerInfo(
             answerId = answer.id,
-            questionId = answer.question?.id ?: 0L,
+            questionId = answer.question.id,
             answer = answer.answer ?: "",
             likeCnt = answer.likeCnt,
             isLiked = isLiked,
