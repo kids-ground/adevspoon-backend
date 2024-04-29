@@ -28,7 +28,7 @@ class ReportEntity(
     val user: UserEntity? = null,
 
     @Column(name = "reason", columnDefinition = "ENUM('abuse','spammer','obscene','scam', 'political_agitation', 'illegal_ads_and_sales', 'etc')")
-    val reason: ReportReason? = null,
+    val reason: ReportReason = ReportReason.ETC,
 
     @Column(name = "is_read")
     var isRead: Boolean? = null,
