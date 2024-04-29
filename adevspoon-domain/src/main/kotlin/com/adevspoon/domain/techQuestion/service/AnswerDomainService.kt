@@ -1,5 +1,7 @@
 package com.adevspoon.domain.techQuestion.service
 
+import com.adevspoon.domain.common.annotation.ActivityEvent
+import com.adevspoon.domain.common.annotation.ActivityEventType
 import com.adevspoon.domain.common.annotation.DomainService
 import com.adevspoon.domain.common.service.LikeDomainService
 import com.adevspoon.domain.member.domain.UserEntity
@@ -29,6 +31,7 @@ class AnswerDomainService(
     private val memberDomainService: MemberDomainService,
     private val likeDomainService: LikeDomainService
 ) {
+    @ActivityEvent(type = ActivityEventType.ANSWER)
     @Transactional
     fun registerQuestionAnswer(request: CreateQuestionAnswer): QuestionAnswerInfo {
         val requestMember = getMember(request.requestMemberId)

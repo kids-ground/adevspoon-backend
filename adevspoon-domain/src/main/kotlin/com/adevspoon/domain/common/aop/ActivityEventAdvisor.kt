@@ -1,9 +1,13 @@
 package com.adevspoon.domain.common.aop
 
 import com.adevspoon.domain.board.dto.response.BoardPost
+import com.adevspoon.domain.board.exception.BoardPostInvalidReturnException
 import com.adevspoon.domain.common.annotation.ActivityEvent
 import com.adevspoon.domain.common.annotation.ActivityEventType
+import com.adevspoon.domain.common.event.AnswerActivityEvent
 import com.adevspoon.domain.common.event.BoardPostActivityEvent
+import com.adevspoon.domain.techQuestion.dto.response.QuestionAnswerInfo
+import com.adevspoon.domain.techQuestion.exception.QuestionAnswerInvalidReturnException
 import org.aspectj.lang.JoinPoint
 import org.aspectj.lang.annotation.AfterReturning
 import org.aspectj.lang.annotation.Aspect
@@ -36,9 +40,10 @@ class ActivityEventAdvisor(
             .getAnnotation(ActivityEvent::class.java)
 
     private fun boardPostEventPublish(result: Any?) {
-        (result as? BoardPost)?.let {
-            eventPublisher.publishEvent(BoardPostActivityEvent(it.user.memberId))
-        }
+        (result as? BoardPost)
+            ?.let {
+                eventPublisher.publishEvent(BoardPostActivityEvent(it.user.memberId))
+            } ?: throw BoardPostInvalidReturnException()
     }
 
     private fun attendanceEventPublish(result: Any?) {
@@ -48,8 +53,9 @@ class ActivityEventAdvisor(
     }
 
     private fun answerEventPublish(result: Any?) {
-        TODO("""
-            Implement the logic to publish the ANSWER event
-        """.trimIndent())
+        (result as? QuestionAnswerInfo)
+            ?.let {
+                eventPublisher.publishEvent(AnswerActivityEvent(it.user.memberId, it.answerId))
+            } ?: throw QuestionAnswerInvalidReturnException()
     }
 }
