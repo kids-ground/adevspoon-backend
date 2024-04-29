@@ -32,6 +32,21 @@ class LikeDomainService(
     }
 
     @Transactional
+    fun toggleLike(answer: AnswerEntity, user: UserEntity, isLike: Boolean) {
+        // FIXME : LikeEntity 나누기(Board, Comment, Answer), 각각 Unique Key 설정 필요 (현재 동시성을 못다룸 - 클라이언트에서만 처리)
+        val likeEntity = likeRepository.findByUserAndAnswer(user, answer)
+        if (!isLike && likeEntity != null) {
+            likeRepository.deleteAllByUserAndAnswer(user, answer)
+            answer.likeCnt -= 1
+        } else if (isLike && likeEntity == null) {
+            likeRepository.save(
+                LikeEntity(user = user, postType = "answer", answer = answer)
+            )
+            answer.likeCnt += 1
+        }
+    }
+
+    @Transactional
     fun toggleLike(type: String, contentId: Long, isLike: Boolean, loginUserId: Long) {
         if (!isLike) {
             deleteLike(type, contentId, loginUserId)

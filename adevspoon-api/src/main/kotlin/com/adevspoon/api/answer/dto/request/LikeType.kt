@@ -4,5 +4,4 @@ import com.adevspoon.api.common.dto.LegacyDtoEnum
 
 enum class LikeType: LegacyDtoEnum {
     ANSWER,
-    BOARD_POST,
 }

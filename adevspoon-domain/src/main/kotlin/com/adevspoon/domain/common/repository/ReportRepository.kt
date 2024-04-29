@@ -1,7 +1,9 @@
 package com.adevspoon.domain.common.repository
 
 import com.adevspoon.domain.common.entity.ReportEntity
-import org.springframework.data.jpa.repository.JpaRepository
+import com.adevspoon.domain.member.domain.UserEntity
+import com.adevspoon.domain.techQuestion.domain.AnswerEntity
+
 import org.springframework.data.jpa.repository.Query
 
 interface ReportRepository : JpaRepository<ReportEntity, Long> {
@@ -10,4 +12,6 @@ interface ReportRepository : JpaRepository<ReportEntity, Long> {
         "AND (r.postType = 'board_post' AND r.boardPostId = :contentId) " +
         "OR (r.postType = 'board_comment' AND  r.boardCommentId =: contentId))")
     fun existsByPostTypeAndContentId(postType: String, contentId: Long): Boolean
+  
+    fun findAllByUserAndPost(user: UserEntity, post: AnswerEntity): List<ReportEntity>
 }

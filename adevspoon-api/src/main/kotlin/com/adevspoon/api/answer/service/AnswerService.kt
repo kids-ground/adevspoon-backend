@@ -27,4 +27,14 @@ class AnswerService(
         val questionAnswer = answerDomainService.modifyAnswerInfo(ModifyQuestionAnswer(memberId, answerId, request.content))
         return AnswerInfoResponse.from(questionAnswer)
     }
+
+    fun likeAnswer(answerId: Long, memberId: Long, isLiked: Boolean): String {
+        answerDomainService.toggleAnswerLike(answerId, memberId, isLiked)
+        return if (isLiked) "답변:$answerId 를 좋아요 완료" else "답변:$answerId 좋아요 취소 완료"
+    }
+
+    fun reportAnswer(answerId: Long, memberId: Long): String {
+        answerDomainService.reportAnswer(answerId, memberId)
+        return "답변:$answerId 에 대한 신고가 접수되었습니다."
+    }
 }

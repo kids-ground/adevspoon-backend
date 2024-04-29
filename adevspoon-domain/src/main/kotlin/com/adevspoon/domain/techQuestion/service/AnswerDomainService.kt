@@ -3,6 +3,8 @@ package com.adevspoon.domain.techQuestion.service
 import com.adevspoon.domain.common.annotation.ActivityEvent
 import com.adevspoon.domain.common.annotation.ActivityEventType
 import com.adevspoon.domain.common.annotation.DomainService
+import com.adevspoon.domain.common.entity.ReportEntity
+import com.adevspoon.domain.common.repository.ReportRepository
 import com.adevspoon.domain.common.service.LikeDomainService
 import com.adevspoon.domain.member.domain.UserEntity
 import com.adevspoon.domain.member.exception.MemberNotFoundException
@@ -14,10 +16,7 @@ import com.adevspoon.domain.techQuestion.domain.QuestionOpenEntity
 import com.adevspoon.domain.techQuestion.dto.request.CreateQuestionAnswer
 import com.adevspoon.domain.techQuestion.dto.request.ModifyQuestionAnswer
 import com.adevspoon.domain.techQuestion.dto.response.QuestionAnswerInfo
-import com.adevspoon.domain.techQuestion.exception.QuestionAnswerEditUnauthorizedException
-import com.adevspoon.domain.techQuestion.exception.QuestionAnswerNotFoundException
-import com.adevspoon.domain.techQuestion.exception.QuestionNotFoundException
-import com.adevspoon.domain.techQuestion.exception.QuestionNotOpenedException
+import com.adevspoon.domain.techQuestion.exception.*
 import com.adevspoon.domain.techQuestion.repository.AnswerRepository
 import com.adevspoon.domain.techQuestion.repository.QuestionOpenRepository
 import com.adevspoon.domain.techQuestion.repository.QuestionRepository
@@ -30,6 +29,7 @@ class AnswerDomainService(
     private val questionOpenRepository: QuestionOpenRepository,
     private val answerRepository: AnswerRepository,
     private val userRepository: UserRepository,
+    private val reportRepository: ReportRepository,
     private val memberDomainService: MemberDomainService,
     private val likeDomainService: LikeDomainService
 ) {
@@ -55,7 +55,7 @@ class AnswerDomainService(
     @Transactional
     fun getAnswerDetail(answerId: Long, requestMemberId: Long): QuestionAnswerInfo {
         val requestMember = getMember(requestMemberId)
-        val answer = getAnswer(answerId)
+        val answer = getAnswerWithUserAndQuestion(answerId)
         val issuedQuestion = getIssuedQuestion(answer.question, requestMember)
         val isLiked = likeDomainService.isUserLikedAnswer(requestMember, answer)
 
@@ -69,7 +69,7 @@ class AnswerDomainService(
 
     @Transactional
     fun modifyAnswerInfo(request: ModifyQuestionAnswer): QuestionAnswerInfo {
-        getAnswer(request.answerId)
+        getAnswerWithUserAndQuestion(request.answerId)
             .takeIf { it.user.id == request.memberId }
             .also { it?.answer = request.answer }
             ?: throw QuestionAnswerEditUnauthorizedException()
@@ -77,8 +77,38 @@ class AnswerDomainService(
         return getAnswerDetail(request.answerId, request.memberId)
     }
 
-    private fun getAnswer(answerId: Long): AnswerEntity {
+    @Transactional
+    fun toggleAnswerLike(answerId: Long, memberId: Long, isLiked: Boolean) {
+        likeDomainService.toggleLike(
+            getAnswer(answerId),
+            getMember(memberId),
+            isLiked
+        )
+    }
+
+    @Transactional
+    fun reportAnswer(answerId: Long, memberId: Long) {
+        val member = getMember(memberId)
+        val answer = getAnswerWithUserAndQuestion(answerId)
+            .takeIf { it.user.id != memberId }
+            ?: throw QuestionAnswerReportNotAllowedException()
+        checkReport(member, answer)
+
+        reportRepository.save(ReportEntity(user = member, postType = "answer", post = answer))
+    }
+
+    private fun checkReport(member: UserEntity, answer: AnswerEntity) {
+        reportRepository.findAllByUserAndPost(member, answer)
+            .takeIf { it.isEmpty() }
+            ?: throw QuestionAnswerReportAlreadyExistException()
+    }
+
+    private fun getAnswerWithUserAndQuestion(answerId: Long): AnswerEntity {
         return answerRepository.findWithQuestionAndUser(answerId) ?: throw QuestionAnswerNotFoundException()
+    }
+
+    private fun getAnswer(answerId: Long): AnswerEntity {
+        return answerRepository.findByIdOrNull(answerId) ?: throw QuestionAnswerNotFoundException()
     }
 
     private fun getQuestion(questionId: Long): QuestionEntity {

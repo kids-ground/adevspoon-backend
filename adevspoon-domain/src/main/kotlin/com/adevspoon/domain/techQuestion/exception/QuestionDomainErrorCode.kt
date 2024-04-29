@@ -12,6 +12,8 @@ enum class QuestionDomainErrorCode(
 ): AdevspoonErrorCode {
     QUESTION_NOT_OPENED(domain code 400 no 1, "발급받지 않은 Question 입니다"),
     QUESTION_EXHAUSTED(domain code 400 no 2, "발급 가능한 Question이 없습니다"),
+    QUESTION_ANSWER_REPORT_NOT_ALLOWED(domain code 400 no 3, "해당 게시글은 신고할 수 없습니다"),
+    QUESTION_ANSWER_REPORT_ALREADY_EXIST(domain code 400 no 4, "해당 게시글을 이미 신고했습니다"),
 
     QUESTION_ANSWER_EDIT_UNAUTHORIZED(domain code 403 no 0, "해당 댓글에 수정 권한이 없습니다."),
 
