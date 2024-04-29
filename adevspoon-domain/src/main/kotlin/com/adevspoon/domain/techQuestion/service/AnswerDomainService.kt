@@ -12,7 +12,9 @@ import com.adevspoon.domain.techQuestion.domain.AnswerEntity
 import com.adevspoon.domain.techQuestion.domain.QuestionEntity
 import com.adevspoon.domain.techQuestion.domain.QuestionOpenEntity
 import com.adevspoon.domain.techQuestion.dto.request.CreateQuestionAnswer
+import com.adevspoon.domain.techQuestion.dto.request.ModifyQuestionAnswer
 import com.adevspoon.domain.techQuestion.dto.response.QuestionAnswerInfo
+import com.adevspoon.domain.techQuestion.exception.QuestionAnswerEditUnauthorizedException
 import com.adevspoon.domain.techQuestion.exception.QuestionAnswerNotFoundException
 import com.adevspoon.domain.techQuestion.exception.QuestionNotFoundException
 import com.adevspoon.domain.techQuestion.exception.QuestionNotOpenedException
@@ -63,6 +65,16 @@ class AnswerDomainService(
             issuedQuestion.openDate.toLocalDate(),
             isLiked
         )
+    }
+
+    @Transactional
+    fun modifyAnswerInfo(request: ModifyQuestionAnswer): QuestionAnswerInfo {
+        getAnswer(request.answerId)
+            .takeIf { it.user.id == request.memberId }
+            .also { it?.answer = request.answer }
+            ?: throw QuestionAnswerEditUnauthorizedException()
+
+        return getAnswerDetail(request.answerId, request.memberId)
     }
 
     private fun getAnswer(answerId: Long): AnswerEntity {
