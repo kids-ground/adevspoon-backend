@@ -41,4 +41,9 @@ class BoardService(
         boardPostDomainService.toggleLike(request.toLikeStateRequest(), userId)
         return "Successfully toggle like"
     }
+
+    fun report(request: ReportBoardContentRequest, userId: Long): String {
+        val report = boardPostDomainService.report(request.toCreateReportRequest(), userId)
+        return "Successfully report. id=${report.id}. type:${report.postType}, reason:${report.reason}"
+    }
 }

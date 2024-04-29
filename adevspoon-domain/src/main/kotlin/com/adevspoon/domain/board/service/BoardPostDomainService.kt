@@ -1,10 +1,7 @@
 package com.adevspoon.domain.board.service
 
 import com.adevspoon.domain.board.domain.BoardPostEntity
-import com.adevspoon.domain.board.dto.request.GetPostListRequestDto
-import com.adevspoon.domain.board.dto.request.RegisterPostRequestDto
-import com.adevspoon.domain.board.dto.request.UpdateLikeStateRequest
-import com.adevspoon.domain.board.dto.request.UpdatePostRequestDto
+import com.adevspoon.domain.board.dto.request.*
 import com.adevspoon.domain.board.dto.response.BoardPost
 import com.adevspoon.domain.board.exception.BoardPostNotFoundException
 import com.adevspoon.domain.board.exception.BoardPostOwnershipException
@@ -14,6 +11,8 @@ import com.adevspoon.domain.board.repository.BoardTagRepository
 import com.adevspoon.domain.common.annotation.ActivityEvent
 import com.adevspoon.domain.common.annotation.ActivityEventType
 import com.adevspoon.domain.common.annotation.DomainService
+import com.adevspoon.domain.common.entity.ReportEntity
+import com.adevspoon.domain.common.repository.ReportRepository
 import com.adevspoon.domain.common.service.LikeDomainService
 import com.adevspoon.domain.common.utils.CursorPageable
 import com.adevspoon.domain.common.utils.PageWithCursor
@@ -22,11 +21,13 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.transaction.annotation.Transactional
+import java.util.*
 
 @DomainService
 class BoardPostDomainService(
     val boardPostRepository: BoardPostRepository,
     val boardTagRepository: BoardTagRepository,
+    val reportRepository: ReportRepository,
     val memberDomainService: MemberDomainService,
     val likeDomainService: LikeDomainService
 ) {
@@ -136,4 +137,16 @@ class BoardPostDomainService(
 
     private fun getBoardPostEntity(postId: Long) =
         boardPostRepository.findByIdOrNull(postId) ?: throw BoardPostNotFoundException(postId.toString())
+
+    @Transactional
+    fun report(request: CreateReportRequest, userId: Long) : ReportEntity {
+        val user = memberDomainService.getUserEntity(userId)
+        val report = ReportEntity(
+            postType = request.type.toString().lowercase(Locale.getDefault()),
+            user = user,
+            reason = request.reason,
+            boardPostId = if (request.type == "BOARD_POST") request.contentId else null,
+            boardCommentId = if (request.type == "BOARD_COMMENT") request.contentId else null)
+        return reportRepository.save(report)
+    }
 }
