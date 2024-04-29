@@ -1,6 +1,6 @@
-package com.adevspoon.domain.banner.domain
+package com.adevspoon.domain.utility.domain
 
-import com.adevspoon.domain.banner.domain.enums.BannerLocationType
+import com.adevspoon.domain.utility.domain.enums.BannerLocationType
 import jakarta.persistence.*
 import jakarta.validation.constraints.Size
 

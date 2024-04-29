@@ -21,12 +21,9 @@ class MemberExtraDataController {
     @GetMapping("/nickname")
     fun checkNickname(
         @RequestUser user: RequestUserInfo,
-        @RequestParam @Size(min = 1, max = 10, message = "1자 이상 10자 이하여야 합니다") nickname: String = "",
+        @RequestParam @Size(min = 2, max = 10, message = "2자 이상 10자 이하여야 합니다") nickname: String,
     ): String {
-        TODO("""
-            - 닉네임 중복체크
-            - 무조건 true로 리턴
-        """.trimIndent())
+        return "가능한 닉네임입니다"
     }
 
     @Operation(summary = "좋아요 리스트", description = "좋아요 누른 포스트 가져오기(게시글, 질문답변 가능)")

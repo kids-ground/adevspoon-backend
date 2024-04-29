@@ -1,4 +1,4 @@
-package com.adevspoon.domain.wallPaper.domain
+package com.adevspoon.domain.utility.domain
 
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
@@ -19,7 +19,7 @@ class WallpaperEntity(
     @Size(max = 50)
     @NotNull
     @Column(name = "content", nullable = false, length = 50)
-    val content: String? = null,
+    val content: String,
 
     @Size(max = 255)
     @Column(name = "reference")

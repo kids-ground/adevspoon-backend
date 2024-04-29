@@ -1,4 +1,4 @@
-package com.adevspoon.domain.banner.domain
+package com.adevspoon.domain.utility.domain
 
 import jakarta.persistence.*
 import org.hibernate.annotations.OnDelete

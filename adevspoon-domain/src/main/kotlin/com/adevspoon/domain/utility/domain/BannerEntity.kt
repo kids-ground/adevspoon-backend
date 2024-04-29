@@ -1,4 +1,4 @@
-package com.adevspoon.domain.banner.domain
+package com.adevspoon.domain.utility.domain
 
 import com.adevspoon.domain.common.entity.LegacyBaseEntity
 import jakarta.persistence.*

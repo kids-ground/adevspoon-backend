@@ -1,4 +1,4 @@
-package com.adevspoon.domain.banner.domain.enums
+package com.adevspoon.domain.utility.domain.enums
 
 import com.adevspoon.domain.common.entity.LegacyEntityEnum
 import com.adevspoon.domain.common.converter.LegacyEntityEnumConverter
