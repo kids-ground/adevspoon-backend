@@ -7,3 +7,5 @@ class QuestionExhaustedException : AdevspoonException(QuestionDomainErrorCode.QU
 
 class QuestionNotFoundException : AdevspoonException(QuestionDomainErrorCode.QUESTION_NOT_FOUND)
 class QuestionCategoryNotFoundException : AdevspoonException(QuestionDomainErrorCode.QUESTION_CATEGORY_NOT_FOUND)
+
+class QuestionAnswerInvalidReturnException : AdevspoonException(QuestionDomainErrorCode.QUESTION_ANSWER_INVALID_RETURN)
