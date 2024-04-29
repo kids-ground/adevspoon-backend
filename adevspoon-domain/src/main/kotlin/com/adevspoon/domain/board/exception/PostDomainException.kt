@@ -17,3 +17,8 @@ class BoardCommentNotFoundException(commentId: String) : AdevspoonException(
     BOARD_COMMENT_NOT_FOUND,
     detailReason = BOARD_COMMENT_NOT_FOUND.message + " 존재하지 않는 commentId: $commentId"
 )
+
+class SelfReportException : AdevspoonException(SELF_REPORT_NOT_ALLOWED)
+class DuplicateReportException(type: String, contentId: Long) : AdevspoonException(
+    ALREADY_REPORTED,
+    detailReason = ALREADY_REPORTED.message + " 신고된 content type: $type, id: $contentId")
