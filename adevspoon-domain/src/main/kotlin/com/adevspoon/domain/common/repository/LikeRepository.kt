@@ -5,6 +5,7 @@ import com.adevspoon.domain.member.domain.UserEntity
 import com.adevspoon.domain.techQuestion.domain.AnswerEntity
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 
 interface LikeRepository : JpaRepository<LikeEntity, Long>, JpaSpecificationExecutor<LikeEntity> {
@@ -21,4 +22,8 @@ interface LikeRepository : JpaRepository<LikeEntity, Long>, JpaSpecificationExec
         "AND ((:type = 'board_post' AND l.boardPostId = :contentId) " +
         "OR (:type = 'board_comment' AND l.boardCommentId = :contentId))")
     fun findByTypeAndUserId(type: String, userId: Long, contentId: Long): LikeEntity?
+
+
+    @Modifying(clearAutomatically = true)
+    fun deleteAllByUserAndAnswer(user: UserEntity, answer: AnswerEntity)
 }
