@@ -1,11 +1,14 @@
 package com.adevspoon.domain.board.service
 
+import com.adevspoon.domain.board.domain.BoardCommentEntity
 import com.adevspoon.domain.board.domain.BoardPostEntity
 import com.adevspoon.domain.board.dto.request.*
 import com.adevspoon.domain.board.dto.response.BoardPost
+import com.adevspoon.domain.board.exception.BoardCommentNotFoundException
 import com.adevspoon.domain.board.exception.BoardPostNotFoundException
 import com.adevspoon.domain.board.exception.BoardPostOwnershipException
 import com.adevspoon.domain.board.exception.BoardTagNotFoundException
+import com.adevspoon.domain.board.repository.BoardCommentRepository
 import com.adevspoon.domain.board.repository.BoardPostRepository
 import com.adevspoon.domain.board.repository.BoardTagRepository
 import com.adevspoon.domain.common.annotation.ActivityEvent
@@ -27,6 +30,7 @@ import java.util.*
 class BoardPostDomainService(
     val boardPostRepository: BoardPostRepository,
     val boardTagRepository: BoardTagRepository,
+    val boardCommentRepository: BoardCommentRepository,
     val reportRepository: ReportRepository,
     val memberDomainService: MemberDomainService,
     val likeDomainService: LikeDomainService
@@ -141,6 +145,11 @@ class BoardPostDomainService(
     @Transactional
     fun report(request: CreateReportRequest, userId: Long) : ReportEntity {
         val user = memberDomainService.getUserEntity(userId)
+        when(request.type) {
+            "BOARD_POST" -> getBoardPostEntity(request.contentId)
+            "BOARD_COMMENT" -> getBoardCommentEntity(request.contentId)
+            else -> IllegalArgumentException("Invalid content type")
+        }
         val report = ReportEntity(
             postType = request.type.toString().lowercase(Locale.getDefault()),
             user = user,
@@ -148,5 +157,9 @@ class BoardPostDomainService(
             boardPostId = if (request.type == "BOARD_POST") request.contentId else null,
             boardCommentId = if (request.type == "BOARD_COMMENT") request.contentId else null)
         return reportRepository.save(report)
+    }
+
+    private fun getBoardCommentEntity(commentId: Long) : BoardCommentEntity {
+        return boardCommentRepository.findByIdOrNull(commentId) ?: throw BoardCommentNotFoundException(commentId.toString())
     }
 }
