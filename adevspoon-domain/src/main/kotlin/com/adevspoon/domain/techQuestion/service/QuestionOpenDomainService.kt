@@ -48,9 +48,9 @@ class QuestionOpenDomainService(
         val issuedQuestionId = candidateIssuableQuestionIds.random()
         val question = getQuestion(issuedQuestionId)
         val issuedQuestion = QuestionOpenEntity(user = user, question = question, openDate = today.atStartOfDay())
-        questionOpenRepository.save(issuedQuestion)
 
-        user.apply { questionCnt += 1 }
+        questionOpenRepository.save(issuedQuestion)
+        user.increaseQuestionCnt()
 
         return makeQuestionInfo(issuedQuestion, candidateIssuableQuestionIds.size == 1)
     }

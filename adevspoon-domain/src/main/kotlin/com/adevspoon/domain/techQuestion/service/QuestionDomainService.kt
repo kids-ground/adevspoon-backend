@@ -30,7 +30,6 @@ class QuestionDomainService(
     private val userCustomizedQuestionCategoryRepository: UserCustomizedQuestionCategoryRepository,
     private val questionOpenDomainService: QuestionOpenDomainService,
 ) {
-
     @Transactional(readOnly = true)
     fun getQuestion(memberId: Long, questionId: Long): QuestionInfo {
         val user = getMember(memberId)

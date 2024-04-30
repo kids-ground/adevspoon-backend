@@ -38,4 +38,9 @@ class QuestionOpenEntity(
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "answer_id")
     var answer: AnswerEntity? = null
-): BaseEntity()
+): BaseEntity() {
+    fun isAnswered(): Boolean = answer != null
+    fun setAnswer(answer: AnswerEntity) {
+        this.answer = answer
+    }
+}
