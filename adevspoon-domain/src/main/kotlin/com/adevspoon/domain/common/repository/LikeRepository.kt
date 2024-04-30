@@ -21,6 +21,9 @@ interface LikeRepository : JpaRepository<LikeEntity, Long>, JpaSpecificationExec
     @Query("SELECT l.boardPostId FROM LikeEntity l WHERE l.user.id = :loginUserId AND l.boardPostId In :boardPostIds")
     fun findLikedPostIdsByUser(loginUserId: Long, boardPostIds: List<Long>): List<Long>
 
+    @Query("SELECT l.boardCommentId FROM LikeEntity l WHERE l.user.id = :loginUserId AND l.boardCommentId In :boardCommentIds")
+    fun findLikedCommentIdsByUser(loginUserId: Long, boardCommentIds: List<Long>): List<Long>
+
     @Modifying(clearAutomatically = true)
     fun deleteAllByUserAndAnswer(user: UserEntity, answer: AnswerEntity)
 
