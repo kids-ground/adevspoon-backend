@@ -40,7 +40,7 @@ class QuestionOpenEntity(
     var answer: AnswerEntity? = null
 ): BaseEntity() {
     fun isAnswered(): Boolean = answer != null
-    fun setAnswer(answer: AnswerEntity) {
+    fun addAnswer(answer: AnswerEntity) {
         this.answer = answer
     }
 }
