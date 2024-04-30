@@ -2,8 +2,8 @@ package com.adevspoon.domain.member.service
 
 import com.adevspoon.common.dto.OAuthUserInfo
 import com.adevspoon.domain.common.annotation.DomainService
-import com.adevspoon.domain.member.domain.UserEntity
 import com.adevspoon.domain.member.domain.UserActivityEntity
+import com.adevspoon.domain.member.domain.UserEntity
 import com.adevspoon.domain.member.domain.enums.UserOAuth
 import com.adevspoon.domain.member.dto.request.MemberUpdateRequireDto
 import com.adevspoon.domain.member.dto.response.MemberAndSignup
@@ -123,7 +123,7 @@ class MemberDomainService(
         }
     }
 
-    fun getUserEntity(userId: Long): UserEntity {
+    private fun getUserEntity(userId: Long): UserEntity {
         return userRepository.findByIdOrNull(userId) ?: throw MemberNotFoundException()
     }
 }

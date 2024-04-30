@@ -6,14 +6,12 @@ import com.adevspoon.domain.common.annotation.DomainService
 import com.adevspoon.domain.common.entity.LikeEntity
 import com.adevspoon.domain.common.repository.LikeRepository
 import com.adevspoon.domain.member.domain.UserEntity
-import com.adevspoon.domain.member.repository.UserRepository
 import com.adevspoon.domain.techQuestion.domain.AnswerEntity
 import org.springframework.transaction.annotation.Transactional
 
 @DomainService
 class LikeDomainService(
-    private val likeRepository: LikeRepository,
-    private val userRepository: UserRepository
+    private val likeRepository: LikeRepository
 ) {
     @Transactional
     fun isUserLikedPost(userId: Long, boardPostId: Long): Boolean {
