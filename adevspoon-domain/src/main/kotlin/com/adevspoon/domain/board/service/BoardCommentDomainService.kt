@@ -22,14 +22,15 @@ class BoardCommentDomainService(
     @Transactional(readOnly = true)
     fun getCommentsByPostId(postId: Long, userId: Long): List<BoardComment> {
         val boardPost = getBoardPostEntity(postId)
-        val comments = boardCommentRepository.findAllByBoardPost(boardPost)
-        val likedCommentIds = getLikedCommentsByUser(userId, comments.map { it.id }.toList())
-        return comments.map { comment ->
+        val commentAndAuthors = boardCommentRepository.findCommentAuthorsByPost(boardPost)
+        val commentIds = commentAndAuthors.map { it.comment.id }
+        val likedCommentIds = getLikedCommentsByUser(userId, commentIds)
+        return commentAndAuthors.map { commentAndAuthor ->
             BoardComment.from(
-                comment = comment,
-                memberProfile = memberDomainService.getOtherMemberProfile(comment.user.id),
-                isLike = likedCommentIds.contains(comment.id),
-                isMine = comment.user.id == userId
+                comment = commentAndAuthor.comment,
+                memberProfile = memberDomainService.getOtherMemberProfile(commentAndAuthor.user.id),
+                isLike = likedCommentIds.contains(commentAndAuthor.comment.id),
+                isMine = commentAndAuthor.user.id == userId
             )
         }
     }
