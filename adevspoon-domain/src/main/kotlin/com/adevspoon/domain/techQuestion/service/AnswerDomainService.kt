@@ -42,7 +42,7 @@ class AnswerDomainService(
         val answer = AnswerEntity(question = question, answer = request.answer, user = requestMember)
 
         answerRepository.save(answer)
-        issuedQuestion.setAnswer(answer)
+        issuedQuestion.addAnswer(answer)
         requestMember.increaseAnswerCnt()
 
         return QuestionAnswerInfo.from(
