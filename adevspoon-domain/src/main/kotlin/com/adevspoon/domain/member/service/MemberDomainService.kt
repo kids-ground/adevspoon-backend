@@ -2,6 +2,7 @@ package com.adevspoon.domain.member.service
 
 import com.adevspoon.common.dto.OAuthUserInfo
 import com.adevspoon.domain.common.annotation.DomainService
+import com.adevspoon.domain.member.domain.BadgeEntity
 import com.adevspoon.domain.member.domain.UserActivityEntity
 import com.adevspoon.domain.member.domain.UserEntity
 import com.adevspoon.domain.member.domain.enums.UserOAuth
@@ -69,6 +70,18 @@ class MemberDomainService(
             }
 
         return MemberProfile.from(user, null, userRepresentativeBadge)
+    }
+
+    @Transactional
+    fun getOtherMemberProfile(userId: Long, badgeList: List<BadgeEntity>): MemberProfile {
+        val user = getUserEntity(userId)
+        val userRepresentativeBadge = user.representativeBadge
+            ?.let {
+                badgeRepository.findByIdOrNull(user.representativeBadge)
+                    ?: throw MemberBadgeNotFoundException()
+            }
+
+        return MemberProfile.from(user, badgeList, userRepresentativeBadge)
     }
 
     @Transactional
