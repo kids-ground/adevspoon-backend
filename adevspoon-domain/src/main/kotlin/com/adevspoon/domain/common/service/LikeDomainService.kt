@@ -1,15 +1,14 @@
 package com.adevspoon.domain.common.service
 
+import com.adevspoon.domain.board.domain.BoardCommentEntity
+import com.adevspoon.domain.board.domain.BoardPostEntity
 import com.adevspoon.domain.common.annotation.DomainService
 import com.adevspoon.domain.common.entity.LikeEntity
 import com.adevspoon.domain.common.repository.LikeRepository
 import com.adevspoon.domain.member.domain.UserEntity
-import com.adevspoon.domain.member.exception.MemberNotFoundException
 import com.adevspoon.domain.member.repository.UserRepository
 import com.adevspoon.domain.techQuestion.domain.AnswerEntity
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
 
 @DomainService
 class LikeDomainService(
@@ -32,7 +31,7 @@ class LikeDomainService(
     }
 
     @Transactional
-    fun toggleLike(answer: AnswerEntity, user: UserEntity, isLike: Boolean) {
+    fun toggleAnswerLike(answer: AnswerEntity, user: UserEntity, isLike: Boolean) {
         // FIXME : LikeEntity 나누기(Board, Comment, Answer), 각각 Unique Key 설정 필요 (현재 동시성을 못다룸 - 클라이언트에서만 처리)
         val likeEntity = likeRepository.findByUserAndAnswer(user, answer)
         if (!isLike && likeEntity != null) {
@@ -47,27 +46,30 @@ class LikeDomainService(
     }
 
     @Transactional
-    fun toggleLike(type: String, contentId: Long, isLike: Boolean, loginUserId: Long) {
-        if (!isLike) {
-            deleteLike(type, contentId, loginUserId)
-        } else {
-            val user = userRepository.findByIdOrNull(loginUserId) ?: throw MemberNotFoundException()
-            createLike(type, contentId, user)
+    fun togglePostLike(post: BoardPostEntity, user: UserEntity, isLike: Boolean) {
+        val likeEntity = likeRepository.findByUserAndBoardPostId(user, post.id)
+        if (!isLike && likeEntity != null) {
+            likeRepository.deleteAllByUserAndBoardPostId(user, post.id)
+            post.likeCount -= 1
+        } else if (isLike && likeEntity == null) {
+            likeRepository.save(
+                LikeEntity(user = user, postType = "board_post", boardPostId = post.id)
+            )
+            post.likeCount += 1
         }
     }
 
-    private fun deleteLike(type: String, contentId: Long, userId: Long) {
-        likeRepository.findByTypeAndUserId(type, userId, contentId)?.let { likeRepository.delete(it) }
+    @Transactional
+    fun toggleCommentLike(comment: BoardCommentEntity, user: UserEntity, isLike: Boolean) {
+        val likeEntity = likeRepository.findByUserAndBoardCommentId(user, comment.id)
+        if (!isLike && likeEntity != null) {
+            likeRepository.deleteAllByUserAndBoardCommentId(user, comment.id)
+            comment.likeCount -= 1
+        } else if (isLike && likeEntity == null) {
+            likeRepository.save(
+                LikeEntity(user = user, postType = "board_comment", boardCommentId = comment.id)
+            )
+            comment.likeCount += 1
+        }
     }
-
-    private fun createLike(type: String, contentId: Long, user: UserEntity) {
-        val newLike = LikeEntity(
-            user = user,
-            postType = type.lowercase(Locale.getDefault()),
-            boardPostId = if (type == "BOARD_POST") contentId else null,
-            boardCommentId = if (type == "BOARD_COMMENT") contentId else null
-        )
-        likeRepository.save(newLike)
-    }
-
 }

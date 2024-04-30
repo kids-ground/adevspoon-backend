@@ -42,7 +42,7 @@ class BoardService(
         val type = likeRequest.type
         val contentId = likeRequest.contentId
 
-        boardPostDomainService.toggleLike(likeRequest, userId)
+        boardPostDomainService.toggleBoardLike(likeRequest, userId)
         return if (likeRequest.like) "type:${type} contentId:${contentId} 좋아요 완료." else "type:${type} contentId:${contentId} 취소 완료."
     }
 

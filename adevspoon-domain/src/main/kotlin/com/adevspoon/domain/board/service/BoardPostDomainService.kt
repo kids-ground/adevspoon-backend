@@ -136,18 +136,33 @@ class BoardPostDomainService(
     }
 
     @Transactional
-    fun toggleLike(request: UpdateLikeStateRequest, userId: Long) {
-        likeDomainService.toggleLike(request.type, request.contentId, request.like, userId)
+    fun toggleBoardLike(request: UpdateLikeStateRequest, userId: Long) {
+        when (request.type) {
+            "BOARD_POST" -> {
+                val boardPost = getBoardPostEntity(request.contentId)
+                likeDomainService.togglePostLike(
+                    boardPost,
+                    memberDomainService.getUserEntity(userId),
+                    request.like)
+            }
+            "BOARD_COMMENT" -> {
+                val boardComment = getBoardCommentEntity(request.contentId)
+                likeDomainService.toggleCommentLike(
+                    boardComment,
+                    memberDomainService.getUserEntity(userId),
+                    request.like)
+            }
+        }
     }
 
-    private fun getBoardPostEntity(postId: Long) =
+    private fun getBoardPostEntity(postId: Long): BoardPostEntity =
         boardPostRepository.findByIdOrNull(postId) ?: throw BoardPostNotFoundException(postId.toString())
 
     @Transactional
     fun report(request: CreateReportRequest, userId: Long): ReportEntity {
         val user = memberDomainService.getUserEntity(userId)
 
-        val content = when(request.type) {
+        val content = when (request.type) {
             "BOARD_POST" -> getBoardPostEntity(request.contentId)
             "BOARD_COMMENT" -> getBoardCommentEntity(request.contentId)
             else -> throw IllegalArgumentException("Invalid content type")
@@ -188,8 +203,7 @@ class BoardPostDomainService(
     }
 
 
-    private fun getBoardCommentEntity(commentId: Long): BoardCommentEntity {
-        return boardCommentRepository.findByIdOrNull(commentId)
-            ?: throw BoardCommentNotFoundException(commentId.toString())
-    }
+    private fun getBoardCommentEntity(commentId: Long): BoardCommentEntity =
+        boardCommentRepository.findByIdOrNull(commentId) ?: throw BoardCommentNotFoundException(commentId.toString())
+
 }
