@@ -14,3 +14,8 @@ class QuestionCategoryNotFoundException : AdevspoonException(QuestionDomainError
 class QuestionAnswerNotFoundException : AdevspoonException(QuestionDomainErrorCode.QUESTION_ANSWER_NOT_FOUND)
 
 class QuestionAnswerInvalidReturnException : AdevspoonException(QuestionDomainErrorCode.QUESTION_ANSWER_INVALID_RETURN)
+
+class NegativeLikeCountExceptionForTechQuestion(type: String, contentId: Long) : AdevspoonException(
+    QuestionDomainErrorCode.MINIMUM_LIKE_COUNT,
+    detailReason = QuestionDomainErrorCode.MINIMUM_LIKE_COUNT.message + " type: $type, id: $contentId"
+)

@@ -23,3 +23,8 @@ class SelfReportException : AdevspoonException(SELF_REPORT_NOT_ALLOWED)
 class DuplicateReportException(type: String, contentId: Long) : AdevspoonException(
     ALREADY_REPORTED,
     detailReason = ALREADY_REPORTED.message + " 신고된 content type: $type, id: $contentId")
+
+class NegativeLikeCountExceptionForBoard(type: String, contentId: Long) : AdevspoonException(
+    MINIMUM_LIKE_COUNT,
+    detailReason = MINIMUM_LIKE_COUNT.message + " type: $type, id: $contentId"
+)

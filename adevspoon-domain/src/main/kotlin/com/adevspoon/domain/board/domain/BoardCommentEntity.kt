@@ -1,5 +1,6 @@
 package com.adevspoon.domain.board.domain
 
+import com.adevspoon.domain.board.exception.NegativeLikeCountExceptionForBoard
 import com.adevspoon.domain.common.entity.BaseEntity
 import com.adevspoon.domain.member.domain.UserEntity
 import jakarta.persistence.*
@@ -33,4 +34,15 @@ class BoardCommentEntity(
     @NotNull
     @Column(name = "likeCount", nullable = false)
     var likeCount: Int = 0
-) : BaseEntity()
+) : BaseEntity() {
+    fun increaseLikeCount() {
+        this.likeCount++
+    }
+
+    fun decreaseLikeCount() {
+        if (likeCount - 1 < 0) {
+            throw NegativeLikeCountExceptionForBoard("board_comment", id)
+        }
+        this.likeCount--
+    }
+}

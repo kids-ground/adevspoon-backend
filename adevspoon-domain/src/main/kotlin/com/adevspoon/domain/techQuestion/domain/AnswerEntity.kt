@@ -1,8 +1,9 @@
 package com.adevspoon.domain.techQuestion.domain
 
 import com.adevspoon.domain.common.entity.LegacyBaseEntity
-import com.adevspoon.domain.techQuestion.domain.enums.AnswerStatus
 import com.adevspoon.domain.member.domain.UserEntity
+import com.adevspoon.domain.techQuestion.domain.enums.AnswerStatus
+import com.adevspoon.domain.techQuestion.exception.NegativeLikeCountExceptionForTechQuestion
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
 import org.hibernate.annotations.OnDelete
@@ -37,4 +38,15 @@ class AnswerEntity(
 
     @Column(name = "status", columnDefinition="ENUM('private','public')")
     var status: AnswerStatus = AnswerStatus.PUBLIC
-): LegacyBaseEntity()
+): LegacyBaseEntity() {
+    fun increaseLikeCount() {
+        this.likeCnt++
+    }
+
+    fun decreaseLikeCount() {
+        if (likeCnt - 1 < 0) {
+            throw NegativeLikeCountExceptionForTechQuestion("answer", id)
+        }
+        this.likeCnt--
+    }
+}

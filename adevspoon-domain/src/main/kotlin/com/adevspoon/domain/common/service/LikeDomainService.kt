@@ -33,13 +33,13 @@ class LikeDomainService(
         // FIXME : LikeEntity 나누기(Board, Comment, Answer), 각각 Unique Key 설정 필요 (현재 동시성을 못다룸 - 클라이언트에서만 처리)
         val likeEntity = likeRepository.findByUserAndAnswer(user, answer)
         if (!isLike && likeEntity != null) {
+            answer.decreaseLikeCount()
             likeRepository.deleteAllByUserAndAnswer(user, answer)
-            answer.likeCnt -= 1
         } else if (isLike && likeEntity == null) {
             likeRepository.save(
                 LikeEntity(user = user, postType = "answer", answer = answer)
             )
-            answer.likeCnt += 1
+            answer.increaseLikeCount()
         }
     }
 
@@ -47,13 +47,13 @@ class LikeDomainService(
     fun togglePostLike(post: BoardPostEntity, user: UserEntity, isLike: Boolean) {
         val likeEntity = likeRepository.findByUserAndBoardPostId(user, post.id)
         if (!isLike && likeEntity != null) {
+            post.decreaseLikeCount()
             likeRepository.deleteAllByUserAndBoardPostId(user, post.id)
-            post.likeCount -= 1
         } else if (isLike && likeEntity == null) {
             likeRepository.save(
                 LikeEntity(user = user, postType = "board_post", boardPostId = post.id)
             )
-            post.likeCount += 1
+            post.increaseLikeCount()
         }
     }
 
@@ -61,13 +61,13 @@ class LikeDomainService(
     fun toggleCommentLike(comment: BoardCommentEntity, user: UserEntity, isLike: Boolean) {
         val likeEntity = likeRepository.findByUserAndBoardCommentId(user, comment.id)
         if (!isLike && likeEntity != null) {
+            comment.decreaseLikeCount()
             likeRepository.deleteAllByUserAndBoardCommentId(user, comment.id)
-            comment.likeCount -= 1
         } else if (isLike && likeEntity == null) {
             likeRepository.save(
                 LikeEntity(user = user, postType = "board_comment", boardCommentId = comment.id)
             )
-            comment.likeCount += 1
+            comment.increaseLikeCount()
         }
     }
 }

@@ -23,9 +23,8 @@ interface LikeRepository : JpaRepository<LikeEntity, Long>, JpaSpecificationExec
 
     @Modifying(clearAutomatically = true)
     fun deleteAllByUserAndAnswer(user: UserEntity, answer: AnswerEntity)
-    @Modifying(clearAutomatically = true)
+
     fun deleteAllByUserAndBoardPostId(user: UserEntity, boardPostId: Long)
 
-    @Modifying(clearAutomatically = true)
     fun deleteAllByUserAndBoardCommentId(user: UserEntity, boardCommentId: Long)
 }
