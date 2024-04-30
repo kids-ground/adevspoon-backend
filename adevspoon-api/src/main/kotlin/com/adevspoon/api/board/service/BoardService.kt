@@ -22,7 +22,7 @@ class BoardService(
         return BoardInfoResponse.from(boardPost)
     }
 
-    fun getBoardPostsByTags(request: BoardListRequest, loginUserId: Long) : BoardListResponse  {
+    fun getBoardPostsByTags(request: BoardListRequest, loginUserId: Long): BoardListResponse {
         val pageWithCursor = boardPostDomainService.getBoardPostsWithCriteria(request.toGetPostListRequestDto(), loginUserId)
         return BoardListResponse.from(pageWithCursor.data, pageWithCursor.nextCursorId)
     }
@@ -37,9 +37,13 @@ class BoardService(
         return "Successfully delete. postId:${request.postId}"
     }
 
-    fun toggleLike(request: LikeBoardContentRequest, userId: Long) : String{
-        boardPostDomainService.toggleLike(request.toLikeStateRequest(), userId)
-        return "Successfully toggle like"
+    fun likeBoard(request: LikeBoardContentRequest, userId: Long): String {
+        val likeRequest = request.toLikeStateRequest()
+        val type = likeRequest.type
+        val contentId = likeRequest.contentId
+
+        boardPostDomainService.toggleBoardLike(likeRequest, userId)
+        return if (likeRequest.like) "type:${type} contentId:${contentId} 좋아요 완료." else "type:${type} contentId:${contentId} 취소 완료."
     }
 
     fun report(request: ReportBoardContentRequest, userId: Long): String {

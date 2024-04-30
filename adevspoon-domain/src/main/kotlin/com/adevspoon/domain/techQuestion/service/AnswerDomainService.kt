@@ -80,7 +80,7 @@ class AnswerDomainService(
 
     @Transactional
     fun toggleAnswerLike(answerId: Long, memberId: Long, isLiked: Boolean) {
-        likeDomainService.toggleLike(
+        likeDomainService.toggleAnswerLike(
             getAnswer(answerId),
             getMember(memberId),
             isLiked
