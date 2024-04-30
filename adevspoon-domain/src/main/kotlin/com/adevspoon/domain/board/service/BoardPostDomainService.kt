@@ -18,6 +18,9 @@ import com.adevspoon.domain.common.repository.ReportRepository
 import com.adevspoon.domain.common.service.LikeDomainService
 import com.adevspoon.domain.common.utils.CursorPageable
 import com.adevspoon.domain.common.utils.PageWithCursor
+import com.adevspoon.domain.member.domain.UserEntity
+import com.adevspoon.domain.member.exception.MemberNotFoundException
+import com.adevspoon.domain.member.repository.UserRepository
 import com.adevspoon.domain.member.service.MemberDomainService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -31,13 +34,14 @@ class BoardPostDomainService(
     val boardTagRepository: BoardTagRepository,
     val boardCommentRepository: BoardCommentRepository,
     val reportRepository: ReportRepository,
+    val userRepository: UserRepository,
     val memberDomainService: MemberDomainService,
     val likeDomainService: LikeDomainService
 ) {
     @ActivityEvent(ActivityEventType.BOARD_POST)
     @Transactional
     fun registerBoardPost(request: RegisterPostRequestDto, userId: Long): BoardPost {
-        val user = memberDomainService.getUserEntity(userId)
+        val user = getUserEntity(userId)
         val tag = boardTagRepository.findByIdOrNull(request.tagId)
             ?: throw BoardTagNotFoundException(request.tagId.toString())
 
@@ -136,18 +140,33 @@ class BoardPostDomainService(
     }
 
     @Transactional
-    fun toggleLike(request: UpdateLikeStateRequest, userId: Long) {
-        likeDomainService.toggleLike(request.type, request.contentId, request.like, userId)
+    fun toggleBoardLike(request: UpdateLikeStateRequest, userId: Long) {
+        when (request.type) {
+            "BOARD_POST" -> {
+                val boardPost = getBoardPostEntity(request.contentId)
+                likeDomainService.togglePostLike(
+                    boardPost,
+                    getUserEntity(userId),
+                    request.like)
+            }
+            "BOARD_COMMENT" -> {
+                val boardComment = getBoardCommentEntity(request.contentId)
+                likeDomainService.toggleCommentLike(
+                    boardComment,
+                    getUserEntity(userId),
+                    request.like)
+            }
+        }
     }
 
-    private fun getBoardPostEntity(postId: Long) =
+    private fun getBoardPostEntity(postId: Long): BoardPostEntity =
         boardPostRepository.findByIdOrNull(postId) ?: throw BoardPostNotFoundException(postId.toString())
 
     @Transactional
     fun report(request: CreateReportRequest, userId: Long): ReportEntity {
-        val user = memberDomainService.getUserEntity(userId)
+        val user = getUserEntity(userId)
 
-        val content = when(request.type) {
+        val content = when (request.type) {
             "BOARD_POST" -> getBoardPostEntity(request.contentId)
             "BOARD_COMMENT" -> getBoardCommentEntity(request.contentId)
             else -> throw IllegalArgumentException("Invalid content type")
@@ -187,9 +206,9 @@ class BoardPostDomainService(
         }
     }
 
+    private fun getBoardCommentEntity(commentId: Long): BoardCommentEntity =
+        boardCommentRepository.findByIdOrNull(commentId) ?: throw BoardCommentNotFoundException(commentId.toString())
 
-    private fun getBoardCommentEntity(commentId: Long): BoardCommentEntity {
-        return boardCommentRepository.findByIdOrNull(commentId)
-            ?: throw BoardCommentNotFoundException(commentId.toString())
-    }
+    private fun getUserEntity(userId: Long): UserEntity =
+        userRepository.findByIdOrNull(userId) ?: throw MemberNotFoundException()
 }

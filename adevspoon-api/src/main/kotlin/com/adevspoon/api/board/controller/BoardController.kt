@@ -79,7 +79,7 @@ class BoardController(
         @RequestUser requestUser: RequestUserInfo,
         @RequestBody @Valid request: LikeBoardContentRequest
     ): String {
-        return boardService.toggleLike(request, requestUser.userId)
+        return boardService.likeBoard(request, requestUser.userId)
     }
 
     @Operation(summary = "게시글 신고")
