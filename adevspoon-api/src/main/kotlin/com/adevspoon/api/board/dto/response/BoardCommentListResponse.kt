@@ -7,18 +7,18 @@ data class BoardCommentListResponse(
     val list: List<BoardCommentResponse>,
 ) {
     companion object {
-        fun from(commentList: List<BoardComment>) : BoardCommentListResponse{
+        fun from(commentList: List<BoardComment>): BoardCommentListResponse {
             val commentResponseList = commentList.map { comment ->
                 BoardCommentResponse(
-                id = comment.id,
-                postId = comment.postId,
-                content = comment.content,
-                user = MemberProfileResponse.from(comment.user),
-                isLiked = comment.isLiked,
-                isMine = comment.isMine,
-                likeCount = comment.likeCount,
-                createdAt = comment.createdAt,
-                updatedAt = comment.updatedAt
+                    id = comment.id,
+                    postId = comment.postId,
+                    content = comment.content,
+                    user = MemberProfileResponse.from(comment.user),
+                    isLiked = comment.isLiked,
+                    isMine = comment.isMine,
+                    likeCount = comment.likeCount,
+                    createdAt = comment.createdAt,
+                    updatedAt = comment.updatedAt
                 )
             }
 
