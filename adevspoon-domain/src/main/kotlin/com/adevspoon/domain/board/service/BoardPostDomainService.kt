@@ -74,7 +74,7 @@ class BoardPostDomainService(
 
     private fun buildBoardPostResponse(boardPost: BoardPostEntity, userId: Long): BoardPost {
         val isUserLikedBoardPost = likeDomainService.isUserLikedPost(userId, boardPost.id)
-        val memberProfile = memberDomainService.getMemberProfile(boardPost.user.id)
+        val memberProfile = memberDomainService.getOtherMemberProfile(boardPost.user.id)
 
         return BoardPost.from(boardPost, memberProfile, isUserLikedBoardPost)
     }
@@ -104,7 +104,7 @@ class BoardPostDomainService(
         val likedPostIds = getLikedPostsByUser(loginUserId, boardPosts.map { it.id }.toList()).toSet()
         val boardPostDto = boardPosts.map { boardPost ->
             val isUserLikedBoardPost = likedPostIds.contains(boardPost.id)
-            BoardPost.from(boardPost, memberDomainService.getMemberProfile(boardPost.user.id), isUserLikedBoardPost)
+            BoardPost.from(boardPost, memberDomainService.getOtherMemberProfile(boardPost.user.id), isUserLikedBoardPost)
         }
 
         return PageWithCursor(

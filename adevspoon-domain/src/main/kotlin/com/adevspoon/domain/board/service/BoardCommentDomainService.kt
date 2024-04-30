@@ -27,7 +27,7 @@ class BoardCommentDomainService(
         return comments.map { comment ->
             BoardComment.from(
                 comment = comment,
-                memberProfile = memberDomainService.getMemberProfile(comment.user.id),
+                memberProfile = memberDomainService.getOtherMemberProfile(comment.user.id),
                 isLike = likedCommentIds.contains(comment.id),
                 isMine = comment.user.id == userId
             )
