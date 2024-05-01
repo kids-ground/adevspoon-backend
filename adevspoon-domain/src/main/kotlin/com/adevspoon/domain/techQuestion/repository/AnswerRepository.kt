@@ -5,13 +5,20 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import java.sql.Date
 
-interface AnswerRepository: JpaRepository<AnswerEntity, Long> {
-
+interface AnswerRepository: JpaRepository<AnswerEntity, Long>, AnswerRepositoryCustom {
     @Query("SELECT a FROM AnswerEntity a " +
             "LEFT JOIN FETCH a.question " +
             "LEFT JOIN FETCH a.user " +
             "WHERE a.id = :answerId")
     fun findWithQuestionAndUser(answerId: Long): AnswerEntity?
+
+    @Query("SELECT a FROM AnswerEntity a " +
+                "LEFT JOIN FETCH a.question " +
+                "LEFT JOIN FETCH a.user " +
+            "WHERE a.question.id = :questionId " +
+            "ORDER BY a.likeCnt DESC " +
+            "LIMIT 1")
+    fun findBestAnswerListByQuestionId(questionId: Long): List<AnswerEntity>
 
     @Query("SELECT DATE(a.createdAt) " +
             "FROM AnswerEntity a " +

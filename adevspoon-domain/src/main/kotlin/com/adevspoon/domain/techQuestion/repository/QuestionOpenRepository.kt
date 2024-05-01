@@ -15,7 +15,7 @@ interface QuestionOpenRepository: JpaRepository<QuestionOpenEntity, Long>, Quest
             "WHERE qo.user = :user " +
             "ORDER BY qo.createdAt DESC " +
             "LIMIT 1")
-    fun findLatest(user: UserEntity): QuestionOpenEntity?
+    fun findLatestWithQuestionAndAnswer(user: UserEntity): QuestionOpenEntity?
 
     @Query("SELECT qo " +
             "FROM QuestionOpenEntity qo " +
