@@ -35,7 +35,7 @@ class AnswerService(
 
         return AnswerListResponse(
             answerList.list.map { AnswerInfoResponse.from(it) },
-            if (answerList.hasNext) request.getNextUrl() else null
+            if (answerList.hasNext) request.nextUrl() else null
         )
     }
 

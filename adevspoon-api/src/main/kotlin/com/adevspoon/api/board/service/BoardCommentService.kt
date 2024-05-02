@@ -19,5 +19,4 @@ class BoardCommentService (
         val comment = boardCommentDomainService.register(request.toRegisterCommentRequestDto(), userId)
         return BoardCommentResponse.from(comment)
     }
-
 }

@@ -24,7 +24,7 @@ data class QuestionListRequest(
         limit = limit,
     )
 
-    fun getNextUrl() = ServletUriComponentsBuilder.fromCurrentRequest()
+    fun nextUrl() = ServletUriComponentsBuilder.fromCurrentRequest()
             .replaceQueryParam("offset", offset + limit)
             .build()
             .toUriString()
