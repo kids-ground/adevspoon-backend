@@ -1,5 +1,6 @@
 package com.adevspoon.api.board.service
 
+import com.adevspoon.api.board.dto.request.BoardCommentDeleteRequest
 import com.adevspoon.api.board.dto.request.RegisterBoardCommentRequest
 import com.adevspoon.api.board.dto.response.BoardCommentListResponse
 import com.adevspoon.api.board.dto.response.BoardCommentResponse
@@ -18,5 +19,10 @@ class BoardCommentService (
     fun registerBoardComment(request: RegisterBoardCommentRequest, userId: Long): BoardCommentResponse {
         val comment = boardCommentDomainService.register(request.toRegisterCommentRequestDto(), userId)
         return BoardCommentResponse.from(comment)
+    }
+
+    fun delete(request: BoardCommentDeleteRequest, userId: Long): String {
+        boardCommentDomainService.deleteById(request.commentId, userId)
+        return "Successfully delete. commentId:${request.commentId}"
     }
 }

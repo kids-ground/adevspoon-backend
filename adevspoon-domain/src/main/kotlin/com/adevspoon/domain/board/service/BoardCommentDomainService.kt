@@ -4,6 +4,7 @@ import com.adevspoon.domain.board.domain.BoardCommentEntity
 import com.adevspoon.domain.board.dto.request.RegisterCommentRequestDto
 import com.adevspoon.domain.board.dto.response.BoardComment
 import com.adevspoon.domain.board.exception.BoardCommentNotFoundException
+import com.adevspoon.domain.board.exception.BoardPostCommentException
 import com.adevspoon.domain.board.exception.BoardPostNotFoundException
 import com.adevspoon.domain.board.repository.BoardCommentRepository
 import com.adevspoon.domain.board.repository.BoardPostRepository
@@ -57,6 +58,19 @@ class BoardCommentDomainService(
                 isLike = likedCommentIds.contains(commentAndAuthor.comment.id),
                 isMine = commentAndAuthor.user.id == userId
             )
+        }
+    }
+
+    @Transactional
+    fun deleteById(commentId: Long, userId: Long) {
+        val boardComment = getBoardCommentEntity(commentId)
+        validateCommentOwnership(boardComment, userId)
+        boardCommentRepository.deleteById(commentId)
+    }
+
+    private fun validateCommentOwnership(boardComment: BoardCommentEntity, userId: Long) {
+        if (boardComment.user.id != userId) {
+            throw BoardPostCommentException(commentOwnerId = boardComment.user.id.toString(), loginUserId = userId.toString())
         }
     }
 
