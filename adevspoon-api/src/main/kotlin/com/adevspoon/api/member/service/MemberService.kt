@@ -2,8 +2,10 @@ package com.adevspoon.api.member.service
 
 import com.adevspoon.api.common.annotation.ApplicationService
 import com.adevspoon.api.common.util.ImageProcessor
+import com.adevspoon.api.member.dto.request.MemberFavoriteListRequest
 import com.adevspoon.common.enums.ImageType
 import com.adevspoon.api.member.dto.request.MemberProfileUpdateRequest
+import com.adevspoon.api.member.dto.response.MemberFavoriteListResponse
 import com.adevspoon.api.member.dto.response.MemberProfileResponse
 import com.adevspoon.domain.member.service.MemberDomainService
 import com.adevspoon.infrastructure.storage.dto.FileInfo
@@ -24,6 +26,12 @@ class MemberService(
             .updateMemberProfile(request.toMemberUpdateRequireDto(userId, profileUrl, thumbnailUrl))
 
         return MemberProfileResponse.from(memberProfile)
+    }
+
+    fun getLikeList(memberId: Long, request: MemberFavoriteListRequest): MemberFavoriteListResponse {
+        TODO("""
+            
+        """.trimIndent())
     }
 
     private fun uploadProfileImage(image: MultipartFile): List<String> {

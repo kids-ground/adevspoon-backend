@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Positive
 data class MemberFavoriteListRequest(
     // TODO: ENUM Validation 필요
     @Schema(description = "좋아요한 포스트 타입", example = "answer")
-    val type: FavoriteType,
+    val type: FavoriteType = FavoriteType.ALL,
 
     @Schema(description = "시작 postId. 첫 요청이면 null", example = "10")
     val startId: Long?,

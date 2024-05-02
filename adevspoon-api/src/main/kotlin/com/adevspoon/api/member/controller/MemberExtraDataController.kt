@@ -5,6 +5,7 @@ import com.adevspoon.api.common.dto.RequestUserInfo
 import com.adevspoon.api.config.swagger.SWAGGER_TAG_USER_ETC
 import com.adevspoon.api.member.dto.request.MemberFavoriteListRequest
 import com.adevspoon.api.member.dto.response.MemberFavoriteListResponse
+import com.adevspoon.api.member.service.MemberService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
@@ -15,7 +16,9 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @Tag(name = SWAGGER_TAG_USER_ETC)
-class MemberExtraDataController {
+class MemberExtraDataController(
+    private val memberService: MemberService
+) {
 
     @Operation(summary = "닉네임 중복체크", description = "현재 정책이 바뀌어 무조건 true로 리턴")
     @GetMapping("/nickname")
@@ -32,10 +35,6 @@ class MemberExtraDataController {
         @RequestUser user: RequestUserInfo,
         @Valid request: MemberFavoriteListRequest,
     ): MemberFavoriteListResponse {
-        TODO("""
-            - 좋아요 누른 것들
-            - Query(ModelAttribute에서 ENUM Convert 필요)
-            - board, answer, all 모두 가져올 수 있음
-        """.trimIndent())
+        return memberService.getLikeList(user.userId, request)
     }
 }
