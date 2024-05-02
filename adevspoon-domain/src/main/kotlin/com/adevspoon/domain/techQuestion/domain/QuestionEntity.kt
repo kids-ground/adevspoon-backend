@@ -16,7 +16,7 @@ class QuestionEntity(
 
     @NotNull
     @Column(name = "question", nullable = false)
-    val question: String? = null,
+    val question: String,
 
     @Column(name = "difficulty", columnDefinition="ENUM('0','1','2','3')")
     @Convert(converter = IntToStringConverter::class)
