@@ -7,6 +7,7 @@ import com.adevspoon.common.enums.ImageType
 import com.adevspoon.api.member.dto.request.MemberProfileUpdateRequest
 import com.adevspoon.api.member.dto.response.MemberFavoriteListResponse
 import com.adevspoon.api.member.dto.response.MemberProfileResponse
+import com.adevspoon.domain.member.dto.request.GetLikeList
 import com.adevspoon.domain.member.service.MemberDomainService
 import com.adevspoon.infrastructure.storage.dto.FileInfo
 import com.adevspoon.infrastructure.storage.service.StorageAdapter
@@ -29,9 +30,12 @@ class MemberService(
     }
 
     fun getLikeList(memberId: Long, request: MemberFavoriteListRequest): MemberFavoriteListResponse {
-        TODO("""
-            
-        """.trimIndent())
+        val likeList = memberDomainService.getLikeList(GetLikeList(memberId, request.startId, request.take))
+
+        return MemberFavoriteListResponse.from(
+            likeList.list,
+            request.nextUrl(likeList.nextStartId)
+        )
     }
 
     private fun uploadProfileImage(image: MultipartFile): List<String> {

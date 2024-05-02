@@ -2,6 +2,7 @@ package com.adevspoon.api.member.dto.request
 
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Positive
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 
 data class MemberFavoriteListRequest(
     // TODO: ENUM Validation 필요
@@ -13,5 +14,11 @@ data class MemberFavoriteListRequest(
 
     @Schema(description = "몇 개 가지고 올 것인지", example = "10")
     @field:Positive(message = "take는 1 이상이어야 합니다.")
-    val take: Long,
-)
+    val take: Int = 10,
+) {
+    fun nextUrl(nextStartId: Long?) = nextStartId?.let {
+        ServletUriComponentsBuilder.fromCurrentRequest()
+            .replaceQueryParam("startId", it)
+            .toUriString()
+    }
+}

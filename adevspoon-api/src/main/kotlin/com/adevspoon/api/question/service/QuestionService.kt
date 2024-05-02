@@ -21,7 +21,7 @@ class QuestionService(
         )
         return QuestionListResponse.from(
             issuedQuestionList,
-            if (issuedQuestionList.hasNext) request.getNextUrl() else null
+            if (issuedQuestionList.hasNext) request.nextUrl() else null
         )
     }
 

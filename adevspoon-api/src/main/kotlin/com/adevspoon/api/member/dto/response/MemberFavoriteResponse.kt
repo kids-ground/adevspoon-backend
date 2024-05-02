@@ -1,16 +1,17 @@
 package com.adevspoon.api.member.dto.response
 
+import com.adevspoon.domain.member.dto.response.LikeInfo
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 
-// TODO: Enum Validation 필요
 data class MemberFavoriteResponse(
-    val id: Int,
-    @Schema(description = "포스트 타입")
-    val postType: PostType,
-    val postId: Int,
+    val id: Long,
+    @Schema(description = "포스트 타입", example = "answer")
+    val postType: PostType = PostType.ANSWER,
+    val postId: Long,
+    @Schema(description = "Question의 제목")
     val title: String,
-    @Schema(description = "포스트의 컨텐트")
+    @Schema(description = "Answer의 내용")
     val content: String,
     @Schema(description = "좋아요한 날짜")
     val date: LocalDate,
@@ -18,4 +19,19 @@ data class MemberFavoriteResponse(
     val writer: MemberProfileResponse,
     val isLiked: Boolean?,
     val likeCount: Int,
-)
+) {
+    companion object {
+        fun from(likeInfo: LikeInfo): MemberFavoriteResponse {
+            return MemberFavoriteResponse(
+                id = likeInfo.id,
+                postId = likeInfo.postId,
+                title = likeInfo.title,
+                content = likeInfo.content,
+                date = likeInfo.date,
+                writer = MemberProfileResponse.from(likeInfo.writer),
+                isLiked = likeInfo.isLiked,
+                likeCount = likeInfo.likeCount,
+            )
+        }
+    }
+}
