@@ -2,6 +2,7 @@ package com.adevspoon.domain.techQuestion.service
 
 import com.adevspoon.domain.common.annotation.DistributedLock
 import com.adevspoon.domain.common.annotation.DomainService
+import com.adevspoon.domain.common.utils.isToday
 import com.adevspoon.domain.member.domain.UserEntity
 import com.adevspoon.domain.member.exception.MemberNotFoundException
 import com.adevspoon.domain.member.repository.UserRepository
@@ -30,7 +31,6 @@ class QuestionDomainService(
     private val userCustomizedQuestionCategoryRepository: UserCustomizedQuestionCategoryRepository,
     private val questionOpenDomainService: QuestionOpenDomainService,
 ) {
-
     @Transactional(readOnly = true)
     fun getQuestion(memberId: Long, questionId: Long): QuestionInfo {
         val user = getMember(memberId)
@@ -44,9 +44,8 @@ class QuestionDomainService(
     @DistributedLock(keyClass = [GetTodayQuestion::class])
     fun getOrCreateTodayQuestion(request: GetTodayQuestion): QuestionInfo {
         val user = getMember(request.memberId)
-        val latestIssuedQuestion = questionOpenRepository.findLatest(user)
-
-        val isTodayQuestion = (latestIssuedQuestion?.openDate?.toLocalDate()?.compareTo(request.today) ?: -1) == 0
+        val latestIssuedQuestion = questionOpenRepository.findLatestWithQuestionAndAnswer(user)
+        val isTodayQuestion = latestIssuedQuestion?.openDate?.isToday() ?: false
 
         return if(isTodayQuestion) makeQuestionInfo(latestIssuedQuestion!!)
         else questionOpenDomainService.issueQuestion(request.memberId, request.today)

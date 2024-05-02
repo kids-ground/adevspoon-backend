@@ -122,14 +122,14 @@ class QuestionDomainServiceUnitTest {
                     openDate = LocalDateTime.now().minusDays(1)
                 )
             val newIssuedQuestionInfo = QuestionFixture.createQuestionInfo(questionId = question2.id)
-            every { questionOpenRepository.findLatest(user) } returns latestIssuedQuestion
+            every { questionOpenRepository.findLatestWithQuestionAndAnswer(user) } returns latestIssuedQuestion
             every { questionOpenDomainService.issueQuestion(user.id, today) } returns newIssuedQuestionInfo
 
             val questionInfo = questionDomainService.getOrCreateTodayQuestion(GetTodayQuestion(user.id, today))
 
             assertEquals(questionInfo.questionId, question2.id)
 
-            verify { questionOpenRepository.findLatest(user) }
+            verify { questionOpenRepository.findLatestWithQuestionAndAnswer(user) }
             verify { questionOpenDomainService.issueQuestion(any(), any()) }
         }
 
@@ -138,14 +138,14 @@ class QuestionDomainServiceUnitTest {
             val latestIssuedQuestion =
                 QuestionFixture.createQuestionOpen(1, question1, user = user, openDate = LocalDateTime.now())
             val newIssuedQuestionInfo = QuestionFixture.createQuestionInfo(questionId = question2.id)
-            every { questionOpenRepository.findLatest(user) } returns latestIssuedQuestion
+            every { questionOpenRepository.findLatestWithQuestionAndAnswer(user) } returns latestIssuedQuestion
             every { questionOpenDomainService.issueQuestion(any(), any()) } returns newIssuedQuestionInfo
 
             val questionInfo = questionDomainService.getOrCreateTodayQuestion(GetTodayQuestion(1, LocalDate.now()))
 
             assertEquals(questionInfo.questionId, question1.id)
 
-            verify { questionOpenRepository.findLatest(user) }
+            verify { questionOpenRepository.findLatestWithQuestionAndAnswer(user) }
             verify(exactly = 0) { questionOpenDomainService.issueQuestion(any(), any()) }
         }
     }

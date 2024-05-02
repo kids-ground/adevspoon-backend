@@ -77,4 +77,12 @@ class UserEntity(
     @NotNull
     @Column(name = "careerDescription", nullable = false)
     var careerDescription: String = ""
-): LegacyBaseEntity()
+): LegacyBaseEntity() {
+    fun increaseQuestionCnt() {
+        questionCnt += 1
+    }
+
+    fun increaseAnswerCnt() {
+        answerCnt += 1
+    }
+}

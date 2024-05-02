@@ -9,7 +9,7 @@ import jakarta.validation.constraints.Size
 class BadgeEntity(
     @Id
     @Column(name = "id", nullable = false)
-    val id: Int? = null,
+    val id: Int = 0,
 
     @Size(max = 50)
     @Column(name = "name", length = 50)

@@ -1,8 +1,10 @@
 package com.adevspoon.api.answer.dto.request
 
+import com.adevspoon.domain.techQuestion.dto.request.GetQuestionAnswerList
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Positive
 import jakarta.validation.constraints.PositiveOrZero
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 
 // TODO: Enum Validation 필요
 data class AnswerListQueryRequest(
@@ -19,4 +21,16 @@ data class AnswerListQueryRequest(
     @Schema(nullable = true, defaultValue = "10")
     @field:Positive(message = "limit은 양수여야 합니다.")
     val limit: Int = 10,
-)
+) {
+    fun toGetQuestionAnswerList(memberId: Long) = GetQuestionAnswerList(
+        memberId = memberId,
+        questionId = questionId,
+        sort = sort.toQuestionAnswerListSortType(),
+        offset = offset,
+        limit = limit
+    )
+    fun getNextUrl() = ServletUriComponentsBuilder.fromCurrentRequest()
+        .replaceQueryParam("offset", offset + limit)
+        .build()
+        .toUriString()
+}

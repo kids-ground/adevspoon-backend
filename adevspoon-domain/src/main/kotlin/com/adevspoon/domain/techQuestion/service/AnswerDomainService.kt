@@ -4,24 +4,32 @@ import com.adevspoon.domain.common.annotation.ActivityEvent
 import com.adevspoon.domain.common.annotation.ActivityEventType
 import com.adevspoon.domain.common.annotation.DomainService
 import com.adevspoon.domain.common.entity.ReportEntity
+import com.adevspoon.domain.common.repository.LikeRepository
 import com.adevspoon.domain.common.repository.ReportRepository
 import com.adevspoon.domain.common.service.LikeDomainService
+import com.adevspoon.domain.common.utils.isToday
 import com.adevspoon.domain.member.domain.UserEntity
+import com.adevspoon.domain.member.dto.response.MemberProfile
 import com.adevspoon.domain.member.exception.MemberNotFoundException
+import com.adevspoon.domain.member.repository.BadgeRepository
 import com.adevspoon.domain.member.repository.UserRepository
 import com.adevspoon.domain.member.service.MemberDomainService
 import com.adevspoon.domain.techQuestion.domain.AnswerEntity
 import com.adevspoon.domain.techQuestion.domain.QuestionEntity
 import com.adevspoon.domain.techQuestion.domain.QuestionOpenEntity
 import com.adevspoon.domain.techQuestion.dto.request.CreateQuestionAnswer
+import com.adevspoon.domain.techQuestion.dto.request.GetQuestionAnswerList
 import com.adevspoon.domain.techQuestion.dto.request.ModifyQuestionAnswer
 import com.adevspoon.domain.techQuestion.dto.response.QuestionAnswerInfo
+import com.adevspoon.domain.techQuestion.dto.response.QuestionAnswerListInfo
 import com.adevspoon.domain.techQuestion.exception.*
 import com.adevspoon.domain.techQuestion.repository.AnswerRepository
 import com.adevspoon.domain.techQuestion.repository.QuestionOpenRepository
 import com.adevspoon.domain.techQuestion.repository.QuestionRepository
-import jakarta.transaction.Transactional
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDate
 
 @DomainService
 class AnswerDomainService(
@@ -29,7 +37,9 @@ class AnswerDomainService(
     private val questionOpenRepository: QuestionOpenRepository,
     private val answerRepository: AnswerRepository,
     private val userRepository: UserRepository,
+    private val badgeRepository: BadgeRepository,
     private val reportRepository: ReportRepository,
+    private val likeRepository: LikeRepository,
     private val memberDomainService: MemberDomainService,
     private val likeDomainService: LikeDomainService
 ) {
@@ -42,7 +52,8 @@ class AnswerDomainService(
         val answer = AnswerEntity(question = question, answer = request.answer, user = requestMember)
 
         answerRepository.save(answer)
-        requestMember.apply { answerCnt += 1 }
+        issuedQuestion.addAnswer(answer)
+        requestMember.increaseAnswerCnt()
 
         return QuestionAnswerInfo.from(
             answer,
@@ -52,7 +63,7 @@ class AnswerDomainService(
         )
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     fun getAnswerDetail(answerId: Long, requestMemberId: Long): QuestionAnswerInfo {
         val requestMember = getMember(requestMemberId)
         val answer = getAnswerWithUserAndQuestion(answerId)
@@ -65,6 +76,33 @@ class AnswerDomainService(
             issuedQuestion.openDate.toLocalDate(),
             isLiked
         )
+    }
+
+    @Transactional(readOnly = true)
+    fun getTodayBestAnswerList(memberId: Long): QuestionAnswerListInfo {
+        val member = getMember(memberId)
+        val latestIssuedQuestion = getLatestIssuedQuestion(member)
+
+        if (!latestIssuedQuestion.openDate.isToday()) throw QuestionNotIssuedException()
+
+        val answerList = answerRepository.findBestAnswerListByQuestionId(latestIssuedQuestion.question.id)
+            .takeIf { it.isNotEmpty() }
+            ?: throw QuestionAnswerNotFoundException()
+
+        return makeQuestionAnswerListInfo(memberId, answerList, false)
+    }
+
+    @Transactional(readOnly = true)
+    fun getAnswerList(request: GetQuestionAnswerList): QuestionAnswerListInfo {
+        if (request.questionId == null) throw QuestionNotFoundException()
+
+        val answerList = answerRepository.findQuestionAnswerList(
+            request.questionId,
+            request.sort,
+            PageRequest.of(request.offset / request.limit, request.limit)
+        )
+
+        return makeQuestionAnswerListInfo(request.memberId, answerList.content, answerList.hasNext())
     }
 
     @Transactional
@@ -97,10 +135,38 @@ class AnswerDomainService(
         reportRepository.save(ReportEntity(user = member, postType = "answer", post = answer))
     }
 
+    private fun makeQuestionAnswerListInfo(
+        requestMemberId: Long,
+        answerList: List<AnswerEntity>,
+        hasNext: Boolean
+    ): QuestionAnswerListInfo {
+        val badgeList = badgeRepository.findAll()
+        val likedAnswerIdsList = likeRepository.findAllIdsByUserIdAndAnswerIds(requestMemberId, answerList.map { it.id })
+
+        return QuestionAnswerListInfo(
+            answerList.map {
+                QuestionAnswerInfo.from(
+                    it,
+                    MemberProfile.from(
+                        it.user,
+                        null,
+                        badgeList.find { badge -> badge.id == it.user.representativeBadge }),
+                    LocalDate.now(), // 무의미한 값
+                    likedAnswerIdsList.contains(it.id)
+                )
+            },
+            hasNext
+        )
+    }
+
     private fun checkReport(member: UserEntity, answer: AnswerEntity) {
         reportRepository.findAllByUserAndPost(member, answer)
             .takeIf { it.isEmpty() }
             ?: throw QuestionAnswerReportAlreadyExistException()
+    }
+
+    private fun getLatestIssuedQuestion(member: UserEntity): QuestionOpenEntity {
+        return questionOpenRepository.findLatestWithQuestionAndAnswer(member) ?: throw QuestionNotOpenedException()
     }
 
     private fun getAnswerWithUserAndQuestion(answerId: Long): AnswerEntity {

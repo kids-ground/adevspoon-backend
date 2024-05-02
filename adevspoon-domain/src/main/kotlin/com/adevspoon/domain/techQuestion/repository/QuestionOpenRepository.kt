@@ -7,7 +7,7 @@ import com.adevspoon.domain.techQuestion.dto.response.CategoryQuestionCountDto
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 
-interface QuestionOpenRepository: JpaRepository<QuestionOpenEntity, Long> {
+interface QuestionOpenRepository: JpaRepository<QuestionOpenEntity, Long>, QuestionOpenRepositoryCustom {
     @Query("SELECT qo " +
             "FROM QuestionOpenEntity qo " +
                 "LEFT JOIN FETCH qo.question " +
@@ -15,7 +15,7 @@ interface QuestionOpenRepository: JpaRepository<QuestionOpenEntity, Long> {
             "WHERE qo.user = :user " +
             "ORDER BY qo.createdAt DESC " +
             "LIMIT 1")
-    fun findLatest(user: UserEntity): QuestionOpenEntity?
+    fun findLatestWithQuestionAndAnswer(user: UserEntity): QuestionOpenEntity?
 
     @Query("SELECT qo " +
             "FROM QuestionOpenEntity qo " +
