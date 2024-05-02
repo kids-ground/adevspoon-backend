@@ -19,6 +19,10 @@ class BoardCommentNotFoundException(commentId: String) : AdevspoonException(
     detailReason = BOARD_COMMENT_NOT_FOUND.message + " 존재하지 않는 commentId: $commentId"
 )
 
+class BoardPostCommentException(commentOwnerId: String, loginUserId: String): AdevspoonException(
+    BOARD_COMMENT_EDIT_UNAUTHORIZED,
+    detailReason = BOARD_COMMENT_EDIT_UNAUTHORIZED.message + " commentOwnerId: $commentOwnerId, loginUserId: $loginUserId")
+
 class SelfReportException : AdevspoonException(SELF_REPORT_NOT_ALLOWED)
 class DuplicateReportException(type: String, contentId: Long) : AdevspoonException(
     ALREADY_REPORTED,
