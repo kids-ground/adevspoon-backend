@@ -1,6 +1,7 @@
 package com.adevspoon.domain.board.service
 
 import com.adevspoon.domain.board.domain.BoardCommentEntity
+import com.adevspoon.domain.board.dto.request.RegisterCommentRequestDto
 import com.adevspoon.domain.board.dto.response.BoardComment
 import com.adevspoon.domain.board.exception.BoardCommentNotFoundException
 import com.adevspoon.domain.board.exception.BoardPostNotFoundException
@@ -9,7 +10,10 @@ import com.adevspoon.domain.board.repository.BoardPostRepository
 import com.adevspoon.domain.common.annotation.DomainService
 import com.adevspoon.domain.common.service.LikeDomainService
 import com.adevspoon.domain.member.dto.response.MemberProfile
+import com.adevspoon.domain.member.exception.MemberNotFoundException
 import com.adevspoon.domain.member.repository.BadgeRepository
+import com.adevspoon.domain.member.repository.UserRepository
+import com.adevspoon.domain.member.service.MemberDomainService
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.transaction.annotation.Transactional
 
@@ -17,9 +21,25 @@ import org.springframework.transaction.annotation.Transactional
 class BoardCommentDomainService(
     private val boardCommentRepository: BoardCommentRepository,
     private val boardPostRepository: BoardPostRepository,
+    private val userRepository: UserRepository,
     private val badgeRepository: BadgeRepository,
+    private val memberDomainService: MemberDomainService,
     private val likeDomainService: LikeDomainService
 ) {
+    @Transactional
+    fun register(request: RegisterCommentRequestDto, userId: Long): BoardComment {
+        val user = getUserEntity(userId)
+        val boardPost = getBoardPostEntity(request.postId)
+        val comment = BoardCommentEntity(user = user, post = boardPost, content = request.content, likeCount = 0)
+        boardCommentRepository.save(comment)
+        return BoardComment.from(
+            comment = comment,
+            memberProfile = memberDomainService.getOtherMemberProfile(userId),
+            isLike = false,
+            isMine = true
+        )
+    }
+
     @Transactional(readOnly = true)
     fun getCommentsByPostId(postId: Long, userId: Long): List<BoardComment> {
         val boardPost = getBoardPostEntity(postId)
@@ -49,4 +69,7 @@ class BoardCommentDomainService(
 
     private fun getBoardCommentEntity(commentId: Long): BoardCommentEntity =
         boardCommentRepository.findByIdOrNull(commentId) ?: throw BoardCommentNotFoundException(commentId.toString())
+
+    private fun getUserEntity(userId: Long) =
+        userRepository.findByIdOrNull(userId) ?: throw MemberNotFoundException()
 }
