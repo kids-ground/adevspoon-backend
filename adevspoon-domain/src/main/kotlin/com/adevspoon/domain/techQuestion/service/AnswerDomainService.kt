@@ -26,9 +26,9 @@ import com.adevspoon.domain.techQuestion.exception.*
 import com.adevspoon.domain.techQuestion.repository.AnswerRepository
 import com.adevspoon.domain.techQuestion.repository.QuestionOpenRepository
 import com.adevspoon.domain.techQuestion.repository.QuestionRepository
-import jakarta.transaction.Transactional
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 
 @DomainService
@@ -63,7 +63,7 @@ class AnswerDomainService(
         )
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     fun getAnswerDetail(answerId: Long, requestMemberId: Long): QuestionAnswerInfo {
         val requestMember = getMember(requestMemberId)
         val answer = getAnswerWithUserAndQuestion(answerId)
@@ -78,7 +78,7 @@ class AnswerDomainService(
         )
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     fun getTodayBestAnswerList(memberId: Long): QuestionAnswerListInfo {
         val member = getMember(memberId)
         val latestIssuedQuestion = getLatestIssuedQuestion(member)
@@ -92,7 +92,7 @@ class AnswerDomainService(
         return makeQuestionAnswerListInfo(memberId, answerList, false)
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     fun getAnswerList(request: GetQuestionAnswerList): QuestionAnswerListInfo {
         if (request.questionId == null) throw QuestionNotFoundException()
 
