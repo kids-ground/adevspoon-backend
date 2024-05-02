@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 
-interface LikeRepository : JpaRepository<LikeEntity, Long>, JpaSpecificationExecutor<LikeEntity> {
+interface LikeRepository : JpaRepository<LikeEntity, Long>, JpaSpecificationExecutor<LikeEntity>, LikeRepositoryCustom {
     @Query("SELECT EXISTS (SELECT 1 FROM LikeEntity l WHERE l.user.id = :userId AND l.boardPostId = :boardPostId)")
     fun exitsByUserIdAndBoardPostId(userId: Long, boardPostId: Long): Boolean
 
