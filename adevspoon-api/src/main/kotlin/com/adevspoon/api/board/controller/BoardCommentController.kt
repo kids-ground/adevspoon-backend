@@ -43,8 +43,6 @@ class BoardCommentController (
         @RequestUser user: RequestUserInfo,
         @RequestBody @Valid request: BoardCommentDeleteRequest,
     ): String {
-        TODO("""
-            게시판 댓글 삭제
-        """.trimIndent())
+        return boardCommentService.delete(request, user.userId)
     }
 }
