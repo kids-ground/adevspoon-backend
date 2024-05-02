@@ -34,9 +34,7 @@ class BoardCommentController (
         @RequestUser user: RequestUserInfo,
         @RequestBody @Valid request: RegisterBoardCommentRequest
     ): BoardCommentResponse {
-        TODO("""
-            게시판 댓글 등록
-        """.trimIndent())
+        return boardCommentService.registerBoardComment(request, user.userId)
     }
 
     @Operation(summary = "게시글의 댓글 삭제")
