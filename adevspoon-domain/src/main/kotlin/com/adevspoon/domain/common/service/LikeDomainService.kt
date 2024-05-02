@@ -28,6 +28,11 @@ class LikeDomainService(
         return likeRepository.findLikedPostIdsByUser(loginUserId, boardPostIds)
     }
 
+    @Transactional(readOnly = true)
+    fun getLikedCommentIdsByUser(loginUserId: Long, commentsIds: List<Long>): List<Long> {
+        return likeRepository.findLikedCommentIdsByUser(loginUserId, commentsIds)
+    }
+
     @Transactional
     fun toggleAnswerLike(answer: AnswerEntity, user: UserEntity, isLike: Boolean) {
         // FIXME : LikeEntity 나누기(Board, Comment, Answer), 각각 Unique Key 설정 필요 (현재 동시성을 못다룸 - 클라이언트에서만 처리)
