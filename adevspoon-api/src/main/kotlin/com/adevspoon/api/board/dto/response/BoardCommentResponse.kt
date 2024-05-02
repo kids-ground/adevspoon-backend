@@ -1,6 +1,7 @@
 package com.adevspoon.api.board.dto.response
 
 import com.adevspoon.api.member.dto.response.MemberProfileResponse
+import com.adevspoon.domain.board.dto.response.BoardComment
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
 
@@ -19,4 +20,18 @@ data class BoardCommentResponse(
     val likeCount: Int,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime,
-)
+) {
+    companion object {
+        fun from(comment: BoardComment) = BoardCommentResponse (
+            id = comment.id,
+            postId = comment.postId,
+            content = comment.content,
+            user = MemberProfileResponse.from(comment.user),
+            isLiked = comment.isLiked,
+            isMine = comment.isMine,
+            likeCount = comment.likeCount,
+            createdAt = comment.createdAt,
+            updatedAt = comment.updatedAt
+        )
+    }
+}
