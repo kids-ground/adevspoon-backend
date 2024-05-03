@@ -17,7 +17,7 @@ data class AnswerListQueryRequest(
 
     @Schema(nullable = true, defaultValue = "0")
     @field:PositiveOrZero(message = "offset은 0이상이어야 합니다.")
-    val offset: Int = 0,
+    val offset: Long = 0,
     @Schema(nullable = true, defaultValue = "10")
     @field:Positive(message = "limit은 양수여야 합니다.")
     val limit: Int = 10,
