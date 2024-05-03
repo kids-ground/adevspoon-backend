@@ -54,7 +54,7 @@ class QuestionOpenRepositoryCustomImpl(
 
     private fun sortOrder(sort: IssuedQuestionSortType) =
         when (sort) {
-            IssuedQuestionSortType.NEWEST -> questionOpenEntity.createdAt.desc()
-            IssuedQuestionSortType.OLDEST -> questionOpenEntity.createdAt.asc()
+            IssuedQuestionSortType.NEWEST -> questionOpenEntity.openDate.desc()
+            IssuedQuestionSortType.OLDEST -> questionOpenEntity.openDate.asc()
         }
 }
