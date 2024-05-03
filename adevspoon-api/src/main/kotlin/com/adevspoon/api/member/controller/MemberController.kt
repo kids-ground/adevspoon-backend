@@ -47,9 +47,7 @@ class MemberController(
         @RequestUser requestUser: RequestUserInfo,
         @PathVariable memberId: Long,
     ) : MemberProfileResponse {
-        TODO("""
-            - 특정 유저 정보 가져오기
-        """.trimIndent())
+        return memberService.getProfile(memberId)
     }
 
     @Operation(summary = "회원탈퇴", description = "유저 활동 기록도 지워짐 주의!")

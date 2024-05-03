@@ -19,6 +19,11 @@ class MemberService(
     private val storageAdapter: StorageAdapter,
     private val imageProcessor: ImageProcessor
 ) {
+    fun getProfile(memberId: Long): MemberProfileResponse {
+        val memberProfile = memberDomainService.getMemberProfile(memberId)
+        return MemberProfileResponse.from(memberProfile)
+    }
+
     fun updateProfile(userId: Long, request: MemberProfileUpdateRequest): MemberProfileResponse {
         val (profileUrl, thumbnailUrl) = request.image
             ?.let(::uploadProfileImage)
