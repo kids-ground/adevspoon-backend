@@ -12,6 +12,7 @@ import com.adevspoon.domain.member.dto.response.LikeInfo
 import com.adevspoon.domain.member.dto.response.LikeListInfo
 import com.adevspoon.domain.member.dto.response.MemberAndSignup
 import com.adevspoon.domain.member.dto.response.MemberProfile
+import com.adevspoon.domain.member.exception.MemberAlreadyExpiredRefreshTokenException
 import com.adevspoon.domain.member.exception.MemberBadgeNotFoundException
 import com.adevspoon.domain.member.exception.MemberNotFoundException
 import com.adevspoon.domain.member.repository.BadgeRepository
@@ -105,11 +106,12 @@ class MemberDomainService(
     }
 
     @Transactional
-    fun updateMemberToken(userId: Long, refreshToken: String) {
+    fun checkAndUpdateToken(userId: Long, oldToken: String?, newToken: String) {
         val user = getUserEntity(userId)
-        user.apply {
-            this.refreshToken = refreshToken
-        }
+
+        if (oldToken != null && user.refreshToken != oldToken) throw MemberAlreadyExpiredRefreshTokenException()
+
+        user.apply { refreshToken = newToken }
     }
 
     @Transactional(readOnly = true)

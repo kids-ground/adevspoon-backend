@@ -5,8 +5,11 @@ import com.adevspoon.api.common.dto.JwtTokenType
 import com.adevspoon.api.common.enums.ServiceRole
 import com.adevspoon.api.common.properties.JwtProperties
 import com.adevspoon.common.exception.common.CommonUnauthorizedException
+import com.fasterxml.jackson.databind.ObjectMapper
+import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
+import org.apache.tomcat.util.codec.binary.Base64
 import org.springframework.stereotype.Component
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -20,7 +23,8 @@ private const val USER_TOKEN_TYPE = "tokenType"
 
 @Component
 class JwtProcessor(
-    private val jwtProperties: JwtProperties
+    private val jwtProperties: JwtProperties,
+    private val objectMapper: ObjectMapper,
 ) {
     fun createToken(jwtTokenInfo: JwtTokenInfo): String = Jwts.builder()
         .claim(USER_ID, jwtTokenInfo.userId)
@@ -42,7 +46,7 @@ class JwtProcessor(
         .signWith(SecretKeySpec(jwtProperties.secretKey.toByteArray(), SignatureAlgorithm.HS256.jcaName))
         .compact()!!
 
-    fun validateAuthorizationHeader(authorizationHeader: String): JwtTokenInfo = try {
+    fun validateServiceToken(authorizationHeader: String): JwtTokenInfo = try {
         val token = authorizationHeader.removePrefix("Bearer ")
 
         Jwts.parserBuilder()
@@ -57,6 +61,28 @@ class JwtProcessor(
                     tokenType = enumValueOf(it.get(key = USER_TOKEN_TYPE) as? String? ?: JwtTokenType.ACCESS.name)
                 )
             }
+    } catch (e: Exception) {
+        throw CommonUnauthorizedException()
+    }
+
+    fun checkOwnToken(token: String) {
+        try {
+            Jwts.parserBuilder()
+                .setSigningKey(jwtProperties.secretKey.toByteArray())
+                .build()
+                .parseClaimsJws(token)
+                .body
+        } catch(_: ExpiredJwtException) {
+
+        } catch (e: Exception) {
+            throw CommonUnauthorizedException()
+        }
+    }
+
+    fun extractUserId(token: String): Long = try {
+        val encodedBody = token.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1]
+        val decodedBytes = Base64.decodeBase64(encodedBody)
+        objectMapper.readValue(decodedBytes, JwtTokenInfo::class.java).userId
     } catch (e: Exception) {
         throw CommonUnauthorizedException()
     }

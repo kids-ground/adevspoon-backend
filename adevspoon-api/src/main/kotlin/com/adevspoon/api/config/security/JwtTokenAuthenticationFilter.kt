@@ -24,7 +24,7 @@ class JwtTokenAuthenticationFilter(
             return
         }
 
-        val tokenInfo = jwtProcessor.validateAuthorizationHeader(authHeader)
+        val tokenInfo = jwtProcessor.validateServiceToken(authHeader)
         SecurityContextHolder.getContext().authentication = UsernamePasswordAuthenticationToken(
             RequestUserInfo(tokenInfo.userId),
             null,

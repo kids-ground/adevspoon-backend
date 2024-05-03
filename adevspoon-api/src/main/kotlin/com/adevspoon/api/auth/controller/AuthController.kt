@@ -2,6 +2,7 @@ package com.adevspoon.api.auth.controller
 
 import com.adevspoon.api.auth.dto.request.RefreshTokenRequest
 import com.adevspoon.api.auth.dto.response.TokenResponse
+import com.adevspoon.api.auth.service.AuthService
 import com.adevspoon.api.common.annotation.RequestUser
 import com.adevspoon.api.common.annotation.SecurityIgnored
 import com.adevspoon.api.common.dto.RequestUserInfo
@@ -16,7 +17,9 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @Tag(name = SWAGGER_TAG_ACCOUNT)
-class AuthController {
+class AuthController(
+    private val authService: AuthService
+) {
 
     @Operation(summary = "토큰 재발급", description = "access/refresh 토큰 재발급")
     @PostMapping("/refresh")
@@ -24,13 +27,10 @@ class AuthController {
     fun refreshToken(
         @RequestBody @Valid request: RefreshTokenRequest,
     ): TokenResponse {
-        TODO("""
-            - 토큰 재발급
-            - refreshToken 만료시간 체크 및 user에 업데이트
-        """.trimIndent())
+        return authService.refreshToken(request)
     }
 
-    @Operation(summary = "로그아웃", description = "로그인 상태에서 로그아웃 처리")
+    @Operation(summary = "(웹) 로그아웃", description = "로그인 상태에서 로그아웃 처리")
     @PostMapping("/logout")
     fun logout(
         @RequestUser user: RequestUserInfo

@@ -1,5 +1,6 @@
 package com.adevspoon.api.auth.service
 
+import com.adevspoon.api.auth.dto.request.RefreshTokenRequest
 import com.adevspoon.api.common.annotation.ApplicationService
 import com.adevspoon.api.common.dto.JwtTokenInfo
 import com.adevspoon.api.common.dto.JwtTokenType
@@ -19,18 +20,26 @@ class AuthService(
     fun signIn(loginRequest: SocialLoginRequest): MemberAndTokenResponse {
         val oAuthUserInfo = oAuthAdapter.getOAuthUserInfo(loginRequest.toOAuthUserInfoRequest())
         val memberAndSignup = memberDomainService.getMemberAndSignUp(oAuthUserInfo)
-        val tokenResponse = getServiceToken(memberAndSignup.memberId)
+        val tokenResponse = getNewServiceToken(memberAndSignup.memberId)
+
+        memberDomainService.checkAndUpdateToken(memberAndSignup.memberId, null, tokenResponse.refreshToken)
 
         return MemberAndTokenResponse.from(memberAndSignup, tokenResponse)
     }
 
-    fun refreshToken(userId: Long): TokenResponse = getServiceToken(userId)
+    fun refreshToken(request: RefreshTokenRequest): TokenResponse {
+        jwtProcessor.checkOwnToken(request.accessToken)
+        val oldTokenInfo = jwtProcessor.validateServiceToken(request.refreshToken)
 
-    private fun getServiceToken(userId: Long): TokenResponse =
+        return getNewServiceToken(oldTokenInfo.userId)
+            .also {
+                memberDomainService.checkAndUpdateToken(oldTokenInfo.userId, request.refreshToken, it.refreshToken)
+            }
+    }
+
+    private fun getNewServiceToken(userId: Long): TokenResponse =
         TokenResponse(
             accessToken = jwtProcessor.createToken(JwtTokenInfo(JwtTokenType.ACCESS, userId)),
             refreshToken = jwtProcessor.createToken(JwtTokenInfo(JwtTokenType.REFRESH, userId)),
-        ).also {
-            memberDomainService.updateMemberToken(userId, it.refreshToken)
-        }
+        )
 }
