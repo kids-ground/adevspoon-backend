@@ -26,7 +26,6 @@ import com.adevspoon.domain.techQuestion.exception.*
 import com.adevspoon.domain.techQuestion.repository.AnswerRepository
 import com.adevspoon.domain.techQuestion.repository.QuestionOpenRepository
 import com.adevspoon.domain.techQuestion.repository.QuestionRepository
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
@@ -99,7 +98,8 @@ class AnswerDomainService(
         val answerList = answerRepository.findQuestionAnswerList(
             request.questionId,
             request.sort,
-            PageRequest.of(request.offset / request.limit, request.limit)
+            request.offset,
+            request.limit
         )
 
         return makeQuestionAnswerListInfo(request.memberId, answerList.content, answerList.hasNext())

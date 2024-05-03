@@ -15,9 +15,10 @@ class QuestionOpenRepositoryCustomImpl(
     private val jpaQueryFactory: JPAQueryFactory
 ): QuestionOpenRepositoryCustom {
     override fun findQuestionOpenList(
-        sort: IssuedQuestionSortType,
         filter: IssuedQuestionFilter,
-        pageable: Pageable
+        sort: IssuedQuestionSortType,
+        offset: Long,
+        limit: Int,
     ): Slice<QuestionOpenEntity> {
         val resultList = jpaQueryFactory.selectFrom(questionOpenEntity)
             .leftJoin(questionOpenEntity.question, questionEntity).fetchJoin()
@@ -28,17 +29,17 @@ class QuestionOpenRepositoryCustomImpl(
                 isAnswered(filter.isAnswered),
             )
             .orderBy(sortOrder(sort))
-            .offset(pageable.offset)
-            .limit(pageable.pageSize.toLong() + 1)
+            .offset(offset)
+            .limit(limit.toLong() + 1)
             .fetch()
 
         var hasNext = false
-        if (resultList.size == pageable.pageSize + 1) {
+        if (resultList.size == limit + 1) {
             hasNext = true
             resultList.removeLast()
         }
 
-        return SliceImpl(resultList, pageable, hasNext)
+        return SliceImpl(resultList, Pageable.unpaged(), hasNext)
     }
 
     private fun inCategory(categoryIds: List<Long>) =
@@ -54,7 +55,7 @@ class QuestionOpenRepositoryCustomImpl(
 
     private fun sortOrder(sort: IssuedQuestionSortType) =
         when (sort) {
-            IssuedQuestionSortType.NEWEST -> questionOpenEntity.createdAt.desc()
-            IssuedQuestionSortType.OLDEST -> questionOpenEntity.createdAt.asc()
+            IssuedQuestionSortType.NEWEST -> questionOpenEntity.openDate.desc()
+            IssuedQuestionSortType.OLDEST -> questionOpenEntity.openDate.asc()
         }
 }

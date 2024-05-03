@@ -2,6 +2,7 @@ package com.adevspoon.domain.techQuestion.repository
 
 import com.adevspoon.domain.techQuestion.domain.AnswerEntity
 import com.adevspoon.domain.techQuestion.domain.QAnswerEntity.answerEntity
+import com.adevspoon.domain.techQuestion.domain.enums.AnswerStatus
 import com.adevspoon.domain.techQuestion.dto.enums.QuestionAnswerListSortType
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.data.domain.Pageable
@@ -14,25 +15,33 @@ class AnswerRepositoryCustomImpl(
     override fun findQuestionAnswerList(
         questionId: Long,
         sort: QuestionAnswerListSortType,
-        pageable: Pageable
+        offset: Long,
+        limit: Int,
     ): Slice<AnswerEntity> {
         val resultList = jpaQueryFactory.selectFrom(answerEntity)
-            .where(answerEntity.question.id.eq(questionId))
+            .where(
+                isNotPrivate(),
+                isQuestionId(questionId)
+            )
             .join(answerEntity.user).fetchJoin()
             .join(answerEntity.question).fetchJoin()
             .orderBy(sortOrder(sort))
-            .offset(pageable.offset)
-            .limit(pageable.pageSize.toLong() + 1)
+            .offset(offset)
+            .limit(limit.toLong() + 1)
             .fetch()
 
         var hasNext = false
-        if (resultList.size == pageable.pageSize + 1) {
+        if (resultList.size == limit + 1) {
             hasNext = true
             resultList.removeLast()
         }
 
-        return SliceImpl(resultList, pageable, hasNext)
+        return SliceImpl(resultList, Pageable.unpaged(), hasNext)
     }
+
+    private fun isNotPrivate() = answerEntity.status.ne(AnswerStatus.PRIVATE)
+
+    private fun isQuestionId(questionId: Long) = answerEntity.question.id.eq(questionId)
 
     private fun sortOrder(sort: QuestionAnswerListSortType) =
         when (sort) {

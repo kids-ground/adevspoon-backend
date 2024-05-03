@@ -19,7 +19,6 @@ import com.adevspoon.domain.techQuestion.repository.QuestionOpenRepository
 import com.adevspoon.domain.techQuestion.repository.QuestionRepository
 import com.adevspoon.domain.techQuestion.repository.UserCustomizedQuestionCategoryRepository
 import org.slf4j.LoggerFactory
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -44,13 +43,14 @@ class QuestionOpenDomainService(
             selectedCategoryList.map { it.id }
 
         val issuedQuestionList = questionOpenRepository.findQuestionOpenList(
-            request.sort,
             IssuedQuestionFilter(
                 request.memberId,
                 targetCategoryIds,
                 request.isAnswered
             ),
-            PageRequest.of(request.offset / request.limit, request.limit)
+            request.sort,
+            request.offset,
+            request.limit
         )
 
         return IssuedQuestionListInfo(

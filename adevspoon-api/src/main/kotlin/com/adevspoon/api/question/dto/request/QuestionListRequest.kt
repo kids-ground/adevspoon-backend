@@ -12,7 +12,7 @@ data class QuestionListRequest(
     val isAnswered: Boolean?,
     @Schema(description = "필터링할 카테고리 리스트. (null일 경우 전부)", nullable = true)
     val category: List<String> = emptyList(),
-    val offset: Int = 0,
+    val offset: Long = 0,
     val limit: Int = 10,
 ) {
     fun toGetIssuedQuestionList(memberId: Long) = GetIssuedQuestionList(

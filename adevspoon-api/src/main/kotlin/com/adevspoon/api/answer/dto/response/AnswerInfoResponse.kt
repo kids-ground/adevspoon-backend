@@ -19,7 +19,7 @@ data class AnswerInfoResponse(
     val isLiked: Boolean,
 
     @Schema(description = "질문을 발급받은 날짜")
-    @JsonProperty("opne_date")
+    @JsonProperty("open_date")
     val openDate: LocalDate,
 
     @Schema(description = "작성자 프로필")
