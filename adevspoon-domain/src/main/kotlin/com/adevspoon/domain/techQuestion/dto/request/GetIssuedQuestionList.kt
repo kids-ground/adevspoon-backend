@@ -7,6 +7,6 @@ data class GetIssuedQuestionList(
     val sort: IssuedQuestionSortType = IssuedQuestionSortType.NEWEST,
     val isAnswered: Boolean?,
     val categoryNameList: List<String> = emptyList(),
-    val offset: Int = 0,
+    val offset: Long = 0,
     val limit: Int = 10,
 )
