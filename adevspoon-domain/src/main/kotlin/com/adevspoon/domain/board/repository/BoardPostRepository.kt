@@ -1,8 +1,8 @@
 package com.adevspoon.domain.board.repository
 
 import com.adevspoon.domain.board.domain.BoardPostEntity
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Slice
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
@@ -16,7 +16,7 @@ interface BoardPostRepository : JpaRepository<BoardPostEntity, Long> {
     fun findWithNoTagsAndUserIdWithCursor(
         @Param("startPostId") startPostId: Long?,
         @Param("targetUserId") targetUserId: Long?,
-        pageable: Pageable) : Page<BoardPostEntity>
+        pageable: Pageable) : Slice<BoardPostEntity>
 
     @Query("SELECT bp FROM BoardPostEntity bp " +
         "JOIN bp.tag t " +
@@ -28,5 +28,5 @@ interface BoardPostRepository : JpaRepository<BoardPostEntity, Long> {
         @Param("tags") tags: List<Int>,
         @Param("startPostId") startPostId: Long?,
         @Param("targetUserId") targetUserId: Long?,
-        pageable: Pageable): Page<BoardPostEntity>
+        pageable: Pageable): Slice<BoardPostEntity>
 }

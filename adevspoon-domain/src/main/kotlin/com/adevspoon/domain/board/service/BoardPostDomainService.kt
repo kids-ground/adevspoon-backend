@@ -7,6 +7,7 @@ import com.adevspoon.domain.board.dto.response.BoardPost
 import com.adevspoon.domain.board.exception.*
 import com.adevspoon.domain.board.repository.BoardCommentRepository
 import com.adevspoon.domain.board.repository.BoardPostRepository
+import com.adevspoon.domain.board.repository.BoardPostRepositoryCustom
 import com.adevspoon.domain.board.repository.BoardTagRepository
 import com.adevspoon.domain.common.annotation.ActivityEvent
 import com.adevspoon.domain.common.annotation.ActivityEventType
@@ -22,8 +23,8 @@ import com.adevspoon.domain.member.domain.UserEntity
 import com.adevspoon.domain.member.exception.MemberNotFoundException
 import com.adevspoon.domain.member.repository.UserRepository
 import com.adevspoon.domain.member.service.MemberDomainService
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Slice
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
@@ -31,6 +32,7 @@ import java.util.*
 @DomainService
 class BoardPostDomainService(
     val boardPostRepository: BoardPostRepository,
+    val boardPostRepositoryCustom: BoardPostRepositoryCustom,
     val boardTagRepository: BoardTagRepository,
     val boardCommentRepository: BoardCommentRepository,
     val reportRepository: ReportRepository,
@@ -97,11 +99,11 @@ class BoardPostDomainService(
     @Transactional(readOnly = true)
     fun getBoardPostsWithCriteria(request: GetPostListRequestDto, loginUserId: Long): PageWithCursor<BoardPost> {
         val pageable = CursorPageable(request.pageSize)
-        val page = fetchPostBasedOnTageExistence(request.tags, request.startPostId, request.targetUserId, pageable)
+        val postsSlice = boardPostRepositoryCustom.findByTagsAndUserIdWithCursor(request.tags, request.startPostId, request.targetUserId, pageable)
 
-        val boardPosts = page.content
-        val nextCursorId = if (boardPosts.size < request.pageSize) null else page.lastOrNull()?.id
-        val likedPostIds = getLikedPostsByUser(loginUserId, boardPosts.map { it.id }.toList()).toSet()
+        val boardPosts = postsSlice.content
+        val nextCursorId = if (!postsSlice.hasNext()) null else boardPosts.lastOrNull()?.id
+        val likedPostIds = getLikedPostsByUser(loginUserId, boardPosts.map { it.id }.toList())
         val boardPostDto = boardPosts.map { boardPost ->
             val isUserLikedBoardPost = likedPostIds.contains(boardPost.id)
             BoardPost.from(boardPost, memberDomainService.getOtherMemberProfile(boardPost.user.id), isUserLikedBoardPost)
@@ -117,18 +119,18 @@ class BoardPostDomainService(
         return likeDomainService.getLikedPostIdsByUser(loginUserId, postIds).toSet()
     }
 
-    private fun fetchPostBasedOnTageExistence(tags: List<Int>?, startPostId: Long?, targetUserId: Long?, pageable: Pageable): Page<BoardPostEntity> {
+    private fun fetchPostBasedOnTageExistence(tags: List<Int>?, startPostId: Long?, targetUserId: Long?, pageable: Pageable): Slice<BoardPostEntity> {
         if (tags.isNullOrEmpty()) {
             return retrievePostsIfNoTags(startPostId, targetUserId, pageable)
         }
         return retrievePostsByTagsIfPresent(tags, startPostId, targetUserId, pageable)
     }
 
-    private fun retrievePostsIfNoTags(startPostId: Long?, targetUserId: Long?, pageable: Pageable): Page<BoardPostEntity> {
+    private fun retrievePostsIfNoTags(startPostId: Long?, targetUserId: Long?, pageable: Pageable): Slice<BoardPostEntity> {
         return boardPostRepository.findWithNoTagsAndUserIdWithCursor(startPostId, targetUserId, pageable)
     }
 
-    private fun retrievePostsByTagsIfPresent(tags: List<Int>, startPostId: Long?, targetUserId: Long?, pageable: Pageable): Page<BoardPostEntity> {
+    private fun retrievePostsByTagsIfPresent(tags: List<Int>, startPostId: Long?, targetUserId: Long?, pageable: Pageable): Slice<BoardPostEntity> {
         return boardPostRepository.findByTagsAndUserIdWithCursor(tags, startPostId, targetUserId, pageable)
     }
 
