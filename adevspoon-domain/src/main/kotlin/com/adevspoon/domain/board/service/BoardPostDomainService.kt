@@ -23,8 +23,6 @@ import com.adevspoon.domain.member.domain.UserEntity
 import com.adevspoon.domain.member.exception.MemberNotFoundException
 import com.adevspoon.domain.member.repository.UserRepository
 import com.adevspoon.domain.member.service.MemberDomainService
-import org.springframework.data.domain.Pageable
-import org.springframework.data.domain.Slice
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
@@ -117,21 +115,6 @@ class BoardPostDomainService(
 
     private fun getLikedPostsByUser(loginUserId: Long, postIds: List<Long>): Set<Long> {
         return likeDomainService.getLikedPostIdsByUser(loginUserId, postIds).toSet()
-    }
-
-    private fun fetchPostBasedOnTageExistence(tags: List<Int>?, startPostId: Long?, targetUserId: Long?, pageable: Pageable): Slice<BoardPostEntity> {
-        if (tags.isNullOrEmpty()) {
-            return retrievePostsIfNoTags(startPostId, targetUserId, pageable)
-        }
-        return retrievePostsByTagsIfPresent(tags, startPostId, targetUserId, pageable)
-    }
-
-    private fun retrievePostsIfNoTags(startPostId: Long?, targetUserId: Long?, pageable: Pageable): Slice<BoardPostEntity> {
-        return boardPostRepository.findWithNoTagsAndUserIdWithCursor(startPostId, targetUserId, pageable)
-    }
-
-    private fun retrievePostsByTagsIfPresent(tags: List<Int>, startPostId: Long?, targetUserId: Long?, pageable: Pageable): Slice<BoardPostEntity> {
-        return boardPostRepository.findByTagsAndUserIdWithCursor(tags, startPostId, targetUserId, pageable)
     }
 
     @Transactional
