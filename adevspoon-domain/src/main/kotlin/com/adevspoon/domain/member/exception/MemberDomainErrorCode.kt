@@ -8,6 +8,7 @@ enum class MemberDomainErrorCode(
     override val error: DomainType.Error,
     override val message: String,
 ): AdevspoonErrorCode {
+    MEMBER_ATTENDANCE_INVALID_RETURN(DomainType.MEMBER code 400 no 0, "출석 반환값이 잘못되었습니다"),
     MEMBER_ALREADY_EXPIRED_REFRESH_TOKEN(DomainType.MEMBER code 403 no 0, "이미 만료된 리프레시 토큰입니다"),
 
     MEMBER_NOT_FOUND(DomainType.MEMBER code 404 no 0, "등록되지 않은 유저입니다"),

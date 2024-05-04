@@ -2,6 +2,7 @@ package com.adevspoon.domain.member.exception
 
 import com.adevspoon.common.exception.AdevspoonException
 
+class MemberAttendanceInvalidReturnException: AdevspoonException(MemberDomainErrorCode.MEMBER_ATTENDANCE_INVALID_RETURN)
 class MemberAlreadyExpiredRefreshTokenException: AdevspoonException(MemberDomainErrorCode.MEMBER_ALREADY_EXPIRED_REFRESH_TOKEN)
 class MemberNotFoundException: AdevspoonException(MemberDomainErrorCode.MEMBER_NOT_FOUND)
 class MemberBadgeNotFoundException: AdevspoonException(MemberDomainErrorCode.MEMBER_BADGE_NOT_FOUND)

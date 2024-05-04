@@ -62,9 +62,7 @@ class MemberController(
     @Operation(summary = "출석", description = "앱 내 출석체크")
     @GetMapping("/attendance")
     fun attendance(@RequestUser requestUser: RequestUserInfo): MemberProfileResponse {
-        TODO("""
-            - 출석 체크
-        """.trimIndent())
+        return memberService.attend(requestUser.userId)
     }
 
     @Operation(summary = "획득한 뱃지 리스트 가져오기", description = "호출자가 얻은 뱃지 리스트 가져오기")

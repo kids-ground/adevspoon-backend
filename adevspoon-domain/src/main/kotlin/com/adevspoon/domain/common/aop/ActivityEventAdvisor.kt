@@ -5,7 +5,10 @@ import com.adevspoon.domain.board.exception.BoardPostInvalidReturnException
 import com.adevspoon.domain.common.annotation.ActivityEvent
 import com.adevspoon.domain.common.annotation.ActivityEventType
 import com.adevspoon.domain.common.event.AnswerActivityEvent
+import com.adevspoon.domain.common.event.AttendanceActivityEvent
 import com.adevspoon.domain.common.event.BoardPostActivityEvent
+import com.adevspoon.domain.member.dto.response.MemberProfile
+import com.adevspoon.domain.member.exception.MemberAttendanceInvalidReturnException
 import com.adevspoon.domain.techQuestion.dto.response.QuestionAnswerInfo
 import com.adevspoon.domain.techQuestion.exception.QuestionAnswerInvalidReturnException
 import org.aspectj.lang.JoinPoint
@@ -47,9 +50,10 @@ class ActivityEventAdvisor(
     }
 
     private fun attendanceEventPublish(result: Any?) {
-        TODO("""
-            Implement the logic to publish the ATTENDANCE event
-        """.trimIndent())
+        (result as? MemberProfile)
+            ?.let {
+                eventPublisher.publishEvent(AttendanceActivityEvent(it.memberId))
+            } ?: throw MemberAttendanceInvalidReturnException()
     }
 
     private fun answerEventPublish(result: Any?) {

@@ -8,10 +8,7 @@ import com.adevspoon.domain.member.domain.UserActivityEntity
 import com.adevspoon.domain.member.domain.UserBadgeAcheiveEntity
 import com.adevspoon.domain.member.domain.UserBadgeAcheiveId
 import com.adevspoon.domain.member.exception.MemberNotFoundException
-import com.adevspoon.domain.member.repository.BadgeRepository
-import com.adevspoon.domain.member.repository.UserActivityRepository
-import com.adevspoon.domain.member.repository.UserBadgeAchieveRepository
-import com.adevspoon.domain.member.repository.UserRepository
+import com.adevspoon.domain.member.repository.*
 import com.adevspoon.domain.techQuestion.repository.AnswerRepository
 import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
@@ -26,23 +23,23 @@ class MemberActivityEventHandler(
     private val userActivityRepository: UserActivityRepository,
     private val userBadgeAchieveRepository: UserBadgeAchieveRepository,
     private val answerRepository: AnswerRepository,
+    private val attendanceRepository: AttendanceRepository,
     private val badgeRepository: BadgeRepository,
 ) {
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional
     fun handleAttendanceEvent(event: AttendanceActivityEvent) {
-        TODO("""
-            Implement the logic to handle the ATTENDANCE event
-        """.trimIndent())
+        val updateAttendanceActivity = updateAttendanceActivity(event.memberId)
+        acquireNewBadges(event.memberId, updateAttendanceActivity)
     }
 
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional
     fun handleAnswerEvent(event: AnswerActivityEvent) {
-        val updatedUserActivity = updateUserActivity(event)
-        acquireNewBadges(updatedUserActivity, event)
+        val updatedUserActivity = updateAnswerActivity(event.memberId)
+        acquireNewBadges(event.memberId, updatedUserActivity)
     }
 
     @Async
@@ -52,11 +49,26 @@ class MemberActivityEventHandler(
         userActivityRepository.increaseBoardPostCount(event.memberId)
     }
 
-    private fun updateUserActivity(event: AnswerActivityEvent): UserActivityEntity {
-        return userActivityRepository.findById(event.memberId)
-            .orElseThrow { MemberNotFoundException() }
+    private fun updateAttendanceActivity(memberId: Long): UserActivityEntity {
+        return (userActivityRepository.findByIdWithLock(memberId) ?: throw MemberNotFoundException())
             .apply {
-                val answeredDateList = answerRepository.findAnsweredDateList(event.memberId)
+                val attendanceDateList = attendanceRepository.findAttendanceDateList(memberId)
+                    .map { it.toLocalDate() }
+
+                cumulativeAttendanceCount += 1
+                consecutiveAttendanceCount =
+                    if (attendanceDateList.size > 1 &&
+                        attendanceDateList[0].until(attendanceDateList[1], ChronoUnit.DAYS) == 1L)
+                        consecutiveAttendanceCount + 1
+                    else 1
+                maxConsecutiveAttendanceCount = maxOf(maxConsecutiveAttendanceCount, consecutiveAttendanceCount)
+            }
+    }
+
+    private fun updateAnswerActivity(memberId: Long): UserActivityEntity {
+        return (userActivityRepository.findByIdWithLock(memberId) ?: throw MemberNotFoundException())
+            .apply {
+                val answeredDateList = answerRepository.findAnsweredDateList(memberId)
                     .map { it.toLocalDate() }
 
                 cumulativeAnswerCount += 1
@@ -67,18 +79,19 @@ class MemberActivityEventHandler(
                     else 1
                 maxConsecutiveAnswerCount = maxOf(maxConsecutiveAnswerCount, consecutiveAnswerCount)
             }
-            .let(userActivityRepository::save)
     }
 
-    private fun acquireNewBadges(userActivity: UserActivityEntity, event: AnswerActivityEvent) {
-        val user = userRepository.findByIdOrNull(event.memberId) ?: throw MemberNotFoundException()
+    private fun acquireNewBadges(memberId: Long, userActivity: UserActivityEntity) {
+        val user = userRepository.findByIdOrNull(memberId) ?: throw MemberNotFoundException()
         val notAchievedBadges = badgeRepository.findAll()
             .also { badgeList ->
-                val achievedBadges = userBadgeAchieveRepository.findUserBadgeList(event.memberId)
+                val achievedBadges = userBadgeAchieveRepository.findUserBadgeList(memberId)
                 badgeList.removeAll { badge -> achievedBadges.any { badge.id == it.id } }
             }
         val newAchieveBadges = notAchievedBadges.filter {
             when(it.criteria) {
+                userActivity::cumulativeAttendanceCount.name ->
+                    (it.criteriaValue ?: 0) <= userActivity.cumulativeAttendanceCount
                 userActivity::cumulativeAnswerCount.name ->
                     (it.criteriaValue ?: 0) <= userActivity.cumulativeAnswerCount
                 userActivity::maxConsecutiveAnswerCount.name ->

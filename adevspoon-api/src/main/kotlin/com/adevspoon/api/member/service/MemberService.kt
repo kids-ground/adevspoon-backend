@@ -34,6 +34,11 @@ class MemberService(
         return MemberProfileResponse.from(memberProfile)
     }
 
+    fun attend(memberId: Long): MemberProfileResponse {
+        val memberProfile = memberDomainService.attend(memberId)
+        return MemberProfileResponse.from(memberProfile)
+    }
+
     fun getLikeList(memberId: Long, request: MemberFavoriteListRequest): MemberFavoriteListResponse {
         val likeList = memberDomainService.getLikeList(GetLikeList(memberId, request.startId, request.take))
 
