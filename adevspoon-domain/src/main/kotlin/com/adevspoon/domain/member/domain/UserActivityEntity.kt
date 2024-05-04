@@ -73,4 +73,16 @@ class UserActivityEntity(
     @NotNull
     @Column(name = "answerClang", nullable = false)
     var answerClang: Int = 0
-): BaseEntity()
+): BaseEntity() {
+    fun fieldValue(fieldName: String): Int {
+        return when (fieldName) {
+            "cumulativeAnswerCount" -> cumulativeAnswerCount
+            "consecutiveAnswerCount" -> consecutiveAnswerCount
+            "cumulativeAttendanceCount" -> cumulativeAttendanceCount
+            "consecutiveAttendanceCount" -> consecutiveAttendanceCount
+            "maxConsecutiveAnswerCount" -> maxConsecutiveAnswerCount
+            "maxConsecutiveAttendanceCount" -> maxConsecutiveAttendanceCount
+            else -> 0
+        }
+    }
+}

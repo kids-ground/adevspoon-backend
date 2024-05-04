@@ -62,14 +62,11 @@ class MemberController(
         return memberService.attend(requestUser.userId)
     }
 
-    @Operation(summary = "획득한 뱃지 리스트 가져오기", description = "호출자가 얻은 뱃지 리스트 가져오기")
+    @Operation(summary = "뱃지 리스트 가져오기", description = "획득 여부, 달성률이 포함되어 있음")
     @GetMapping("/badge")
-    fun getAchievedBadge(@RequestUser requestUser: RequestUserInfo): AchievedBadgeResponse {
-        TODO("""
-            - 내가 얻은 뱃지 정보 가져오기
-        """.trimIndent())
+    fun getAchievedBadge(@RequestUser requestUser: RequestUserInfo): List<AchievedBadgeResponse> {
+        return memberService.getBadgeList(requestUser.userId)
     }
-
 
     @Operation(summary = "답변 활동기록 가져오기", description = "year, month를 통해 일별 답변활동 수 가져오기")
     @GetMapping("/answerGrass")

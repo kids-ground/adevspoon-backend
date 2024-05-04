@@ -13,10 +13,7 @@ import com.adevspoon.domain.member.domain.enums.UserOAuth
 import com.adevspoon.domain.member.domain.enums.UserStatus
 import com.adevspoon.domain.member.dto.request.GetLikeList
 import com.adevspoon.domain.member.dto.request.MemberUpdateRequireDto
-import com.adevspoon.domain.member.dto.response.LikeInfo
-import com.adevspoon.domain.member.dto.response.LikeListInfo
-import com.adevspoon.domain.member.dto.response.MemberAndSignup
-import com.adevspoon.domain.member.dto.response.MemberProfile
+import com.adevspoon.domain.member.dto.response.*
 import com.adevspoon.domain.member.exception.MemberAlreadyExpiredRefreshTokenException
 import com.adevspoon.domain.member.exception.MemberBadgeNotFoundException
 import com.adevspoon.domain.member.exception.MemberNotFoundException
@@ -166,6 +163,23 @@ class MemberDomainService(
             },
             nextStartId = likeList.lastOrNull()?.id,
         )
+    }
+
+    @Transactional(readOnly = true)
+    fun getBadgeListWithAchievedInfo(memberId: Long): List<BadgeAchievedInfo> {
+        val member = getUserEntity(memberId)
+        val activity = userActivityRepository.findByIdOrNull(memberId) ?: throw MemberNotFoundException()
+        val memberBadgeList = userBadgeAchieveRepository.findUserBadgeList(memberId)
+
+        return badgeRepository.findAll()
+            .map { badge ->
+                BadgeAchievedInfo.from(
+                    badge = badge,
+                    isAchieved = memberBadgeList.any { badge.id == it.id },
+                    isRepresentative = member.representativeBadge == badge.id,
+                    userValue = activity.fieldValue(badge::criteria.name),
+                )
+            }
     }
 
     private fun createMember(oauthInfo: OAuthUserInfo): MemberAndSignup {
