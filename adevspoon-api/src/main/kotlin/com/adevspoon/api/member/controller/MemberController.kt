@@ -53,10 +53,7 @@ class MemberController(
     @Operation(summary = "회원탈퇴", description = "유저 활동 기록도 지워짐 주의!")
     @DeleteMapping
     fun withdrawal(@RequestUser requestUser: RequestUserInfo): String {
-        TODO("""
-            - 회원탈퇴
-            - 어디까지 삭제해야하나?
-        """.trimIndent())
+        return authService.withdraw(requestUser.userId)
     }
 
     @Operation(summary = "출석", description = "앱 내 출석체크")

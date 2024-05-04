@@ -27,6 +27,11 @@ class AuthService(
         return MemberAndTokenResponse.from(memberAndSignup, tokenResponse)
     }
 
+    fun withdraw(userId: Long): String {
+        memberDomainService.withdraw(userId)
+        return "회원탈퇴 완료되었습니다"
+    }
+
     fun refreshToken(request: RefreshTokenRequest): TokenResponse {
         jwtProcessor.checkOwnToken(request.accessToken)
         val oldTokenInfo = jwtProcessor.validateServiceToken(request.refreshToken)

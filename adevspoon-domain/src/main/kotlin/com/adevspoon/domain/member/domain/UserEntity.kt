@@ -85,4 +85,10 @@ class UserEntity(
     fun increaseAnswerCnt() {
         answerCnt += 1
     }
+
+    fun withdraw() {
+        status = UserStatus.EXIT
+        refreshToken = null
+        fcmToken = null
+    }
 }

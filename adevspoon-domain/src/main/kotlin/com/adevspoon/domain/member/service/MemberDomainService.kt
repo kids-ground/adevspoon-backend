@@ -10,6 +10,7 @@ import com.adevspoon.domain.member.domain.AttendanceId
 import com.adevspoon.domain.member.domain.UserActivityEntity
 import com.adevspoon.domain.member.domain.UserEntity
 import com.adevspoon.domain.member.domain.enums.UserOAuth
+import com.adevspoon.domain.member.domain.enums.UserStatus
 import com.adevspoon.domain.member.dto.request.GetLikeList
 import com.adevspoon.domain.member.dto.request.MemberUpdateRequireDto
 import com.adevspoon.domain.member.dto.response.LikeInfo
@@ -94,6 +95,13 @@ class MemberDomainService(
         } catch (e: Exception) {
             throw e
         }
+    }
+
+    @Transactional
+    fun withdraw(memberId: Long) {
+        val member = getUserEntity(memberId)
+        if (member.status == UserStatus.EXIT) throw MemberNotFoundException()
+        member.withdraw()
     }
 
     @Transactional
