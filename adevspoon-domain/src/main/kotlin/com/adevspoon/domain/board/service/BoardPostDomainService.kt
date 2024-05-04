@@ -117,8 +117,8 @@ class BoardPostDomainService(
         return likeDomainService.getLikedPostIdsByUser(loginUserId, postIds).toSet()
     }
 
-    private fun fetchPostBasedOnTageExistence(tags: List<Int>, startPostId: Long?, targetUserId: Long?, pageable: Pageable): Page<BoardPostEntity> {
-        if (tags.isEmpty()) {
+    private fun fetchPostBasedOnTageExistence(tags: List<Int>?, startPostId: Long?, targetUserId: Long?, pageable: Pageable): Page<BoardPostEntity> {
+        if (tags.isNullOrEmpty()) {
             return retrievePostsIfNoTags(startPostId, targetUserId, pageable)
         }
         return retrievePostsByTagsIfPresent(tags, startPostId, targetUserId, pageable)
