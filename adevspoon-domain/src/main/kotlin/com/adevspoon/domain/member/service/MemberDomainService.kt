@@ -1,27 +1,28 @@
 package com.adevspoon.domain.member.service
 
 import com.adevspoon.common.dto.OAuthUserInfo
+import com.adevspoon.domain.common.annotation.ActivityEvent
+import com.adevspoon.domain.common.annotation.ActivityEventType
 import com.adevspoon.domain.common.annotation.DomainService
 import com.adevspoon.domain.common.repository.LikeRepository
+import com.adevspoon.domain.member.domain.AttendanceEntity
+import com.adevspoon.domain.member.domain.AttendanceId
 import com.adevspoon.domain.member.domain.UserActivityEntity
 import com.adevspoon.domain.member.domain.UserEntity
 import com.adevspoon.domain.member.domain.enums.UserOAuth
+import com.adevspoon.domain.member.domain.enums.UserStatus
 import com.adevspoon.domain.member.dto.request.GetLikeList
 import com.adevspoon.domain.member.dto.request.MemberUpdateRequireDto
-import com.adevspoon.domain.member.dto.response.LikeInfo
-import com.adevspoon.domain.member.dto.response.LikeListInfo
-import com.adevspoon.domain.member.dto.response.MemberAndSignup
-import com.adevspoon.domain.member.dto.response.MemberProfile
+import com.adevspoon.domain.member.dto.response.*
+import com.adevspoon.domain.member.exception.MemberAlreadyExpiredRefreshTokenException
 import com.adevspoon.domain.member.exception.MemberBadgeNotFoundException
 import com.adevspoon.domain.member.exception.MemberNotFoundException
-import com.adevspoon.domain.member.repository.BadgeRepository
-import com.adevspoon.domain.member.repository.UserActivityRepository
-import com.adevspoon.domain.member.repository.UserBadgeAchieveRepository
-import com.adevspoon.domain.member.repository.UserRepository
+import com.adevspoon.domain.member.repository.*
 import com.adevspoon.domain.techQuestion.exception.QuestionAnswerNotFoundException
 import com.adevspoon.domain.techQuestion.service.QuestionDomainService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
@@ -33,6 +34,7 @@ class MemberDomainService(
     private val userActivityRepository: UserActivityRepository,
     private val badgeRepository: BadgeRepository,
     private val likeRepository: LikeRepository,
+    private val attendanceRepository: AttendanceRepository,
     private val questionDomainService: QuestionDomainService,
     private val nicknameDomainService: NicknameDomainService,
 ) {
@@ -56,9 +58,9 @@ class MemberDomainService(
     }
 
     @Transactional
-    fun getMemberProfile(userId: Long): MemberProfile {
-        val user = getUserEntity(userId)
-        val userBadgeList = userBadgeAchieveRepository.findUserBadgeList(userId)
+    fun getMemberProfile(memberId: Long): MemberProfile {
+        val user = getUserEntity(memberId)
+        val userBadgeList = userBadgeAchieveRepository.findUserBadgeList(memberId)
         val userRepresentativeBadge = userBadgeList.firstOrNull {
             it.id == user.representativeBadge
         }
@@ -67,8 +69,8 @@ class MemberDomainService(
     }
 
     @Transactional
-    fun getOtherMemberProfile(userId: Long): MemberProfile {
-        val user = getUserEntity(userId)
+    fun getOtherMemberProfile(memberId: Long): MemberProfile {
+        val user = getUserEntity(memberId)
         val userRepresentativeBadge = user.representativeBadge
             ?.let {
                 badgeRepository.findByIdOrNull(user.representativeBadge)
@@ -76,6 +78,27 @@ class MemberDomainService(
             }
 
         return MemberProfile.from(user, null, userRepresentativeBadge)
+    }
+
+    @ActivityEvent(type = ActivityEventType.ATTENDANCE)
+    @Transactional
+    fun attend(memberId: Long): MemberProfile {
+        val member = getUserEntity(memberId)
+        return try {
+            attendanceRepository.save(AttendanceEntity(AttendanceId(member, LocalDate.now().atStartOfDay())))
+            getMemberProfile(memberId)
+        } catch (e: DataIntegrityViolationException) {
+            getMemberProfile(memberId)
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    @Transactional
+    fun withdraw(memberId: Long) {
+        val member = getUserEntity(memberId)
+        if (member.status == UserStatus.EXIT) throw MemberNotFoundException()
+        member.withdraw()
     }
 
     @Transactional
@@ -105,11 +128,12 @@ class MemberDomainService(
     }
 
     @Transactional
-    fun updateMemberToken(userId: Long, refreshToken: String) {
+    fun checkAndUpdateToken(userId: Long, oldToken: String?, newToken: String) {
         val user = getUserEntity(userId)
-        user.apply {
-            this.refreshToken = refreshToken
-        }
+
+        if (oldToken != null && user.refreshToken != oldToken) throw MemberAlreadyExpiredRefreshTokenException()
+
+        user.apply { refreshToken = newToken }
     }
 
     @Transactional(readOnly = true)
@@ -139,6 +163,23 @@ class MemberDomainService(
             },
             nextStartId = likeList.lastOrNull()?.id,
         )
+    }
+
+    @Transactional(readOnly = true)
+    fun getBadgeListWithAchievedInfo(memberId: Long): List<BadgeAchievedInfo> {
+        val member = getUserEntity(memberId)
+        val activity = userActivityRepository.findByIdOrNull(memberId) ?: throw MemberNotFoundException()
+        val memberBadgeList = userBadgeAchieveRepository.findUserBadgeList(memberId)
+
+        return badgeRepository.findAll()
+            .map { badge ->
+                BadgeAchievedInfo.from(
+                    badge = badge,
+                    isAchieved = memberBadgeList.any { badge.id == it.id },
+                    isRepresentative = member.representativeBadge == badge.id,
+                    userValue = activity.fieldValue(badge::criteria.name),
+                )
+            }
     }
 
     private fun createMember(oauthInfo: OAuthUserInfo): MemberAndSignup {

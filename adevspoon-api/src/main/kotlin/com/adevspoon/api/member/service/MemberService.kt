@@ -5,6 +5,7 @@ import com.adevspoon.api.common.util.ImageProcessor
 import com.adevspoon.api.member.dto.request.MemberFavoriteListRequest
 import com.adevspoon.common.enums.ImageType
 import com.adevspoon.api.member.dto.request.MemberProfileUpdateRequest
+import com.adevspoon.api.member.dto.response.AchievedBadgeResponse
 import com.adevspoon.api.member.dto.response.MemberFavoriteListResponse
 import com.adevspoon.api.member.dto.response.MemberProfileResponse
 import com.adevspoon.domain.member.dto.request.GetLikeList
@@ -19,6 +20,11 @@ class MemberService(
     private val storageAdapter: StorageAdapter,
     private val imageProcessor: ImageProcessor
 ) {
+    fun getProfile(memberId: Long): MemberProfileResponse {
+        val memberProfile = memberDomainService.getMemberProfile(memberId)
+        return MemberProfileResponse.from(memberProfile)
+    }
+
     fun updateProfile(userId: Long, request: MemberProfileUpdateRequest): MemberProfileResponse {
         val (profileUrl, thumbnailUrl) = request.image
             ?.let(::uploadProfileImage)
@@ -29,6 +35,11 @@ class MemberService(
         return MemberProfileResponse.from(memberProfile)
     }
 
+    fun attend(memberId: Long): MemberProfileResponse {
+        val memberProfile = memberDomainService.attend(memberId)
+        return MemberProfileResponse.from(memberProfile)
+    }
+
     fun getLikeList(memberId: Long, request: MemberFavoriteListRequest): MemberFavoriteListResponse {
         val likeList = memberDomainService.getLikeList(GetLikeList(memberId, request.startId, request.take))
 
@@ -36,6 +47,11 @@ class MemberService(
             likeList.list,
             request.nextUrl(likeList.nextStartId)
         )
+    }
+
+    fun getBadgeList(memberId: Long): List<AchievedBadgeResponse> {
+        val badgeList = memberDomainService.getBadgeListWithAchievedInfo(memberId)
+        return badgeList.map { AchievedBadgeResponse.from(it) }
     }
 
     private fun uploadProfileImage(image: MultipartFile): List<String> {

@@ -5,6 +5,7 @@ import com.adevspoon.api.common.dto.JwtTokenType
 import com.adevspoon.api.common.enums.ServiceRole
 import com.adevspoon.api.common.properties.JwtProperties
 import com.adevspoon.common.exception.common.CommonUnauthorizedException
+import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.stereotype.Component
@@ -20,7 +21,7 @@ private const val USER_TOKEN_TYPE = "tokenType"
 
 @Component
 class JwtProcessor(
-    private val jwtProperties: JwtProperties
+    private val jwtProperties: JwtProperties,
 ) {
     fun createToken(jwtTokenInfo: JwtTokenInfo): String = Jwts.builder()
         .claim(USER_ID, jwtTokenInfo.userId)
@@ -42,7 +43,7 @@ class JwtProcessor(
         .signWith(SecretKeySpec(jwtProperties.secretKey.toByteArray(), SignatureAlgorithm.HS256.jcaName))
         .compact()!!
 
-    fun validateAuthorizationHeader(authorizationHeader: String): JwtTokenInfo = try {
+    fun validateServiceToken(authorizationHeader: String): JwtTokenInfo = try {
         val token = authorizationHeader.removePrefix("Bearer ")
 
         Jwts.parserBuilder()
@@ -59,5 +60,19 @@ class JwtProcessor(
             }
     } catch (e: Exception) {
         throw CommonUnauthorizedException()
+    }
+
+    fun checkOwnToken(token: String) {
+        try {
+            Jwts.parserBuilder()
+                .setSigningKey(jwtProperties.secretKey.toByteArray())
+                .build()
+                .parseClaimsJws(token)
+                .body
+        } catch(_: ExpiredJwtException) {
+
+        } catch (e: Exception) {
+            throw CommonUnauthorizedException()
+        }
     }
 }

@@ -16,9 +16,9 @@ class AttendanceEntity(
 class AttendanceId(
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "userId", nullable = false)
-    val user: UserEntity? = null,
+    val user: UserEntity,
 
     @NotNull
     @Column(name = "attendTime", nullable = false)
-    val attendTime: LocalDateTime? = null
+    val attendTime: LocalDateTime
 ): Serializable

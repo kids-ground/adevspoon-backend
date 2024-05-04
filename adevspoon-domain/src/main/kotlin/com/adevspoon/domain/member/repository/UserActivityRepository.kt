@@ -13,6 +13,6 @@ interface UserActivityRepository : JpaRepository<UserActivityEntity, Long> {
     fun increaseBoardPostCount(userId: Long): Int
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("SELECT u FROM UserActivityEntity u WHERE u.id = :userid")
-    fun findByIdWithLock(userid: Long): UserActivityEntity?
+    @Query("SELECT u FROM UserActivityEntity u WHERE u.id = :userId")
+    fun findByIdWithLock(userId: Long): UserActivityEntity?
 }
