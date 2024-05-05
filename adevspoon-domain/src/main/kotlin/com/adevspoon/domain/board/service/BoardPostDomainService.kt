@@ -7,7 +7,6 @@ import com.adevspoon.domain.board.dto.response.BoardPost
 import com.adevspoon.domain.board.exception.*
 import com.adevspoon.domain.board.repository.BoardCommentRepository
 import com.adevspoon.domain.board.repository.BoardPostRepository
-import com.adevspoon.domain.board.repository.BoardPostRepositoryCustom
 import com.adevspoon.domain.board.repository.BoardTagRepository
 import com.adevspoon.domain.common.annotation.ActivityEvent
 import com.adevspoon.domain.common.annotation.ActivityEventType
@@ -30,7 +29,6 @@ import java.util.*
 @DomainService
 class BoardPostDomainService(
     val boardPostRepository: BoardPostRepository,
-    val boardPostRepositoryCustom: BoardPostRepositoryCustom,
     val boardTagRepository: BoardTagRepository,
     val boardCommentRepository: BoardCommentRepository,
     val reportRepository: ReportRepository,
@@ -97,7 +95,7 @@ class BoardPostDomainService(
     @Transactional(readOnly = true)
     fun getBoardPostsWithCriteria(request: GetPostListRequestDto, loginUserId: Long): PageWithCursor<BoardPost> {
         val pageable = CursorPageable(request.pageSize)
-        val postsSlice = boardPostRepositoryCustom.findByTagsAndUserIdWithCursor(request.tags, request.startPostId, request.targetUserId, pageable)
+        val postsSlice = boardPostRepository.findByTagsAndUserIdWithCursor(request.tags, request.startPostId, request.targetUserId, pageable)
 
         val boardPosts = postsSlice.content
         val nextCursorId = if (!postsSlice.hasNext()) null else boardPosts.lastOrNull()?.id

@@ -8,9 +8,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
 import org.springframework.data.domain.SliceImpl
-import org.springframework.stereotype.Repository
 
-@Repository
+
 class BoardPostRepositoryCustomImpl(
     private val jpaQueryFactory: JPAQueryFactory
 ) : BoardPostRepositoryCustom {
@@ -21,14 +20,7 @@ class BoardPostRepositoryCustomImpl(
         pageable: Pageable
     ): Slice<BoardPostEntity> {
         val boardPosts = jpaQueryFactory.selectFrom(boardPostEntity)
-            .apply {
-                if (!tags.isNullOrEmpty()) {
-                    join(boardPostEntity.tag, boardTagEntity)
-                        .where(boardTagEntity.id.`in`(tags))
-                } else {
-                    jpaQueryFactory.selectFrom(boardTagEntity).fetch()
-                }
-            }
+            .leftJoin(boardPostEntity.tag, boardTagEntity).fetchJoin()
             .where(
                 userIdCondition(targetUserId),
                 postIdLessThanCondition(startPostId)
