@@ -37,7 +37,3 @@ tasks.register("copyConfig", Copy::class) {
         into("src/main/resources")
     }
 }
-
-tasks.assemble {
-    dependsOn(":adevspoon-common", ":adevspoon-domain", ":adevspoon-infrastructure")
-}
