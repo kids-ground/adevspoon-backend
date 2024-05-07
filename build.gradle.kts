@@ -70,6 +70,12 @@ subprojects {
         // Annotation Processor
         kapt("org.springframework.boot:spring-boot-configuration-processor")
     }
+
+    tasks.register("globalCopyConfig") {
+        group = "custom"
+
+        dependsOn(":adevspoon-api:copyConfig", ":adevspoon-common:copyConfig", ":adevspoon-domain:copyConfig", ":adevspoon-infrastructure:copyConfig")
+    }
 }
 
 tasks.getByName("bootJar") {

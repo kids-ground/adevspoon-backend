@@ -37,6 +37,7 @@ jobs:
       # Build App
       - name: Gradle Build
         run: |
+          ./gradlew globalCopyConfig
           ./gradlew adevspoon-api:build -x test
 
       # AWS Config
