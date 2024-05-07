@@ -6,8 +6,8 @@ import com.adevspoon.api.common.annotation.SecurityIgnored
 import com.adevspoon.api.common.dto.RequestUserInfo
 import com.adevspoon.api.config.swagger.SWAGGER_TAG_USER
 import com.adevspoon.api.member.dto.request.MemberActivityRequest
-import com.adevspoon.api.member.dto.request.SocialLoginRequest
 import com.adevspoon.api.member.dto.request.MemberProfileUpdateRequest
+import com.adevspoon.api.member.dto.request.SocialLoginRequest
 import com.adevspoon.api.member.dto.response.AchievedBadgeResponse
 import com.adevspoon.api.member.dto.response.MemberActivityResponse
 import com.adevspoon.api.member.dto.response.MemberAndTokenResponse
@@ -74,8 +74,6 @@ class MemberController(
         @RequestUser requestUser: RequestUserInfo,
         @Valid request: MemberActivityRequest
     ): List<MemberActivityResponse> {
-        TODO("""
-            - year, month에 맞는 활동 정보 가져오기
-        """.trimIndent())
+        return memberService.getDailyAnswersCountForMonth(request, requestUser.userId)
     }
 }

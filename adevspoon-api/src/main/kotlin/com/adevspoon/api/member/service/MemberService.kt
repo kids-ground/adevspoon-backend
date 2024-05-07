@@ -2,12 +2,14 @@ package com.adevspoon.api.member.service
 
 import com.adevspoon.api.common.annotation.ApplicationService
 import com.adevspoon.api.common.util.ImageProcessor
+import com.adevspoon.api.member.dto.request.MemberActivityRequest
 import com.adevspoon.api.member.dto.request.MemberFavoriteListRequest
-import com.adevspoon.common.enums.ImageType
 import com.adevspoon.api.member.dto.request.MemberProfileUpdateRequest
 import com.adevspoon.api.member.dto.response.AchievedBadgeResponse
+import com.adevspoon.api.member.dto.response.MemberActivityResponse
 import com.adevspoon.api.member.dto.response.MemberFavoriteListResponse
 import com.adevspoon.api.member.dto.response.MemberProfileResponse
+import com.adevspoon.common.enums.ImageType
 import com.adevspoon.domain.member.dto.request.GetLikeList
 import com.adevspoon.domain.member.service.MemberDomainService
 import com.adevspoon.infrastructure.storage.dto.FileInfo
@@ -52,6 +54,11 @@ class MemberService(
     fun getBadgeList(memberId: Long): List<AchievedBadgeResponse> {
         val badgeList = memberDomainService.getBadgeListWithAchievedInfo(memberId)
         return badgeList.map { AchievedBadgeResponse.from(it) }
+    }
+
+    fun getDailyAnswersCountForMonth(request: MemberActivityRequest, userId: Long): List<MemberActivityResponse> {
+        val answerActivityInfoList = memberDomainService.getMonthlyAnswerActivity(request.toGetActivityRequest())
+        return answerActivityInfoList.map { MemberActivityResponse.from(it) }
     }
 
     private fun uploadProfileImage(image: MultipartFile): List<String> {
