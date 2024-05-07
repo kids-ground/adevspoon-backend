@@ -11,6 +11,7 @@ import com.adevspoon.domain.member.domain.UserActivityEntity
 import com.adevspoon.domain.member.domain.UserEntity
 import com.adevspoon.domain.member.domain.enums.UserOAuth
 import com.adevspoon.domain.member.domain.enums.UserStatus
+import com.adevspoon.domain.member.dto.request.GetActivityRequest
 import com.adevspoon.domain.member.dto.request.GetLikeList
 import com.adevspoon.domain.member.dto.request.MemberUpdateRequireDto
 import com.adevspoon.domain.member.dto.response.*
@@ -19,6 +20,7 @@ import com.adevspoon.domain.member.exception.MemberBadgeNotFoundException
 import com.adevspoon.domain.member.exception.MemberNotFoundException
 import com.adevspoon.domain.member.repository.*
 import com.adevspoon.domain.techQuestion.exception.QuestionAnswerNotFoundException
+import com.adevspoon.domain.techQuestion.repository.AnswerRepository
 import com.adevspoon.domain.techQuestion.service.QuestionDomainService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -35,11 +37,13 @@ class MemberDomainService(
     private val badgeRepository: BadgeRepository,
     private val likeRepository: LikeRepository,
     private val attendanceRepository: AttendanceRepository,
+    private val answerRepository: AnswerRepository,
     private val questionDomainService: QuestionDomainService,
     private val nicknameDomainService: NicknameDomainService,
 ) {
     @Value("\${default.profile-url}")
     private lateinit var defaultProfileImg: String
+
     @Value("\${default.thumbnail-url}")
     private lateinit var defaultThumbnailImg: String
     private val logger = LoggerFactory.getLogger(this.javaClass)!!
@@ -180,6 +184,12 @@ class MemberDomainService(
                     userValue = activity.fieldValue(badge::criteria.name),
                 )
             }
+    }
+
+    @Transactional(readOnly = true)
+    fun getMonthlyAnswerActivity(request: GetActivityRequest): List<AnswerActivityInfo> {
+        val member = getUserEntity(request.userId)
+        return answerRepository.findAnswerCountsByMonthAndUser(request.year, request.month, member)
     }
 
     private fun createMember(oauthInfo: OAuthUserInfo): MemberAndSignup {

@@ -9,6 +9,6 @@ import org.springframework.data.jpa.repository.Query
 interface BoardCommentRepository : JpaRepository<BoardCommentEntity, Long> {
 
     @Query("SELECT NEW com.adevspoon.domain.board.dto.response.CommentAuthor(c.user, c) FROM BoardCommentEntity c " +
-        "WHERE c.post = :post ORDER BY c.id DESC")
+        "WHERE c.post = :post ORDER BY c.id")
     fun findCommentAuthorsByPost(post: BoardPostEntity): List<CommentAuthor>
 }

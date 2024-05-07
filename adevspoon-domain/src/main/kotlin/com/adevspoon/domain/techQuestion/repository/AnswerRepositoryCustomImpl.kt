@@ -1,17 +1,23 @@
 package com.adevspoon.domain.techQuestion.repository
 
+import com.adevspoon.domain.member.domain.UserEntity
+import com.adevspoon.domain.member.dto.response.AnswerActivityInfo
 import com.adevspoon.domain.techQuestion.domain.AnswerEntity
 import com.adevspoon.domain.techQuestion.domain.QAnswerEntity.answerEntity
 import com.adevspoon.domain.techQuestion.domain.enums.AnswerStatus
 import com.adevspoon.domain.techQuestion.dto.enums.QuestionAnswerListSortType
+import com.querydsl.core.types.dsl.Expressions
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
 import org.springframework.data.domain.SliceImpl
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
 
 class AnswerRepositoryCustomImpl(
     private val jpaQueryFactory: JPAQueryFactory
-): AnswerRepositoryCustom {
+) : AnswerRepositoryCustom {
     override fun findQuestionAnswerList(
         questionId: Long,
         sort: QuestionAnswerListSortType,
@@ -37,6 +43,30 @@ class AnswerRepositoryCustomImpl(
         }
 
         return SliceImpl(resultList, Pageable.unpaged(), hasNext)
+    }
+
+    override fun findAnswerCountsByMonthAndUser(year: Int, month: Int, user: UserEntity): List<AnswerActivityInfo> {
+        val firstDayOfMonth = LocalDate.of(year, month, 1)
+        val lastDayOfMonth = firstDayOfMonth.withDayOfMonth(firstDayOfMonth.lengthOfMonth())
+
+        val results = jpaQueryFactory.select(
+                Expressions.stringTemplate("DATE_FORMAT({0}, {1})", answerEntity.createdAt, "%Y-%m-%d").`as`("date"),
+                answerEntity.id.count()
+            )
+            .from(answerEntity)
+            .where(answerEntity.createdAt.between(firstDayOfMonth.atStartOfDay(), lastDayOfMonth.atTime(23, 59, 59))
+                .and(answerEntity.user.eq(user)))
+            .groupBy(Expressions.stringTemplate("DATE_FORMAT({0}, {1})", answerEntity.createdAt, "%Y-%m-%d"))
+            .orderBy(Expressions.stringTemplate("DATE_FORMAT({0}, {1})", answerEntity.createdAt, "%Y-%m-%d").asc())
+            .fetch()
+
+        return results.map { tuple ->
+            val dateAsString = tuple.get(0, String::class.java)
+            val date = LocalDate.parse(dateAsString, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+            val count = tuple.get(1, Long::class.java)?.toInt() ?: 0
+            AnswerActivityInfo(date, count)
+        }
+
     }
 
     private fun isNotPrivate() = answerEntity.status.ne(AnswerStatus.PRIVATE)

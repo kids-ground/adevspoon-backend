@@ -1,5 +1,6 @@
 package com.adevspoon.api.member.dto.request
 
+import com.adevspoon.domain.member.dto.request.GetActivityRequest
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min
@@ -16,4 +17,10 @@ data class MemberActivityRequest(
     @Schema(description = "가져올 년도(Year)", example = "yyyy")
     @field:Min(2022, message = "년도는 2022 이상이어야 합니다.")
     val year: Int,
-)
+) {
+    fun toGetActivityRequest() = GetActivityRequest(
+        userId = this.userId,
+        month = this.month,
+        year = this.year
+    )
+}
