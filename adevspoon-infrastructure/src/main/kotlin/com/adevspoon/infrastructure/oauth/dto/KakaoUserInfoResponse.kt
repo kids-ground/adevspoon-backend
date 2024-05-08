@@ -9,21 +9,21 @@ data class KakaoUserInfoResponse(
 ) {
     data class KakaoAccount (
         @JsonProperty("profile_nickname_needs_agreement")
-        val profileNicknameNeedsAgreement: Boolean,
+        val profileNicknameNeedsAgreement: Boolean?,
         val profile: KakaoProfile,
         val email: String?,
     ) {
         data class KakaoProfile(
-            val nickname: String,
+            val nickname: String?,
 
             @JsonProperty("thumbnail_image_url")
-            val thumbnailImageUrl: String,
+            val thumbnailImageUrl: String?,
 
             @JsonProperty("profile_image_url")
-            val profileImageUrl: String,
+            val profileImageUrl: String?,
 
             @JsonProperty("is_default_image")
-            val isDefaultImage: Boolean,
+            val isDefaultImage: Boolean?,
         )
     }
 }
