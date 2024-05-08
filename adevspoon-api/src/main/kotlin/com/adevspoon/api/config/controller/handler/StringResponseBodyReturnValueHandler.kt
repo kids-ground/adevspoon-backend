@@ -28,7 +28,10 @@ class StringResponseBodyReturnValueHandler(
         mavContainer: ModelAndViewContainer,
         webRequest: NativeWebRequest
     ) {
-        val realReturnValue = SuccessResponse(message = returnValue as String, data = null)
+        val realReturnValue = SuccessResponse(
+            message = returnValue as String,
+            data = SuccessResponse(message = returnValue, data = null)
+        )
         delegate.handleReturnValue(realReturnValue, returnType, mavContainer, webRequest)
     }
 }

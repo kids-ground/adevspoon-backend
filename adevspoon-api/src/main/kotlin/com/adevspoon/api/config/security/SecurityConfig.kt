@@ -40,6 +40,7 @@ class SecurityConfig(
     fun filterChain(http: HttpSecurity) = http
         .csrf { it.disable() }
         .formLogin { it.disable() }
+        .logout { it.disable() }
         .httpBasic { it.disable() }
         .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
         .addFilterBefore(jwtTokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter::class.java)

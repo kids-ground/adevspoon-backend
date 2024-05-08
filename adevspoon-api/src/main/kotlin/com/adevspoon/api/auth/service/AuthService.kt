@@ -27,8 +27,13 @@ class AuthService(
         return MemberAndTokenResponse.from(memberAndSignup, tokenResponse)
     }
 
-    fun withdraw(userId: Long): String {
-        memberDomainService.withdraw(userId)
+    fun signOut(memberId: Long): String {
+        memberDomainService.signOut(memberId)
+        return "로그아웃 되었습니다"
+    }
+
+    fun withdraw(memberId: Long): String {
+        memberDomainService.withdraw(memberId)
         return "회원탈퇴 완료되었습니다"
     }
 

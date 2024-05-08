@@ -99,6 +99,12 @@ class MemberDomainService(
     }
 
     @Transactional
+    fun signOut(memberId: Long) {
+        val member = getUserEntity(memberId)
+        member.signOut()
+    }
+
+    @Transactional
     fun withdraw(memberId: Long) {
         val member = getUserEntity(memberId)
         if (member.status == UserStatus.EXIT) throw MemberNotFoundException()
@@ -130,6 +136,7 @@ class MemberDomainService(
 
         return MemberProfile.from(user, userBadgeList, userRepresentativeBadge)
     }
+
 
     @Transactional
     fun checkAndUpdateToken(userId: Long, oldToken: String?, newToken: String) {

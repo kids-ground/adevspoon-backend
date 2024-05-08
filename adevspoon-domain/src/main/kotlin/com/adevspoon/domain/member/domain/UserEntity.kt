@@ -91,4 +91,9 @@ class UserEntity(
         refreshToken = null
         fcmToken = null
     }
+
+    fun signOut() {
+        refreshToken = null
+        fcmToken = null
+    }
 }

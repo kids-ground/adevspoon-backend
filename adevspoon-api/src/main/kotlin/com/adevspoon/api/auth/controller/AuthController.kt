@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController
 class AuthController(
     private val authService: AuthService
 ) {
-
     @Operation(summary = "토큰 재발급", description = "access/refresh 토큰 재발급")
     @PostMapping("/refresh")
     @SecurityIgnored
@@ -30,14 +29,12 @@ class AuthController(
         return authService.refreshToken(request)
     }
 
-    @Operation(summary = "(웹) 로그아웃", description = "로그인 상태에서 로그아웃 처리")
+    @Operation(summary = "로그아웃", description = "로그인 상태에서 로그아웃 처리")
     @PostMapping("/logout")
     fun logout(
-        @RequestUser user: RequestUserInfo
+        @RequestUser requestUser: RequestUserInfo
     ): String {
-        TODO("""
-            - 로그아웃
-        """.trimIndent())
+        return authService.signOut(requestUser.userId)
     }
 
     @Operation(summary = "(웹) 로그인", description = "웹 전용 카카오 로그인")
@@ -45,7 +42,7 @@ class AuthController(
     @SecurityIgnored
     fun login() {
         TODO("""
-            - 로그인 (웹, security에서 처리하기) 
+            - 로그인 (웹, security에서 처리하기)
         """.trimIndent())
     }
 
