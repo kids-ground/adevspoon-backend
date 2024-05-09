@@ -32,3 +32,5 @@ class NegativeLikeCountExceptionForBoard(type: String, contentId: Long) : Adevsp
     MINIMUM_LIKE_COUNT,
     detailReason = MINIMUM_LIKE_COUNT.message + " type: $type, id: $contentId"
 )
+
+class UnsupportedTypeForContentAccess() : AdevspoonException(UNSUPPORTED_TYPE_FOR_CONTENT_ACCESS)
