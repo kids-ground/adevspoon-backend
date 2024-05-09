@@ -47,7 +47,7 @@ class BoardService(
     }
 
     fun report(request: ReportBoardContentRequest, userId: Long): String {
-        val report = boardPostDomainService.report(request.toCreateReportRequest(), userId)
-        return "Successfully report. id=${report.id}. type:${report.postType}, reason:${report.reason}"
+        val event = boardPostDomainService.report(request.toCreateReportRequest(), userId)
+        return "Successfully report. id=${event.report.id}. type:${event.report.postType}, reason:${event.report.reason}"
     }
 }
