@@ -13,5 +13,6 @@ enum class DomainCommonError(
     FAIL_TO_LOCK_QUERY(DomainType.COMMON code 500 no 2, "서버 내부 오류입니다. 관리자에게 문의하세요"),
     FAIL_TO_GET_LOCK(DomainType.COMMON code 500 no 3, "서버 내부 오류입니다. 관리자에게 문의하세요"),
     FAIL_TO_RELEASE_LOCK(DomainType.COMMON code 500 no 4, "서버 내부 오류입니다. 관리자에게 문의하세요"),
-    LOCK_KEY_NOT_SET(DomainType.COMMON code 500 no 5, "서버 내부 오류입니다. 관리자에게 문의하세요");
+    LOCK_KEY_NOT_SET(DomainType.COMMON code 500 no 5, "서버 내부 오류입니다. 관리자에게 문의하세요"),
+    REPORT_EVENT_INVALID_RETURN(DomainType.COMMON code 500 no 5, "버그 레포트 이벤트 저장 중 오류가 발생했습니다.");
 }
