@@ -49,15 +49,16 @@ class AnswerRepositoryCustomImpl(
         val firstDayOfMonth = LocalDate.of(year, month, 1)
         val lastDayOfMonth = firstDayOfMonth.withDayOfMonth(firstDayOfMonth.lengthOfMonth())
 
+        val formattedDate = Expressions.stringTemplate("DATE_FORMAT({0}, {1})", answerEntity.createdAt, "%Y-%m-%d")
         val results = jpaQueryFactory.select(
-                Expressions.stringTemplate("DATE_FORMAT({0}, {1})", answerEntity.createdAt, "%Y-%m-%d").`as`("date"),
+                formattedDate.`as`("date"),
                 answerEntity.id.count()
             )
             .from(answerEntity)
             .where(answerEntity.createdAt.between(firstDayOfMonth.atStartOfDay(), lastDayOfMonth.atTime(23, 59, 59))
                 .and(answerEntity.user.eq(user)))
-            .groupBy(Expressions.stringTemplate("DATE_FORMAT({0}, {1})", answerEntity.createdAt, "%Y-%m-%d"))
-            .orderBy(Expressions.stringTemplate("DATE_FORMAT({0}, {1})", answerEntity.createdAt, "%Y-%m-%d").asc())
+            .groupBy(formattedDate)
+            .orderBy(formattedDate.asc())
             .fetch()
 
         return results.map { tuple ->
