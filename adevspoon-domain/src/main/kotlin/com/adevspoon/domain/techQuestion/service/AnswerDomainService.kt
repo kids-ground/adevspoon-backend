@@ -1,9 +1,8 @@
 package com.adevspoon.domain.techQuestion.service
 
-import com.adevspoon.domain.common.annotation.ActivityEvent
-import com.adevspoon.domain.common.annotation.ActivityEventType
-import com.adevspoon.domain.common.annotation.DomainService
+import com.adevspoon.domain.common.annotation.*
 import com.adevspoon.domain.common.entity.ReportEntity
+import com.adevspoon.domain.common.event.ReportEvent
 import com.adevspoon.domain.common.repository.LikeRepository
 import com.adevspoon.domain.common.repository.ReportRepository
 import com.adevspoon.domain.common.service.LikeDomainService
@@ -125,14 +124,17 @@ class AnswerDomainService(
     }
 
     @Transactional
-    fun reportAnswer(answerId: Long, memberId: Long) {
+    @AdminNotificationEvent(type = AdminMessageType.REPORT)
+    fun reportAnswer(answerId: Long, memberId: Long) : ReportEvent{
         val member = getMember(memberId)
         val answer = getAnswerWithUserAndQuestion(answerId)
             .takeIf { it.user.id != memberId }
             ?: throw QuestionAnswerReportNotAllowedException()
         checkReport(member, answer)
 
-        reportRepository.save(ReportEntity(user = member, postType = "answer", post = answer))
+        val report = reportRepository.save(ReportEntity(user = member, postType = "answer", post = answer))
+
+        return ReportEvent(content = answer.answer ?: "",report = report)
     }
 
     private fun makeQuestionAnswerListInfo(
