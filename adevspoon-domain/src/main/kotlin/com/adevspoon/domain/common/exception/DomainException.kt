@@ -7,3 +7,5 @@ class DomainFailToLockQueryException: AdevspoonException(DomainCommonError.FAIL_
 class DomainFailToGetLockException(keyName: String? = null, reason: String? = null): AdevspoonException(DomainCommonError.FAIL_TO_GET_LOCK, internalLog = keyName?.let { "$it 획득 실패 (사유: $reason)" })
 class DomainFailToReleaseLockException(keyName: String? = null, reason: String? = null): AdevspoonException(DomainCommonError.FAIL_TO_RELEASE_LOCK, internalLog = keyName?.let { "$it 해제 실패 (사유: $reason)" })
 class DomainLockKeyNotSetException: AdevspoonException(DomainCommonError.LOCK_KEY_NOT_SET)
+
+class ReportEventInvalidReturnException: AdevspoonException(DomainCommonError.REPORT_EVENT_INVALID_RETURN)

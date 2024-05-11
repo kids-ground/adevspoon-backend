@@ -43,4 +43,6 @@ class ReportEntity(
 
     @Column(name = "boardCommentId")
     val boardCommentId: Long? = null
-) : LegacyBaseEntity()
+) : LegacyBaseEntity() {
+    fun getContentId(): Long = boardPostId ?: boardCommentId ?: post?.id ?: -1
+}

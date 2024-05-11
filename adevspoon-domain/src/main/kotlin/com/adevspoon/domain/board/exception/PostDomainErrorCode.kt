@@ -10,6 +10,7 @@ enum class PostDomainErrorCode(
     override val message: String,
 ): AdevspoonErrorCode {
     MINIMUM_LIKE_COUNT(domain code 400 no 0, "좋아요 수는 음수일 수 없습니다."),
+    UNSUPPORTED_TYPE_FOR_CONTENT_ACCESS(domain code 400 no 1, "BOARD에서 지원하지 않는 타입입니다."),
 
     BOARD_TAG_NOT_FOUND(domain code 404 no 0, "등록되지 않은 태그입니다."),
     BOARD_POST_NOT_FOUND(domain code 404 no 1, "등록되지 않은 게시글입니다."),

@@ -8,12 +8,11 @@ import com.adevspoon.domain.board.exception.*
 import com.adevspoon.domain.board.repository.BoardCommentRepository
 import com.adevspoon.domain.board.repository.BoardPostRepository
 import com.adevspoon.domain.board.repository.BoardTagRepository
-import com.adevspoon.domain.common.annotation.ActivityEvent
-import com.adevspoon.domain.common.annotation.ActivityEventType
-import com.adevspoon.domain.common.annotation.DomainService
+import com.adevspoon.domain.common.annotation.*
 import com.adevspoon.domain.common.entity.BaseEntity
 import com.adevspoon.domain.common.entity.ReportEntity
 import com.adevspoon.domain.common.entity.enums.ReportReason
+import com.adevspoon.domain.common.event.ReportEvent
 import com.adevspoon.domain.common.repository.ReportRepository
 import com.adevspoon.domain.common.service.LikeDomainService
 import com.adevspoon.domain.common.utils.CursorPageable
@@ -142,21 +141,20 @@ class BoardPostDomainService(
         }
     }
 
-    private fun getBoardPostEntity(postId: Long): BoardPostEntity =
-        boardPostRepository.findByIdOrNull(postId) ?: throw BoardPostNotFoundException(postId.toString())
-
     @Transactional
-    fun report(request: CreateReportRequest, userId: Long): ReportEntity {
+    @AdminNotificationEvent(type = AdminMessageType.REPORT)
+    fun report(request: CreateReportRequest, userId: Long): ReportEvent {
         val user = getUserEntity(userId)
 
-        val content = when (request.type) {
+        val entity = when (request.type) {
             "BOARD_POST" -> getBoardPostEntity(request.contentId)
             "BOARD_COMMENT" -> getBoardCommentEntity(request.contentId)
             else -> throw IllegalArgumentException("Invalid content type")
         }
 
-        checkOwnership(content, userId)
+        checkOwnershipAndGetContent(entity, userId)
         checkReportExistence(request.type.toString(), request.contentId)
+        val content = getContent(entity)
 
         val report = ReportEntity(
             postType = request.type.toString().lowercase(Locale.getDefault()),
@@ -165,7 +163,8 @@ class BoardPostDomainService(
             boardPostId = if (request.type == "BOARD_POST") request.contentId else null,
             boardCommentId = if (request.type == "BOARD_COMMENT") request.contentId else null
         )
-        return reportRepository.save(report)
+        reportRepository.save(report)
+        return ReportEvent(content = content, report = report)
     }
 
     private fun checkReportExistence(type: String, contentId: Long) {
@@ -174,8 +173,7 @@ class BoardPostDomainService(
         }
     }
 
-
-    private fun checkOwnership(contentEntity: BaseEntity, userId: Long) {
+    private fun checkOwnershipAndGetContent(contentEntity: BaseEntity, userId: Long){
         if (contentEntity is BoardPostEntity) {
             if (contentEntity.user.id == userId) {
                 throw SelfReportException()
@@ -188,6 +186,17 @@ class BoardPostDomainService(
             }
         }
     }
+
+    private fun getContent(entity: BaseEntity): String {
+        return when (entity) {
+            is BoardPostEntity -> entity.content
+            is BoardCommentEntity -> entity.content
+            else -> throw UnsupportedTypeForContentAccess()
+        }
+    }
+
+    private fun getBoardPostEntity(postId: Long): BoardPostEntity =
+        boardPostRepository.findByIdOrNull(postId) ?: throw BoardPostNotFoundException(postId.toString())
 
     private fun getBoardCommentEntity(commentId: Long): BoardCommentEntity =
         boardCommentRepository.findByIdOrNull(commentId) ?: throw BoardCommentNotFoundException(commentId.toString())
