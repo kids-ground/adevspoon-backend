@@ -1,0 +1,61 @@
+# 최신 Tag 기준으로 Hotfix Branch 생성
+name: Create Hotfix Branch
+
+on:
+  workflow_dispatch:
+    inputs:
+      artifact:
+        type: choice
+        description: 'artifact type'
+        required: true
+        default: 'Api'
+        options:
+          - 'Api'
+          - 'Batch'
+
+jobs:
+  create-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.MY_TOKEN }}
+          fetch-depth: 0
+
+      # 최신 Tag 가져오기
+      - name: Get latest tag
+        id: get-latest-tag
+        run: |
+          latest_tag=$(git describe --tags --abbrev=0 --match "${{ github.event.inputs.artifact }}-v*")
+          echo "LATEST_TAG=$latest_tag" >> $GITHUB_OUTPUT
+
+      # Hotfix 용 버전 생성
+      - name: Create new hotfix version
+        id: create-new-version
+        run: |
+          tag=${{ steps.get-latest-tag.outputs.LATEST_TAG }}
+
+          IFS='+' read -ra version_parts <<< "$tag"
+          version=${version_parts[0]}
+          fix_number=${version_parts[1]}
+
+          # 픽스넘버가 비어 있는 경우 0으로 설정
+          if [ -z "$fix_number" ]; then
+            fix_number=0
+          fi
+
+          # 픽스넘버 증가
+          fix_number=$((fix_number + 1))
+
+          # hotfix 버전
+          new_version="${version}+${fix_number}"
+          echo "NEW_VERSION=$new_version" >> $GITHUB_OUTPUT
+
+      # tag 기반 Hotfix Branch 생성
+      - name: Create and push hotfix branch
+        run: |
+          tag=${{ steps.get-latest-tag.outputs.LATEST_TAG }}
+
+          git checkout -b hotfix/${{ steps.create-new-version.outputs.NEW_VERSION }} tags/$tag
+          git push origin hotfix/${{ steps.create-new-version.outputs.NEW_VERSION }}
