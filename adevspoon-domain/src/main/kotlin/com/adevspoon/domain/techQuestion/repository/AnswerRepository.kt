@@ -15,7 +15,7 @@ interface AnswerRepository: JpaRepository<AnswerEntity, Long>, AnswerRepositoryC
     @Query("SELECT a FROM AnswerEntity a " +
                 "LEFT JOIN FETCH a.question " +
                 "LEFT JOIN FETCH a.user " +
-            "WHERE a.question.id = :questionId " +
+            "WHERE a.question.id = :questionId and a.status != com.adevspoon.domain.techQuestion.domain.enums.AnswerStatus.PRIVATE " +
             "ORDER BY a.likeCnt DESC " +
             "LIMIT 1")
     fun findBestAnswerListByQuestionId(questionId: Long): List<AnswerEntity>
