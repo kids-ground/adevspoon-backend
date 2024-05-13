@@ -4,7 +4,7 @@
 
 1. [기술스택](#기술스택)
 2. [인프라](#인프라)
-3. [CI/CD & 자동화](#ci/cd-&-자동화)
+3. [CI/CD & 자동화](#cicd--자동화)
 4. [History](#history)
 
 
@@ -25,11 +25,11 @@ AWS & Terraform 기반 배포. 비용 효율적으로 구성
 
 ![adevspoon-automation](https://github.com/kids-ground/adevspoon-backend/assets/52196792/957ffd4d-9daa-499f-91e7-d68e2be5dca6)
 
-1. 최신 Tag 기반으로 자동 버전업된 release 브랜치 생성
-2. 최신 Tag 기반 hotfix 브랜치 생성
-3. release & hotfix 브랜치 내 커밋 시 dev 환경 자동배포
-4. release & hotfix -> develop으로 PR 머지 시 Tag/Release 생성
-5. Tag 생성 시 prod 환경 자동배포
+1. `create-release-branch` : 최신 Tag 기반으로 자동 버전업된 release 브랜치 생성
+2. `create-hotfix-branch` : 최신 Tag 기반 hotfix 브랜치 생성
+3. `deploy-dev` : release & hotfix 내 push 시 dev 환경 자동배포
+4. `tagging-and-release` : release & hotfix -> develop PR 머지 시 Tag/Release 생성
+5. `deploy-prod` : Tag 생성 시 prod 환경 자동배포
 
 
 ## History
