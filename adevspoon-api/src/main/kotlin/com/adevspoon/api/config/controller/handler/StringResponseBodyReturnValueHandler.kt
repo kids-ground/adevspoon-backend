@@ -13,8 +13,7 @@ class StringResponseBodyReturnValueHandler(
 ): HandlerMethodReturnValueHandler {
 
     override fun supportsReturnType(returnType: MethodParameter): Boolean {
-        return returnType.parameterType == String::class.java &&
-                (
+        return (
                     AnnotatedElementUtils.hasAnnotation(
                         returnType.containingClass,
                         ResponseBody::class.java
@@ -28,10 +27,15 @@ class StringResponseBodyReturnValueHandler(
         mavContainer: ModelAndViewContainer,
         webRequest: NativeWebRequest
     ) {
-        val realReturnValue = SuccessResponse(
-            message = returnValue as String,
-            data = SuccessResponse(message = returnValue, data = null)
-        )
+        val realReturnValue = if (returnValue is String)
+            SuccessResponse(
+                message = returnValue,
+                data = SuccessResponse(message = returnValue, data = null)
+            )
+        else
+            SuccessResponse(data = returnValue)
+
+        // returnType도 바꾸기
         delegate.handleReturnValue(realReturnValue, returnType, mavContainer, webRequest)
     }
 }

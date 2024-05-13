@@ -28,12 +28,15 @@ class SuccessResponseBodyAdvisor: ResponseBodyAdvice<Any> {
         request: ServerHttpRequest,
         response: ServerHttpResponse
     ): Any? {
-        val servletResponse = (response as ServletServerHttpResponse).servletResponse
-        val status = servletResponse.status
-        val resolve = HttpStatus.resolve(status) ?: return body
-
-        return if (resolve.is2xxSuccessful) {
-            SuccessResponse(data = body)
-        } else body
+        return body
+//
+//
+//        val servletResponse = (response as ServletServerHttpResponse).servletResponse
+//        val status = servletResponse.status
+//        val resolve = HttpStatus.resolve(status) ?: return body
+//
+//        return if (resolve.is2xxSuccessful) {
+//            SuccessResponse(data = body)
+//        } else body
     }
 }
