@@ -1,8 +1,8 @@
-name: API Server Deploy to Production
+name: API - Deploy Production Environment
 on:
   push:
-    branches:
-      - main
+    tags:
+      - Api-v*
   workflow_dispatch:
 
 env:
@@ -17,9 +17,9 @@ jobs:
     steps:
       # Repo checkout
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
-          token: ${{ secrets.TOKEN_GITHUB }}
+          token: ${{ secrets.MY_TOKEN }}
           submodules: true
 
       # JDK 환경 셋팅
@@ -35,7 +35,7 @@ jobs:
         run: chmod +x gradlew
 
       # Build App
-      - name: Gradle Build
+      - name: Gradle build
         run: |
           ./gradlew globalCopyConfig
           ./gradlew adevspoon-api:build -x test
@@ -49,7 +49,7 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       # S3 Upload
-      - name: S3 Upload
+      - name: S3 upload
         run: |
           aws deploy push \
           --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
@@ -57,7 +57,7 @@ jobs:
           --s3-location s3://$S3_BUCKET_NAME/$GITHUB_SHA.zip \
           --source ./adevspoon-api
 
-      # Code Deploy 실행 (블루-그린 배포)
+      # Code Deploy 실행 (블루/그린 무중단 배포)
       - name: CodeDeploy - Blue-Green Deployment
         run: |
           aws deploy create-deployment \
