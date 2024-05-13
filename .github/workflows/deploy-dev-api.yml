@@ -8,6 +8,9 @@ on:
       - release/Api-v*
       - hotfix/Api-v*
 
+env:
+  AWS_REGION: ap-northeast-2
+
 jobs:
   check-branch:
     # Branch 이름 가져오기
@@ -23,7 +26,7 @@ jobs:
   deploy-development-environment:
     needs: check-branch
     # release, hotfix 일때만 실행
-    if: startsWith(${{ needs.check-branch.outputs.current_branch}}, 'release/Api-v') || startsWith(${{ needs.check-branch.outputs.current_branch}}, 'hotfix/Api-v')
+    if: ${{ startsWith(needs.check-branch.outputs.current_branch, 'release/Api-v') || startsWith(needs.check-branch.outputs.current_branch, 'hotfix/Api-v') }}
     runs-on: 'ubuntu-latest'
     steps:
       - name: Check out repository

@@ -21,7 +21,7 @@ class SlackNotificationService: AdminNotificationService{
         val slack = Slack.getInstance()
         try {
             slack.send(SLACK_WEBHOOK_URL, WebhookPayloads.payload { p ->
-                p.text("*New Bug Report* :warning:")
+                p.text("*신고 접수* :warning:")
                     .attachments(listOf(generateSlackAttachment(event)))
             })
         } catch (e: IOException) {
@@ -34,12 +34,12 @@ class SlackNotificationService: AdminNotificationService{
         val contentId = event.report.getContentId()
         return Attachment.builder()
             .color("fa8128")
-            .title("$requestTime 발생 내용")
             .fields(listOf(
+                generateSlackField("Report Time", requestTime),
                 generateSlackField("Report reason", event.report.reason.toString()),
                 generateSlackField("Report Type", event.report.postType),
-                generateSlackField("Target", "id: $contentId\ncontent: ${event.content}"),
-                generateSlackField("Reported by", "id: ${event.report.user.id} nickname: ${event.report.user.nickname}")))
+                generateSlackField("Report (id: $contentId)", event.content),
+                generateSlackField("Reported by", "id: ${event.report.user.id}, name: ${event.report.user.nickname}")))
             .build()
     }
 

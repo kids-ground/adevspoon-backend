@@ -1,6 +1,6 @@
 package com.adevspoon.api.config
 
-import com.adevspoon.api.config.controller.handler.StringResponseBodyReturnValueHandler
+import com.adevspoon.api.config.controller.handler.WrappingResponseBodyReturnValueHandler
 import jakarta.annotation.PostConstruct
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler
@@ -22,7 +22,7 @@ class HandlerAdapterCustomConfig (
         val responseBodyReturnHandler = (handlerAdapter.returnValueHandlers
             ?.firstOrNull { it is RequestResponseBodyMethodProcessor }
             ?: return)
-        newReturnValueHandlers.add(StringResponseBodyReturnValueHandler(responseBodyReturnHandler))
+        newReturnValueHandlers.add(WrappingResponseBodyReturnValueHandler(responseBodyReturnHandler))
         newReturnValueHandlers.addAll(handlerAdapter.returnValueHandlers ?: emptyList())
         handlerAdapter.returnValueHandlers = newReturnValueHandlers
     }

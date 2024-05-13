@@ -22,7 +22,7 @@ jobs:
   tagging-and-release:
     needs: check-branch
     runs-on: 'ubuntu-latest'
-    if: github.event.pull_request.merged == true && (startsWith(${{ needs.check-branch.outputs.current_branch }}, 'release/') || startsWith(${{ needs.check-branch.outputs.current_branch }}, 'hotfix/'))
+    if: ${{ github.event.pull_request.merged == true && (startsWith(needs.check-branch.outputs.current_branch, 'release/') || startsWith(needs.check-branch.outputs.current_branch, 'hotfix/')) }}
     steps:
       - name: Get tag
         id: get-tag

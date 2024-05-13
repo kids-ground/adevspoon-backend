@@ -8,18 +8,14 @@ import org.springframework.web.context.request.NativeWebRequest
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler
 import org.springframework.web.method.support.ModelAndViewContainer
 
-class StringResponseBodyReturnValueHandler(
+class WrappingResponseBodyReturnValueHandler(
     private val delegate: HandlerMethodReturnValueHandler
 ): HandlerMethodReturnValueHandler {
-
     override fun supportsReturnType(returnType: MethodParameter): Boolean {
-        return returnType.parameterType == String::class.java &&
-                (
-                    AnnotatedElementUtils.hasAnnotation(
-                        returnType.containingClass,
-                        ResponseBody::class.java
-                    ) || returnType.hasMethodAnnotation(ResponseBody::class.java)
-                )
+        return AnnotatedElementUtils.hasAnnotation(
+            returnType.containingClass,
+            ResponseBody::class.java
+        ) || returnType.hasMethodAnnotation(ResponseBody::class.java)
     }
 
     override fun handleReturnValue(
@@ -28,10 +24,15 @@ class StringResponseBodyReturnValueHandler(
         mavContainer: ModelAndViewContainer,
         webRequest: NativeWebRequest
     ) {
-        val realReturnValue = SuccessResponse(
-            message = returnValue as String,
-            data = SuccessResponse(message = returnValue, data = null)
-        )
+        val realReturnValue =
+            if (returnValue is String)
+                SuccessResponse(
+                    message = returnValue,
+                    data = SuccessResponse(data = null)
+                )
+            else
+                SuccessResponse(data = returnValue)
+
         delegate.handleReturnValue(realReturnValue, returnType, mavContainer, webRequest)
     }
 }
