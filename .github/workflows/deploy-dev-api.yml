@@ -9,9 +9,11 @@ on:
 
 env:
   AWS_REGION: ap-northeast-2
+  DEV_RUN: false
 
 jobs:
   dev-api-server-deploy:
+    if: ${{ env.DEV_RUN == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
