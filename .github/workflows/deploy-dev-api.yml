@@ -13,7 +13,7 @@ env:
 
 jobs:
   dev-api-server-deploy:
-    if: ${{ env.DEV_RUN == 'true' }}
+    if: ${{ env.DEV_RUN }}
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
