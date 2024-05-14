@@ -7,11 +7,13 @@
 3. [CI/CD & 자동화](#cicd--자동화)
 4. [History](#history)
 
+<br />
 
 ## 기술스택
 *서버리스 아키텍쳐(AWS API Gateway + Lambda) -> Spring Boot 마이그레이션*  
 Spring Boot, Kotlin, JPA, MySQL, LocalStack, AWS, Terraform, Github Actions
 
+<br />
 
 ## 인프라
 AWS & Terraform 기반 배포. 비용 효율적으로 구성
@@ -19,6 +21,8 @@ AWS & Terraform 기반 배포. 비용 효율적으로 구성
 - 배포 : Github Actions + CodeDeploy + ALB를 통한 무중단(블루/그린) 배포
 
 ![adevspoon-v1](https://github.com/kids-ground/adevspoon-backend/assets/52196792/c3c5eef5-f6b9-4352-bcb3-6454397fc193)
+
+<br />
 
 ## CI/CD & 자동화
 브랜치 & PR 기반 자동화. 무중단 배포 파이프라인 구축  
@@ -31,6 +35,7 @@ AWS & Terraform 기반 배포. 비용 효율적으로 구성
 4. `tagging-and-release` : release & hotfix -> develop PR 머지 시 Tag/Release 생성
 5. `deploy-prod` : Tag 생성 시 prod 환경 자동배포
 
+<br />
 
 ## History
 **Product**

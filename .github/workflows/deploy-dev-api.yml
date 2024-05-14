@@ -2,7 +2,6 @@
 name: API - Deploy Development Environment
 
 on:
-  create:
   push:
     branches:
       - release/Api-v*
@@ -12,22 +11,9 @@ env:
   AWS_REGION: ap-northeast-2
 
 jobs:
-  check-branch:
-    # Branch 이름 가져오기
-    if: ${{ github.event_name != 'create' || github.ref_type != 'tag' }}
+  dev-api-server-deploy:
+    if: false
     runs-on: ubuntu-latest
-    outputs:
-      current_branch: ${{ steps.branch-name.outputs.current_branch }}
-    steps:
-      - name: Get branch name
-        id: branch-name
-        uses: tj-actions/branch-names@v8
-
-  deploy-development-environment:
-    needs: check-branch
-    # release, hotfix 일때만 실행
-    if: ${{ startsWith(needs.check-branch.outputs.current_branch, 'release/Api-v') || startsWith(needs.check-branch.outputs.current_branch, 'hotfix/Api-v') }}
-    runs-on: 'ubuntu-latest'
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
