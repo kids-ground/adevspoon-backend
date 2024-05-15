@@ -21,6 +21,7 @@ spring:
 server:
   servlet:
     context-path: /api
+  shutdown: graceful
 
 springdoc:
   api-docs:
