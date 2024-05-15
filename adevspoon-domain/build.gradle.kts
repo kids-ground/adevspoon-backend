@@ -11,6 +11,7 @@ dependencies {
     implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
     kapt("com.querydsl:querydsl-apt:5.0.0:jakarta")
 
+    runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
     runtimeOnly("com.mysql:mysql-connector-j")
 }
 
