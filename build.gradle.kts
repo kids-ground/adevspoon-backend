@@ -73,8 +73,17 @@ subprojects {
 
     tasks.register("globalCopyConfig") {
         group = "custom"
+        dependsOn(":adevspoon-api:copyConfig", ":adevspoon-batch:copyConfig")
+    }
 
-        dependsOn(":adevspoon-api:copyConfig", ":adevspoon-common:copyConfig", ":adevspoon-domain:copyConfig", ":adevspoon-infrastructure:copyConfig")
+    tasks.register("ApiCopyConfig") {
+        group = "custom"
+        dependsOn(":adevspoon-api:copyConfig")
+    }
+
+    tasks.register("BatchCopyConfig") {
+        group = "custom"
+        dependsOn(":adevspoon-batch:copyConfig")
     }
 }
 

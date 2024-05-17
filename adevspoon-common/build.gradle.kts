@@ -10,14 +10,6 @@ tasks.getByName("jar") {
     enabled = true
 }
 
-tasks.register("copyConfig", Copy::class) {
-    copy {
-        from("../adevspoon-config/backend/common")
-        include("*.yml", "*.xml")
-        into("src/main/resources")
-    }
-}
-
 plugins {
     id("com.adevspoon.kotlin-common-conventions")
 }

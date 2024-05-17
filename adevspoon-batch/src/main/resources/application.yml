@@ -1,0 +1,13 @@
+spring:
+  profiles:
+    default: local
+    group:
+      local:
+        - batch-local
+      dev:
+        - batch-dev
+      prod:
+        - batch-prod
+
+server:
+  shutdown: graceful
