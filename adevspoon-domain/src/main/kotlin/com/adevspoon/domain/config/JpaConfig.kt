@@ -31,7 +31,7 @@ class JpaConfig {
 
     @Bean
     @Primary
-    fun mainDataSource(): DataSource {
+    fun dataSource(): DataSource {
         return mainDataSourceProperties()
             .initializeDataSourceBuilder()
             .type(HikariDataSource::class.java)
