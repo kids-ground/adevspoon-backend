@@ -42,7 +42,6 @@ build
 ### Configuration ###
 **/src/**/*.yml
 **/src/**/*.json
-!src/**/application.yml
 !**/*/application.yml
 !**/*/*-test.yml
 !src/test/**/*.yml
