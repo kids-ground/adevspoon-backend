@@ -5,8 +5,8 @@ plugins {
 
 dependencies {
     implementation(project(":adevspoon-common"))
+    implementation(project(":adevspoon-infrastructure"))
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("com.slack.api:slack-api-client:1.38.0")
     //querydsl
     implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
     kapt("com.querydsl:querydsl-apt:5.0.0:jakarta")

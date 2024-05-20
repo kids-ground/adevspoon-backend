@@ -1,5 +1,5 @@
 package com.adevspoon.domain.common.annotation
 
-enum class AdminMessageType {
+enum class AdminEventType {
     REPORT
 }

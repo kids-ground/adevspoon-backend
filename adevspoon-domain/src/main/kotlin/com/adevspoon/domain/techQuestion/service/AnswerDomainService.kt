@@ -124,7 +124,7 @@ class AnswerDomainService(
     }
 
     @Transactional
-    @AdminNotificationEvent(type = AdminMessageType.REPORT)
+    @AdminEvent(type = AdminEventType.REPORT)
     fun reportAnswer(answerId: Long, memberId: Long) : ReportEvent{
         val member = getMember(memberId)
         val answer = getAnswerWithUserAndQuestion(answerId)
