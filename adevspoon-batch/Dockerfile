@@ -10,4 +10,4 @@ COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:0.8.3 /lambda-adapter /opt
 ENV PORT=8080
 WORKDIR /opt
 COPY --from=artifact-image /task/app.jar /opt
-CMD ["java", "-jar", "app.jar", "--server.port=${PORT}", "-Duser.timezone=Asia/Seoul", "-Dspring.profiles.active=prod"]
+CMD ["java", "-jar", "app.jar", "--server.port=${PORT}", "-Duser.timezone=Awsia/Seoul", "-Dspring.profiles.active=prod"]
