@@ -4,3 +4,6 @@ spring:
       initialize-schema: always
     job:
       enabled: false
+
+firebase:
+  key-path: firebaseKey.json

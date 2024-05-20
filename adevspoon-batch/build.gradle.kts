@@ -30,7 +30,7 @@ dependencies {
 tasks.register("copyConfig", Copy::class) {
     copy {
         from("../adevspoon-config/backend/batch")
-        include("*.yml", "*.xml")
+        include("*.yml", "*.xml", "*.json")
         into("src/main/resources")
     }
 }
