@@ -1,7 +1,9 @@
 spring:
   profiles:
-    default: local
+    default: prod
     group:
+      local-docker:
+        - batch-local-docker
       local:
         - batch-local
       dev:

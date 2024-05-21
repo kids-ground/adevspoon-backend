@@ -45,3 +45,5 @@ build
 !**/*/application.yml
 !**/*/*-test.yml
 !src/test/**/*.yml
+
+.aws-sam/
