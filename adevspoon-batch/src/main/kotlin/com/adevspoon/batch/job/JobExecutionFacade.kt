@@ -1,22 +1,24 @@
 package com.adevspoon.batch.job
 
+import com.adevspoon.infrastructure.alarm.dto.AlarmType
+import com.adevspoon.infrastructure.alarm.service.AlarmAdapter
 import org.springframework.batch.core.Job
 import org.springframework.batch.core.JobParametersBuilder
 import org.springframework.batch.core.launch.JobLauncher
-import org.springframework.batch.core.launch.support.TaskExecutorJobLauncher
 import org.springframework.context.ApplicationContext
-import org.springframework.core.task.TaskExecutor
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
 @Service
 class JobExecutionFacade(
     private val jobLauncher: JobLauncher,
-    private val batchTaskExecutor: TaskExecutor,
+//    private val batchTaskExecutor: TaskExecutor,
     private val applicationContext: ApplicationContext,
+    private val alarmAdapter: AlarmAdapter,
 ) {
-    fun executeJob() {
-        (jobLauncher as TaskExecutorJobLauncher).setTaskExecutor(batchTaskExecutor)
+    fun executeJob(event: String) {
+        alarmAdapter.sendAlarm(AlarmType.CHECK, mapOf("Event" to event))
+//        (jobLauncher as TaskExecutorJobLauncher).setTaskExecutor(batchTaskExecutor)
 
         // TODO: 추후 Event Type에 따라 Job, JobParameter 나누기
         val jobParameters = JobParametersBuilder()

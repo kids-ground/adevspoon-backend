@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory
 class FCMNotificationAdapter(
     private val messaging: FirebaseMessaging
 ): PushNotificationAdapter {
-    private val log = LoggerFactory.getLogger(this.javaClass)!!
+    private val logger = LoggerFactory.getLogger(this.javaClass)!!
 
     override fun sendMessageSync(info: NotificationInfo) = sendMessageSync(info.toGroupNotificationInfo())
 
@@ -31,6 +31,7 @@ class FCMNotificationAdapter(
         execute: (GroupNotificationInfo) -> NotificationResponse
     ): NotificationResponse {
         var notificationInfo = initInfo
+        logger.info("FCM Send 시작: ${initInfo.tokens.size}개")
 
         for (i in 0 until count) {
             val executeResult = execute(notificationInfo)
@@ -42,7 +43,7 @@ class FCMNotificationAdapter(
             if (executeResult.failure == 0) break
         }
 
-        log.info("FCM Send - 성공: ${initInfo.tokens.size - notificationInfo.tokens.size}, 실패: ${notificationInfo.tokens.size}")
+        logger.info("FCM Send - 성공: ${initInfo.tokens.size - notificationInfo.tokens.size}, 실패: ${notificationInfo.tokens.size}")
 
         return NotificationResponse(
             initInfo.tokens.size - notificationInfo.tokens.size,
@@ -77,6 +78,7 @@ class FCMNotificationAdapter(
                 failedMessageIndexes
             )
         } catch (e: FirebaseMessagingException) {
+            logger.error("FCM Send Error", e.messagingErrorCode.name)
             throw e
         }
     }

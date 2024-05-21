@@ -1,6 +1,5 @@
 package com.adevspoon.batch.job
 
-import com.adevspoon.domain.member.domain.UserEntity
 import com.adevspoon.infrastructure.alarm.dto.AlarmType
 import com.adevspoon.infrastructure.alarm.service.AlarmAdapter
 import com.adevspoon.infrastructure.notification.dto.GroupNotificationInfo
@@ -51,15 +50,14 @@ class QuestionPublishedNotification(
             .build()
     }
 
-    // 멀티쓰레드 처리
     @Bean(JOB_NAME + "_step")
     @JobScope
     fun notificationStep(jobRepository: JobRepository): Step {
         return StepBuilder(JOB_NAME + "_step", jobRepository)
-            .chunk<UserEntity, UserEntity>(chunkSize, transactionManager)
+            .chunk<String, String>(chunkSize, transactionManager)
             .reader(reader())
             .writer(pushWriter(null))
-            .taskExecutor(executor())
+            .listener(stepListener())
             .build()
     }
 
@@ -76,10 +74,10 @@ class QuestionPublishedNotification(
 
     @Bean(JOB_NAME + "_reader")
     @StepScope
-    fun reader(): JpaPagingItemReader<UserEntity> {
-        return JpaPagingItemReaderBuilder<UserEntity>()
+    fun reader(): JpaPagingItemReader<String> {
+        return JpaPagingItemReaderBuilder<String>()
             .name(JOB_NAME + "_reader")
-            .queryString("SELECT u FROM UserEntity u WHERE u.fcmToken IS NOT NULL")
+            .queryString("SELECT u.fcmToken FROM UserEntity u WHERE u.fcmToken IS NOT NULL")
             .pageSize(chunkSize)
             .entityManagerFactory(entityManagerFactory)
             .saveState(false)
@@ -88,13 +86,10 @@ class QuestionPublishedNotification(
 
     @Bean
     @StepScope
-    fun pushWriter(@Value("#{stepExecution.jobExecution.executionContext}") jobExecutionContext: ExecutionContext?): ItemWriter<UserEntity> {
+    fun pushWriter(@Value("#{stepExecution.jobExecution.executionContext}") jobExecutionContext: ExecutionContext?): ItemWriter<String> {
         return ItemWriter {
             val notificationResponse = pushNotificationAdapter.sendMessageSync(
-                GroupNotificationInfo(
-                    NotificationType.QUESTION_OPENED,
-                    it.items.map { user -> user.fcmToken!! }
-                )
+                GroupNotificationInfo(NotificationType.QUESTION_OPENED, it.items)
             )
 
             jobExecutionContext?.let {
@@ -111,6 +106,10 @@ class QuestionPublishedNotification(
     @Bean(JOB_NAME + "_listener")
     fun jobListener(): JobExecutionListener {
         return object : JobExecutionListener {
+            override fun beforeJob(jobExecution: JobExecution) {
+                logger.info("$JOB_NAME Batch JOB Start")
+            }
+
             override fun afterJob(jobExecution: JobExecution) {
                 val pushSuccess = jobExecution.executionContext.getInt("successCount", -1)
                 val pushFail = jobExecution.executionContext.getInt("failCount", -1)
@@ -121,14 +120,27 @@ class QuestionPublishedNotification(
                 )
 
                 if (jobExecution.status == BatchStatus.COMPLETED) {
-                    logger.info("Push Finished - 성공: $pushSuccess, 실패: $pushFail")
+                    logger.info("$JOB_NAME Batch JOB Finished - 성공: $pushSuccess, 실패: $pushFail")
                     alarmAdapter.sendAlarm(AlarmType.BATCH_COMPLETE, jobInfo)
                 } else {
-                    logger.error("Push Failed - 성공: $pushSuccess, 실패: $pushFail")
+                    logger.error("$JOB_NAME Batch JOB Failed - 성공: $pushSuccess, 실패: $pushFail")
                     alarmAdapter.sendAlarm(AlarmType.BATCH_ERROR, jobInfo)
                 }
             }
         }
     }
 
+    @Bean(JOB_NAME + "_step_execution_listener")
+    fun stepListener(): StepExecutionListener {
+        return object : StepExecutionListener {
+            override fun beforeStep(stepExecution: StepExecution) {
+                logger.info("$JOB_NAME Batch Step Start")
+            }
+
+            override fun afterStep(stepExecution: StepExecution): ExitStatus {
+                logger.info("$JOB_NAME Batch Step Finished")
+                return stepExecution.exitStatus
+            }
+        }
+    }
 }
