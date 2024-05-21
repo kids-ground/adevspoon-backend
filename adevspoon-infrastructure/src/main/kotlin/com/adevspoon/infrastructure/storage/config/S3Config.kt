@@ -14,6 +14,7 @@ import org.testcontainers.containers.localstack.LocalStackContainer
 import org.testcontainers.utility.DockerImageName
 
 @Configuration
+@ConditionalOnProperty(prefix = "cloud.aws", name = ["s3.bucket"])
 class S3Config {
     @Configuration
     @Profile("!local && !test")
@@ -40,6 +41,7 @@ class S3Config {
 
     @Configuration
     @Profile("local || test")
+    @ConditionalOnProperty(prefix = "cloud.aws", name = ["s3.bucket"])
     class S3LocalConfig {
         private val bucketName = "test-bucket"
         private val localStackImageName = DockerImageName.parse("localstack/localstack")

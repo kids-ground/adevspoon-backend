@@ -1,0 +1,32 @@
+spring:
+  datasource:
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    url: jdbc:tc:mysql:8:///
+  lock-datasource:
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    jdbc-url: jdbc:tc:mysql:8:///
+    pool-name: lock-pool
+  jpa:
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        highlight_sql: true
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: debug
+
+default:
+  profile-url: test-url
+  thumbnail-url: test-url
+
+slack:
+  webhook:
+    url: test-url

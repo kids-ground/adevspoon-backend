@@ -142,7 +142,7 @@ class BoardPostDomainService(
     }
 
     @Transactional
-    @AdminNotificationEvent(type = AdminMessageType.REPORT)
+    @AdminEvent(type = AdminEventType.REPORT)
     fun report(request: CreateReportRequest, userId: Long): ReportEvent {
         val user = getUserEntity(userId)
 
