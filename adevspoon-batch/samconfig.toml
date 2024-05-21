@@ -1,0 +1,10 @@
+version = 0.1
+[default.deploy.parameters]
+stack_name = "adevspoon-batch"
+resolve_s3 = true
+s3_prefix = "adevspoon-batch"
+region = "ap-northeast-2"
+profile = "adevspoon"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+image_repositories = []

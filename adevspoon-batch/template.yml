@@ -1,0 +1,23 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Resources:
+  AdevspoonBatchFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      MemorySize: 2048
+      Timeout: 180
+      ImageUri: ${ImageUri} # Registry/Repository:tag
+      Events:
+        QuestionPublishedEventBridgeRule:
+          Type: Schedule
+          Properties:
+            Schedule: cron(0 23 * * ? *) # UTC 기준으로 매일 23시에 실행 (한국 시간으로는 매일 오전 8시)
+            Input: '{"eventName": "questionPublished"}'
+      VpcConfig:
+        SecurityGroupIds:
+          - ${SecurityGroupId}
+        SubnetIds:
+          - ${SubnetId1}
+          - ${SubnetId2}
