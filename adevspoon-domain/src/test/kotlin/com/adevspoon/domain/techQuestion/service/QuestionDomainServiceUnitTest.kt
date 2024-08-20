@@ -1,5 +1,6 @@
 package com.adevspoon.domain.techQuestion.service
 
+import com.adevspoon.domain.annotation.UnitTest
 import com.adevspoon.domain.fixture.MemberFixture
 import com.adevspoon.domain.fixture.QuestionFixture
 import com.adevspoon.domain.member.domain.UserEntity
@@ -13,42 +14,31 @@ import com.adevspoon.domain.techQuestion.repository.QuestionOpenRepository
 import com.adevspoon.domain.techQuestion.repository.QuestionRepository
 import com.adevspoon.domain.techQuestion.repository.UserCustomizedQuestionCategoryRepository
 import io.mockk.every
-import io.mockk.mockk
+import io.mockk.impl.annotations.InjectMockKs
+import io.mockk.impl.annotations.MockK
 import io.mockk.verify
+import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Test
 
-import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.springframework.data.repository.findByIdOrNull
 import java.time.LocalDate
 import java.time.LocalDateTime
 
+@UnitTest
 class QuestionDomainServiceUnitTest {
-    private val questionCategoryRepository = mockk<QuestionCategoryRepository>()
-    private val questionRepository = mockk<QuestionRepository>()
-    private val questionOpenRepository = mockk<QuestionOpenRepository>()
-    private val userRepository = mockk<UserRepository>()
-    private val userCustomizedQuestionCategoryRepository = mockk<UserCustomizedQuestionCategoryRepository>()
-    private val questionOpenDomainService = mockk<QuestionOpenDomainService>()
+    @MockK private lateinit var questionCategoryRepository: QuestionCategoryRepository
+    @MockK private lateinit var questionRepository: QuestionRepository
+    @MockK private lateinit var questionOpenRepository: QuestionOpenRepository
+    @MockK private lateinit var userRepository: UserRepository
+    @MockK private lateinit var userCustomizedQuestionCategoryRepository: UserCustomizedQuestionCategoryRepository
+    @MockK private lateinit var questionOpenDomainService: QuestionOpenDomainService
 
-    private lateinit var questionDomainService: QuestionDomainService
-
-    @BeforeEach
-    fun setup() {
-        questionDomainService = QuestionDomainService(
-            questionCategoryRepository,
-            questionRepository,
-            questionOpenRepository,
-            userRepository,
-            userCustomizedQuestionCategoryRepository,
-            questionOpenDomainService
-        )
-    }
+    @InjectMockKs private lateinit var questionDomainService: QuestionDomainService
 
     @Nested
-    inner class GetQuestion {
+    inner class GetQuestionUnitTests {
         private lateinit var user: UserEntity
         private lateinit var question1: QuestionEntity
         private lateinit var question2: QuestionEntity
@@ -67,7 +57,7 @@ class QuestionDomainServiceUnitTest {
         }
 
         @Test
-        fun `SCCESS - 문제 가져오기 성공`() {
+        fun `SCCESS - 발급 받은 문제를 문제ID를 이용해 가져온다`() {
             // given
             val issuedQuestion = QuestionFixture.createQuestionOpen(1, question1, user = user)
             every { questionOpenRepository.findByQuestionAndUser(question1, user) } returns issuedQuestion
@@ -76,26 +66,27 @@ class QuestionDomainServiceUnitTest {
             val question = questionDomainService.getQuestion(user.id, question1.id)
 
             // then
-            assertEquals(question.questionId, question1.id)
+            assertThat(question.questionId)
+                .isEqualTo(question1.id)
+
             verify { questionOpenRepository.findByQuestionAndUser(question1, user) }
         }
 
         @Test
-        fun `FAIL - 발급 받지 않은 문제 요청`() {
+        fun `FAIL - 발급 받지 않은 문제 요청 시 예외가 발생한다`() {
             // given
             every { questionOpenRepository.findByQuestionAndUser(question1, user) } returns null
 
             // when, then
-            assertThrows<QuestionNotOpenedException> {
-                questionDomainService.getQuestion(user.id, question1.id)
-            }
+            assertThatThrownBy { questionDomainService.getQuestion(user.id, question1.id) }
+                .isInstanceOf(QuestionNotOpenedException::class.java)
 
             verify { questionOpenRepository.findByQuestionAndUser(question1, user) }
         }
     }
 
     @Nested
-    inner class GetOrCreateTodayQuestion {
+    inner class GetOrCreateTodayQuestionUnitTests {
         private lateinit var user: UserEntity
         private lateinit var question1: QuestionEntity
         private lateinit var question2: QuestionEntity
@@ -112,38 +103,48 @@ class QuestionDomainServiceUnitTest {
         }
 
         @Test
-        fun `SUCCESS - 문제 발급 & 응답`() {
+        fun `SUCCESS - 오늘자 문제를 아직 발급받지 않았다면 문제를 발급 후 응답한다`() {
+            // given
             val today = LocalDate.now()
+            val yesterdayDateTime = today.atStartOfDay().minusDays(1)
             val latestIssuedQuestion =
                 QuestionFixture.createQuestionOpen(
-                    1,
-                    question1,
+                    id = 1,
+                    question = question1,
                     user = user,
-                    openDate = LocalDateTime.now().minusDays(1)
+                    openDate = yesterdayDateTime
                 )
             val newIssuedQuestionInfo = QuestionFixture.createQuestionInfo(questionId = question2.id)
             every { questionOpenRepository.findLatestWithQuestionAndAnswer(user) } returns latestIssuedQuestion
             every { questionOpenDomainService.issueQuestion(user.id, today) } returns newIssuedQuestionInfo
 
+            // when
             val questionInfo = questionDomainService.getOrCreateTodayQuestion(GetTodayQuestion(user.id, today))
 
-            assertEquals(questionInfo.questionId, question2.id)
+            // then
+            assertThat(questionInfo.questionId)
+                .isEqualTo(question2.id)
 
             verify { questionOpenRepository.findLatestWithQuestionAndAnswer(user) }
             verify { questionOpenDomainService.issueQuestion(any(), any()) }
         }
 
         @Test
-        fun `SUCCESS - 기존 문제 응답`() {
+        fun `SUCCESS - 이미 오늘자 문제를 발급 받았다면 해당 문제를 응답한다`() {
+            // given
+            val today = LocalDate.now()
             val latestIssuedQuestion =
-                QuestionFixture.createQuestionOpen(1, question1, user = user, openDate = LocalDateTime.now())
+                QuestionFixture.createQuestionOpen(1, question1, user = user, openDate = today.atStartOfDay())
             val newIssuedQuestionInfo = QuestionFixture.createQuestionInfo(questionId = question2.id)
             every { questionOpenRepository.findLatestWithQuestionAndAnswer(user) } returns latestIssuedQuestion
             every { questionOpenDomainService.issueQuestion(any(), any()) } returns newIssuedQuestionInfo
 
-            val questionInfo = questionDomainService.getOrCreateTodayQuestion(GetTodayQuestion(1, LocalDate.now()))
+            // when
+            val questionInfo = questionDomainService.getOrCreateTodayQuestion(GetTodayQuestion(1, today))
 
-            assertEquals(questionInfo.questionId, question1.id)
+            // then
+            assertThat(questionInfo.questionId)
+                .isEqualTo(question1.id)
 
             verify { questionOpenRepository.findLatestWithQuestionAndAnswer(user) }
             verify(exactly = 0) { questionOpenDomainService.issueQuestion(any(), any()) }
@@ -176,7 +177,7 @@ class QuestionDomainServiceUnitTest {
         }
 
         @Test
-        fun `SUCCESS - 사용자의 문제 카테고리 가져오기 (고갈, 선택 포함)`() {
+        fun `SUCCESS - 선택 여부와 고갈 여부를 포함한 문제 카테고리 정보를 모두 가져온다`() {
             // given
             every { questionCategoryRepository.findAll() } returns listOf(
                 questionCategory1,
@@ -201,16 +202,13 @@ class QuestionDomainServiceUnitTest {
             val categories = questionDomainService.getQuestionCategories(user.id).sortedWith(compareBy { it.id })
 
             // then
-            val expected = mutableListOf(
-                QuestionFixture.createQuestionCategoryInfo(id = 1, depleted = true, selected = true),
-                QuestionFixture.createQuestionCategoryInfo(id = 2, depleted = false, selected = true),
-                QuestionFixture.createQuestionCategoryInfo(id = 3, depleted = false, selected = false)
-            )
-
-            expected.forEachIndexed { idx, info ->
-                assertEquals(categories[idx].depleted, info.depleted)
-                assertEquals(categories[idx].selected, info.selected)
-            }
+            assertThat(categories).hasSize(3)
+                .extracting("id", "depleted", "selected")
+                .containsExactlyInAnyOrder(
+                    tuple(1L, true, true),
+                    tuple(2L, false, true),
+                    tuple(3L, false, false)
+                )
         }
     }
 }
