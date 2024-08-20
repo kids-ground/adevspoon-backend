@@ -59,29 +59,32 @@ class QuestionOpenDomainService(
         )
     }
 
+    // 정책 - 1일 1회 Random 발급
     @Transactional(propagation = Propagation.MANDATORY)
     fun issueQuestion(memberId: Long, today: LocalDate): QuestionInfo {
-        // 정책 - 1일 1회 Random 발급
-        logger.info("질문발급 : memberId($memberId), today($today)")
+        logger.info("질문발급 시작 : memberId($memberId), today($today)")
         val user = getMember(memberId)
-        val selectedCategoryIds = userCustomizedQuestionCategoryRepository.findAllSelectedCategoryIds(user)
+
+        // 질문 선정
+        val categoryIds = userCustomizedQuestionCategoryRepository.findAllSelectedCategoryIds(user)
             .takeIf { it.isNotEmpty() }
             ?: questionCategoryRepository.findAllIds()
+        val allQuestionIds = questionRepository.findAllQuestionIds(categoryIds)
+        val issuedQuestionIds = questionOpenRepository.findAllIssuedQuestionIds(user)
+        val issuableQuestionIds = (allQuestionIds - issuedQuestionIds)
+            .takeIf { it.isNotEmpty() }
+            ?: throw QuestionExhaustedException()
+        val selectedQuestionId = issuableQuestionIds.random()
 
-        val alreadyIssuedQuestionIds = questionOpenRepository.findAllIssuedQuestionIds(user)
-        val candidateIssuableQuestionIds =
-            (questionRepository.findAllQuestionIds(selectedCategoryIds) - alreadyIssuedQuestionIds)
-                .takeIf { it.isNotEmpty() }
-                ?: throw QuestionExhaustedException()
+        // 질문 발급
+        val question = getQuestion(selectedQuestionId)
+        val questionOpen = QuestionOpenEntity(user = user, question = question, openDate = today.atStartOfDay())
+        questionOpenRepository.save(questionOpen)
 
-        val issuedQuestionId = candidateIssuableQuestionIds.random()
-        val question = getQuestion(issuedQuestionId)
-        val issuedQuestion = QuestionOpenEntity(user = user, question = question, openDate = today.atStartOfDay())
-
-        questionOpenRepository.save(issuedQuestion)
+        // 유저 정보 업데이트
         user.increaseQuestionCnt()
 
-        return makeQuestionInfo(issuedQuestion, candidateIssuableQuestionIds.size == 1)
+        return makeQuestionInfo(questionOpen, issuableQuestionIds.size == 1)
     }
 
     private fun getCategoryList(categoryNameList: List<String>): List<QuestionCategoryEntity> {

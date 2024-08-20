@@ -1,5 +1,6 @@
 package com.adevspoon.domain.techQuestion.service
 
+import com.adevspoon.domain.annotation.UnitTest
 import com.adevspoon.domain.fixture.MemberFixture
 import com.adevspoon.domain.fixture.QuestionFixture
 import com.adevspoon.domain.member.domain.UserEntity
@@ -13,38 +14,30 @@ import com.adevspoon.domain.techQuestion.repository.QuestionOpenRepository
 import com.adevspoon.domain.techQuestion.repository.QuestionRepository
 import com.adevspoon.domain.techQuestion.repository.UserCustomizedQuestionCategoryRepository
 import io.mockk.every
-import io.mockk.mockk
+import io.mockk.impl.annotations.InjectMockKs
+import io.mockk.impl.annotations.MockK
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions.assertEquals
+
+import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.springframework.data.repository.findByIdOrNull
 import java.time.LocalDate
 
+@UnitTest
 class QuestionOpenDomainServiceUnitTest {
-    private val questionCategoryRepository = mockk<QuestionCategoryRepository>()
-    private val questionOpenRepository = mockk<QuestionOpenRepository>()
-    private val questionRepository = mockk<QuestionRepository>()
-    private val userRepository = mockk<UserRepository>()
-    private val userCustomizedQuestionCategoryRepository = mockk<UserCustomizedQuestionCategoryRepository>()
+    @MockK private lateinit var questionCategoryRepository: QuestionCategoryRepository
+    @MockK private lateinit var questionRepository: QuestionRepository
+    @MockK private lateinit var questionOpenRepository: QuestionOpenRepository
+    @MockK private lateinit var userRepository: UserRepository
+    @MockK private lateinit var userCustomizedQuestionCategoryRepository: UserCustomizedQuestionCategoryRepository
 
-    private lateinit var questionOpenDomainService: QuestionOpenDomainService
-
-    @BeforeEach
-    fun setUp() {
-        questionOpenDomainService = QuestionOpenDomainService(
-            questionCategoryRepository,
-            questionOpenRepository,
-            questionRepository,
-            userRepository,
-            userCustomizedQuestionCategoryRepository
-        )
-    }
+    @InjectMockKs private lateinit var questionOpenDomainService: QuestionOpenDomainService
 
     @Nested
-    inner class IssueQuestion() {
+    inner class IssueQuestionUnitTests() {
         private lateinit var member: UserEntity
         private lateinit var question: QuestionEntity
         private lateinit var questionOpen: QuestionOpenEntity
@@ -59,15 +52,15 @@ class QuestionOpenDomainServiceUnitTest {
 
             every { userRepository.findByIdOrNull(any()) } returns member
             every { userCustomizedQuestionCategoryRepository.findAllSelectedCategoryIds(any()) } returns listOf(1, 2)
-            every { questionCategoryRepository.findAllIds() } returns listOf(1, 2)
 
+            every { questionCategoryRepository.findAllIds() } returns listOf(1, 2)
             every { questionRepository.findByIdOrNull(any()) } returns question
             every { questionOpenRepository.save(any()) } returns questionOpen
             every { questionCategoryRepository.findByIdOrNull(any()) } returns questionCategory
         }
 
         @Test
-        fun `SUCCESS - 새로운 문제 발급 성공(커먼 케이스)`() {
+        fun `SUCCESS - 발급 가능한 문제들 중 랜덤하게 1개를 발급한다`() {
             // given
             every { questionOpenRepository.findAllIssuedQuestionIds(any()) } returns setOf(3,4)
             every { questionRepository.findAllQuestionIds(any()) } returns setOf(1,2,3,4)
@@ -76,18 +69,18 @@ class QuestionOpenDomainServiceUnitTest {
             val issueQuestion = questionOpenDomainService.issueQuestion(member.id, LocalDate.now())
 
             // then
-            assertEquals(question.id, issueQuestion.questionId)
-            assertEquals(false, issueQuestion.isLast)
+            assertThat(issueQuestion)
+                .extracting("questionId", "isLast")
+                .containsExactly(question.id, false)
 
             verify { userCustomizedQuestionCategoryRepository.findAllSelectedCategoryIds(any()) }
             verify(exactly = 0) { questionCategoryRepository.findAllIds() }
-
             verify { questionRepository.findAllQuestionIds(any()) }
             verify { questionOpenRepository.findAllIssuedQuestionIds(any()) }
         }
 
         @Test
-        fun `SUCCESS - 새로운 문제발급 성공(마지막 문제 발급)`() {
+        fun `SUCCESS - 발급 가능한 문제가 마지막 1개라면 리턴값에 이를 표시한다`() {
             // given
             every { questionOpenRepository.findAllIssuedQuestionIds(any()) } returns setOf(3,4)
             every { questionRepository.findAllQuestionIds(any()) } returns setOf(1,3,4)
@@ -96,33 +89,30 @@ class QuestionOpenDomainServiceUnitTest {
             val issueQuestion = questionOpenDomainService.issueQuestion(member.id, LocalDate.now())
 
             // then
-            assertEquals(question.id, issueQuestion.questionId)
-            assertEquals(true, issueQuestion.isLast)
+            assertThat(issueQuestion)
+                .extracting("questionId", "isLast")
+                .containsExactly(question.id, true)
 
             verify { userCustomizedQuestionCategoryRepository.findAllSelectedCategoryIds(any()) }
             verify(exactly = 0) { questionCategoryRepository.findAllIds() }
-
             verify { questionRepository.findAllQuestionIds(any()) }
             verify { questionOpenRepository.findAllIssuedQuestionIds(any()) }
         }
 
         @Test
-        fun `FAIL - 문제 고갈`() {
+        fun `FAIL - 발급 가능한 문제가 없다면 예외가 발생한다`() {
             // given
             every { questionOpenRepository.findAllIssuedQuestionIds(any()) } returns setOf(3,4)
             every { questionRepository.findAllQuestionIds(any()) } returns setOf(3,4)
 
             // when, then
-            assertThrows<QuestionExhaustedException> {
-                questionOpenDomainService.issueQuestion(member.id, LocalDate.now())
-            }
+            assertThatThrownBy { questionOpenDomainService.issueQuestion(member.id, LocalDate.now()) }
+                .isInstanceOf(QuestionExhaustedException::class.java)
 
             verify { userCustomizedQuestionCategoryRepository.findAllSelectedCategoryIds(any()) }
             verify(exactly = 0) { questionCategoryRepository.findAllIds() }
-
             verify { questionRepository.findAllQuestionIds(any()) }
             verify { questionOpenRepository.findAllIssuedQuestionIds(any()) }
-
             verify(exactly = 0) { questionOpenRepository.save(any()) }
         }
     }
